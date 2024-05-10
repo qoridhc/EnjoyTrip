@@ -13,14 +13,21 @@
       <div class="col" style="font-size: 13px">
         <p class="pt-2">더베이101</p>
         <p>명소 대한민국 부산광역시 해둔대구 동백로 52</p>
+        <div class="d-flex">
+          <img src="/src/assets/img/like.png" style="width: 15px" />
+          <p class="ps-2 pe-2">123</p>
+          <img src="/src/assets/img/star.png" style="width: 15px" />
+          <p class="ps-2 pe-2">123</p>
+        </div>
       </div>
     </div>
   </div>
+  <hr />
 </template>
 
 <style scoped>
 img {
-  max-width: 130%; /* 이미지가 부모 요소에 맞게 너비가 조정됩니다 */
+  max-width: 140%; /* 이미지가 부모 요소에 맞게 너비가 조정됩니다 */
   height: 100%; /* 이미지의 높이를 자동으로 조정하여 가로 비율을 유지합니다 */
 }
 </style>
