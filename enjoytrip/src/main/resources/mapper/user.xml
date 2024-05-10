@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace = "com.ssafy.user.model.dao.UserDao">
+
+	<resultMap type="UserDto" id="userMap">
+		<result column="user_id" property="id" />
+		<result column="user_name" property="name" />
+		<result column="user_password" property="pw" />
+		<result column="email_id" property="email_1" />
+		<result column="email_domain" property="email_2" />
+	</resultMap>
+
+	<select id = "login" resultType="userDto" resultMap="userMap">
+		select *
+		from members 
+		where user_id = #{id}
+	</select>
+
+	<insert id="signUp">
+		insert into members 
+		values(#{id}, #{name}, #{pwd}, substring_index(#{email},'@',1), substring_index(#{email},'@',-1), now(), null);
+	</insert>
+	
+	<select id="idCheck" parameterType="String" resultType="int">
+		select count(user_id)
+		from members
+		where user_id = #{userid}
+	</select>
+	
+	<update id="modify">
+		update members set user_password = #{pw} where user_id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from members where user_id = #{id}
+	</delete>
+	
+	
+</mapper>
+
