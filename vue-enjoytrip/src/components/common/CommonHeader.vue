@@ -1,0 +1,41 @@
+<script setup>
+import { vShow, ref } from 'vue';
+    const root = ''
+    const condition = ref(true)
+</script>
+
+<template>
+    <nav class="fixed-top navbar navbar-light navbar-expand-lg" style="font-family: 'NotoSansKR-Regular';">
+        <div class="container px-5">
+            <a class="navbar-brand" href="${root}/">Enjoy Trip</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="${root}/attraction">지역별여행지</a></li>
+                    <li class="nav-item"><a class="nav-link" href="${root}/article/list">여행정보공유</a></li>
+
+                    <!-- <div> -->
+                    <template v-if="condition"> 
+                        <li class="nav-item"><a class="nav-link" href="${root}/user/signup">회원가입</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${root}/user/login">로그인</a></li>                    
+                    </template>
+                    
+                    <!-- <div> -->
+                    <template v-if="!condition"> 
+                        <li class="nav-item"><a class="nav-link" href="${root}/attractoin/myroute">나의여행계획</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${root}/attraction/myplace">핫플자랑하기</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${root}/user/profile">마이페이지</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${root}/user/logout">로그아웃</a></li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<style scoped>
+</style>

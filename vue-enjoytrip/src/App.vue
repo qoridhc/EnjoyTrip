@@ -1,7 +1,23 @@
-<script setup></script>
+<script setup>
+import { RouterLink, RouterView } from "vue-router";
+import CommonHeader from "@/components/common/CommonHeader.vue";
+</script>
 
-<template>
-  <router-view></router-view>
+<template style="font-family: 'NotoSansKR-Regular'">
+  <header>
+    <div class="wrapper">
+      <nav>
+        <CommonHeader />
+      </nav>
+    </div>
+  </header>
+
+  <RouterView style="font-family: 'NotoSansKR-Regular'" />
 </template>
 
-<style scoped></style>
+<style scoped>
+@font-face {
+  font-family: "NotoSansKR-Regular";
+  src: url("@/assets/fonts/NotoSansKR-Regular.ttf");
+}
+</style>
