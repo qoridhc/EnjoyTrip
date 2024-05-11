@@ -1,9 +1,16 @@
-<script setup></script>
+<script setup>
+const props = defineProps({
+  place: Object,
+});
+
+// console.log("routecard");
+console.log(props.idx);
+</script>
 
 <template>
-  <div class="container mt-3">
+  <div class="container" @mouseover="$emit('mouseover', idx)" @mouseout="$emit('mouseout')">
     <div class="row">
-      <div class="col-3 d-flex align-items-center justify-content-center">
+      <div class="col-md-4 d-flex align-items-center justify-content-center">
         <img
           class="img-fluid rounded"
           src="https://mblogthumb-phinf.pstatic.net/MjAyMjA3MDNfNjQg/MDAxNjU2ODI0NDY3MjQ1.NvuXIg9IlYq-1V0hawiNbQLx0I4gP2hk-0kHniUswCsg.n7KXh7VY9b8vOGtpPdmn-YQ7foxHFzTFyUOSuUgc5Dgg.JPEG.effy0424/1656823763773.jpg?type=w800"
@@ -11,23 +18,23 @@
       </div>
 
       <div class="col" style="font-size: 13px">
-        <p class="pt-2">더베이101</p>
-        <p>명소 대한민국 부산광역시 해둔대구 동백로 52</p>
-        <div class="d-flex">
-          <img src="/src/assets/img/like.png" style="width: 15px" />
-          <p class="ps-2 pe-2">123</p>
+        <div class="pt-3" style="font-weight: bold; color: black">{{ place.place_name }}</div>
+        <div class="pt-1 pb-2" style="color: gray">명소 {{ place.address_name }}</div>
+        <div class="d-flex align-items-center mb-3">
+          <img src="/src/assets/img/like.png" style="width: 12px" />
+          <div class="ps-2 pe-2">123</div>
           <img src="/src/assets/img/star.png" style="width: 15px" />
-          <p class="ps-2 pe-2">123</p>
+          <div class="ps-2 pe-2">251</div>
         </div>
       </div>
     </div>
   </div>
-  <hr />
+  <hr style="margin-top: 0px; margin-bottom: 0px" />
 </template>
 
 <style scoped>
 img {
-  max-width: 140%; /* 이미지가 부모 요소에 맞게 너비가 조정됩니다 */
-  height: 100%; /* 이미지의 높이를 자동으로 조정하여 가로 비율을 유지합니다 */
+  max-width: 110%;
+  height: 70%;
 }
 </style>

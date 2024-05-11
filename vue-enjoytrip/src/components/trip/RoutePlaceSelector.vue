@@ -6,16 +6,20 @@ import RouteCard from "@/components/trip/RouteCard.vue";
   <div class="col-md-3">
     <!-- Left Section -->
     <div class="border p-4 h-100">
-      <h3>부산</h3>
-      <p>2024.05.10(금) ~ 2024.05.11(토)</p>
-      <p>장소 선택</p>
+      <div style="font-size: 25px; font-weight: bold">부산</div>
+      <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.10(금) ~ 2024.05.11(토)</div>
+      <!-- <div class="pt-2 pb-2">장소 선택</div> -->
       <div class="search">
         <input type="text" placeholder="장소명을 입력해 주세요" />
         <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
       </div>
-      <RouteCard v-for="i in 7" />
+      <div class="mt-3">
+        <RouteCard v-for="i in 7" />
+      </div>
     </div>
   </div>
+
+  <div class="col-md-2">22</div>
 </template>
 
 <style scoped>
