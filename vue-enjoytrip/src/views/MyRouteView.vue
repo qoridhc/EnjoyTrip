@@ -112,7 +112,6 @@ const placesSearchCB = (data, status, pagination) => {
     // 검색 목록과 마커를 표출합니다
 
     searchResult.value = data;
-    console.log(searchResult.value);
 
     displayMarkers(data);
 
@@ -128,13 +127,15 @@ const placesSearchCB = (data, status, pagination) => {
   }
 };
 
-const positions = [];
+var positions = [];
 
 const displayMarkers = (places) => {
   console.log("displaceMarkers");
   // const bounds = new kakao.maps.LatLngBounds();
 
   console.log(places);
+
+  positions = [];
 
   places.forEach((place) => {
     positions.push({ title: place.place_name, latlng: new kakao.maps.LatLng(place.y, place.x) });
@@ -149,6 +150,8 @@ const displayMarkers = (places) => {
       item.setMap(null);
     });
   }
+
+  markers = [];
 
   const imgSrc = "/src/assets/img/like.png";
   const imgSize = new kakao.maps.Size(24, 35);
