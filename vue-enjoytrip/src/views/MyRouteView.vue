@@ -19,34 +19,71 @@
               @click="searchPlaces()"
               src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
-          <!-- displayInfowindow(makers[index], searchPlace.title) -->
-          <!-- displayInfowindow(makers[$event], searchResult[$event].place_name) -->
           <div class="mt-3" style="max-height: 70vh; overflow-y: auto">
-            <RouteCard
+            <!-- <draggable
+              class="dragArea list-group"
+              :list="searchResult"
+              :group="{ name: 'people', pull: 'clone', put: false, move: null }"
+              :sort="false"
+              @change="log"
+              item-key="name">
+              <template #item="{ element }">
+                <div class="list-group-item">
+                  
+                </div>
+              </template>
+            </draggable> -->
+
+            <PlaceCard
               :place="searchPlace"
               v-for="(searchPlace, index) in searchResult"
               :key="index"
               @mouseover="displayInfowindow(markers[index], positions[index].title)"
-              @mouseout="infowindow.close()">
+              @mouseout="infowindow.close()"
+              @click="addRoute(index)">
               {{ searchPlace }}
-            </RouteCard>
+            </PlaceCard>
           </div>
         </div>
       </div>
 
-      <!-- KaKaoMap.vue -->
-      <!-- <div class="col-md-2">22</div> -->
+      <div class="col-md-3">
+        <div class="mt-5 d-flex">
+          <h4 class="me-auto">{{ selectedPlaceList.length }}</h4>
+          <div
+            class="border rounded p-1 me-2 custom-bg-color text-white"
+            @click="getShortestPath()"
+            style="font-size: 14px; height: 30px">
+            최단경로
+          </div>
+          <div
+            class="border rounded p-1 custom-bg-color text-white"
+            @click="clearSelectedRoute()"
+            style="font-size: 14px; height: 30px">
+            초기화
+          </div>
+        </div>
+        <div style="max-height: 90vh; overflow-y: auto; overflow-x: hidden">
+          <RouteCard
+            v-for="(place, index) in selectedPlaceList"
+            :place="place"
+            :id="index + 1"
+            :key="index"></RouteCard>
+        </div>
+      </div>
       <!-- Right Section -->
       <!-- <KakaoMap class="h-100" /> -->
-      <div id="map" class="col-md-9"></div>
+      <div id="map" class="col"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-// import RoutePlaceSelector from "@/components/trip/RoutePlaceSelector.vue";
+import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
+
 import { onMounted, ref } from "vue";
+import draggable from "vuedraggable";
 
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
@@ -54,8 +91,32 @@ onMounted(() => {
 
 var map, ps, infowindow;
 
+// default 검색
+var searchKeyword = ref("이태원맛집");
+
+// 검색 결과 담는 배열
+/*
+searchResult[idx].value :
+{
+  address_name: "서울 용산구 이태원동 34-149"
+  category_group_code: "FD6"
+  category_group_name: "음식점"
+  category_name: "음식점 > 분식"
+  distance: ""id: "1952478679"
+  phone: "02-790-7300"
+  place_name: "명동교자 이태원점"
+  place_url: "http://place.map.kakao.com/1952478679"
+  road_address_name: "서울 용산구 녹사평대로 136"
+  x: "126.990949104616"
+  y: "37.5308561175718"
+}
+*/
+var searchResult = ref([]);
+
+// 생성된 마커들 담는 배열열
 var markers = [];
 
+// 초기 맵 생성
 const initMap = () => {
   var container = document.getElementById("map");
   var options = {
@@ -79,6 +140,7 @@ const initMap = () => {
   searchPlaces();
 };
 
+// kakao api 쓰기위한 초기 설정
 const addScript = () => {
   const script = document.createElement("script");
   /* global kakao */
@@ -88,13 +150,9 @@ const addScript = () => {
   document.head.appendChild(script);
 };
 
-var searchKeyword = ref("이태원맛집");
-var searchResult = ref([]);
-
+// 검색어 기반으로 장소 검색
 const searchPlaces = () => {
   var keyword = searchKeyword.value;
-
-  console.log(keyword);
 
   if (!keyword.replace(/^\s+|\s+$/g, "")) {
     alert("키워드를 입력해주세요!");
@@ -106,7 +164,7 @@ const searchPlaces = () => {
 };
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-const placesSearchCB = (data, status, pagination) => {
+const placesSearchCB = (data, status) => {
   if (status === kakao.maps.services.Status.OK) {
     // 정상적으로 검색이 완료됐으면
     // 검색 목록과 마커를 표출합니다
@@ -127,22 +185,17 @@ const placesSearchCB = (data, status, pagination) => {
   }
 };
 
+//  {title: '명동교자 이태원점', latlng: qa}
 var positions = [];
 
 const displayMarkers = (places) => {
-  console.log("displaceMarkers");
   // const bounds = new kakao.maps.LatLngBounds();
-
-  console.log(places);
 
   positions = [];
 
   places.forEach((place) => {
     positions.push({ title: place.place_name, latlng: new kakao.maps.LatLng(place.y, place.x) });
   });
-
-  console.log("forEach 이후");
-  console.log(positions);
 
   // 기존에 생성된 마커가 있으면 마커 반복문 돌면서 지우기
   if (markers.length > 0) {
@@ -189,18 +242,187 @@ const displayMarkers = (places) => {
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
   map.setBounds(bounds);
 
+  console.log(searchResult.value[0]);
+
   // displayInfowindow(markers[0], positions[0].title);
 };
 
+// 인포 윈도우 생성
 const displayInfowindow = (marker, title) => {
-  console.log("실행");
-  console.log(marker);
-  console.log(title);
-
   var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
 
   infowindow.setContent(content);
   infowindow.open(map, marker);
+};
+
+var selectedPlaceList = ref([]);
+var testPath = [],
+  polylines = [];
+
+// 선택한 여행지 추가
+const addRoute = (index) => {
+  console.log("== addRoute == ");
+  console.log(index);
+
+  const selectedPlaceInfo = {
+    title: searchResult.value[index].place_name,
+    address: searchResult.value[index].address_name,
+    currPos: new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x),
+  };
+
+  // 같은 장소 중복 선택 방지
+  const isDuplicated = selectedPlaceList.value.some(
+    (iter) => JSON.stringify(iter) === JSON.stringify(selectedPlaceInfo)
+  );
+
+  if (isDuplicated) {
+    alert("이미 선택한 장소입니다.");
+    return;
+  }
+
+  selectedPlaceList.value.push(selectedPlaceInfo);
+
+  testPath.push(new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x));
+
+  // 지도에 표시할 선을 생성합니다
+  var polyline = new kakao.maps.Polyline({
+    path: testPath, // 선을 구성하는 좌표배열 입니다
+    strokeWeight: 5, // 선의 두께 입니다
+    strokeColor: "#FF204E", // 선의 색깔입니다
+    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    strokeStyle: "solid", // 선의 스타일입니다
+  });
+
+  polyline.setMap(map);
+
+  // 선 배열에 저장
+  polylines.push(polyline);
+};
+
+// 지도 위에 표시되고 있는 마커를 모두 제거합니다
+// const removeMarker = () => {
+//   for (var i = 0; i < markers.length; i++) {
+//     markers[i].setMap(null);
+//   }
+//   markers = [];
+// };
+
+const clearSelectedRoute = () => {
+  polylines.forEach((polyline) => {
+    polyline.setMap(null);
+  });
+
+  selectedPlaceList.value = [];
+  testPath = [];
+  polylines = [];
+};
+
+// ====== 최단 경로  구하는 로직 ======
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
+
+const distance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // 지구 반지름 (단위: km)
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // 두 지점 간의 거리 (단위: km)
+  return distance;
+};
+
+let arr = [[]];
+let dp = [];
+let pos = [];
+let visited = [];
+let size = 0;
+
+const getShortestPath = () => {
+  for (let j = 0; j < polylines.length; j++) polylines[j].setMap(null);
+
+  size = testPath.length;
+
+  arr = Array.from(new Array(size), () => new Array(size).fill(Infinity));
+  dp = Array.from({ length: size }, () => Infinity);
+  visited = Array.from({ length: size }, () => 0);
+  pos = Array.from({ length: size }, () => -1);
+
+  for (let i = 0; i < size - 1; i++) {
+    let pos1 = testPath[i];
+    for (let j = i + 1; j < size; j++) {
+      let pos2 = testPath[j];
+      let dist = distance(pos1.La, pos1.Ma, pos2.La, pos2.Ma);
+
+      arr[i][j] = dist;
+      arr[j][i] = dist;
+    }
+  }
+
+  console.log("arr : ", arr);
+  dijkstra();
+};
+
+const dijkstra = () => {
+  console.log("다익 실행");
+
+  dp[0] = 0;
+  for (let i = 0; i < size; i++) {
+    let min = Infinity;
+    let cur = -1;
+
+    //현재 접점에서 미방문 접점 중 가장 가까운 곳 선택
+    for (let j = 0; j < size; j++) {
+      if (visited[j]) continue;
+      if (min > dp[j]) {
+        min = dp[j];
+        cur = j;
+      }
+    }
+
+    //방문 처리 및 최적화
+    if (cur == -1) break;
+    visited[cur] = true;
+
+    //업데이트
+    for (let j = 0; j < size; j++) {
+      if (dp[j] > min + arr[cur][j]) dp[j] = min + arr[cur][j];
+    }
+  }
+
+  for (let i = 0; i < size; i++) {
+    let min = Infinity;
+    let idx = -1;
+
+    for (let j = 0; j < size; j++) {
+      if (min > dp[j]) {
+        min = dp[j];
+        idx = j;
+      }
+    }
+
+    if (idx !== -1) {
+      testPath[i] = selectedPlaceList.value[idx].currPos;
+      dp[idx] = Infinity; // dp에서 해당 요소를 제거합니다.
+    }
+  }
+  // 지도에 표시할 선을 생성합니다
+  var polyline = new kakao.maps.Polyline({
+    path: testPath, // 선을 구성하는 좌표배열 입니다
+    strokeWeight: 5, // 선의 두께 입니다
+    strokeColor: "#FF204E", // 선의 색깔입니다
+    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    strokeStyle: "solid", // 선의 스타일입니다
+  });
+
+  console.log("testPath2 : ", testPath);
+
+  // 지도에 선을 표시합니다
+  polyline.setMap(map);
+  polylines.push(polyline);
 };
 </script>
 
@@ -229,5 +451,8 @@ img {
   top: 10px;
   right: 12px;
   margin: 0;
+}
+.custom-bg-color {
+  background-color: #a6e3e9;
 }
 </style>

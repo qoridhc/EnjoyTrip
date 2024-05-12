@@ -1,5 +1,5 @@
 <script setup>
-import RouteCard from "@/components/trip/RouteCard.vue";
+import RouteCard from "@/components/trip/PlaceCard.vue";
 </script>
 
 <template>
