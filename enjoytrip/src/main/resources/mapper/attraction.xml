@@ -12,7 +12,7 @@
 		select gugun_code, gugun_name from gugun where sido_code = #{sidoCode}
 	</select>
 	
-	<select id="getAttractionList" resultMap="attractionDto">
+	<select id="getAttractionList" resultType="attractionDto">
 		select first_image, title, addr1, latitude, longitude 
 		from attraction_info 
 		where content_type_id = #{content_id} and sido_code = #{sido_code} and gugun_code = #{gugun_code} 

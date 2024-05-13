@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.ssafy.trip.model.AttractionDto;
 import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.SidoDto;
@@ -13,12 +16,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+@Controller
+@RequestMapping("/attraction")
 public class AttractionController 
 {
 	private static AttractionController acon;
 	private AttractionServiceImpl service;
-	
 	
 	public static AttractionController getCont() {
 		if(acon == null) {

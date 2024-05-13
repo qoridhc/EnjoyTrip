@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import CommonHeader from "@/components/common/CommonHeader.vue";
+import CommonFooter from "./components/common/CommonFooter.vue";
 </script>
 
 <template style="font-family: 'NotoSansKR-Regular'">
@@ -13,6 +14,7 @@ import CommonHeader from "@/components/common/CommonHeader.vue";
   </header>
 
   <RouterView style="font-family: 'NotoSansKR-Regular'" />
+  <CommonFooter />
 </template>
 
 <style scoped>

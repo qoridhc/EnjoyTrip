@@ -1,6 +1,6 @@
 <template>
     <div class="container min-vw-100 gray pd">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center pt-5 pb-5">
 
             <!-- 왼쪽 텍스트 -->
             <div class="col-3" style="margin: auto 0px;">
