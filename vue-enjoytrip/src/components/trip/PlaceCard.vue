@@ -10,10 +10,7 @@ const props = defineProps({
   <div class="container" @mouseover="$emit('mouseover', idx)" @mouseout="$emit('mouseout')" @click="$emit('click')">
     <div class="row">
       <div class="col-md-4 d-flex align-items-center justify-content-center">
-        <img
-          class="img-fluid rounded"
-          src="https://mblogthumb-phinf.pstatic.net/MjAyMjA3MDNfNjQg/MDAxNjU2ODI0NDY3MjQ1.NvuXIg9IlYq-1V0hawiNbQLx0I4gP2hk-0kHniUswCsg.n7KXh7VY9b8vOGtpPdmn-YQ7foxHFzTFyUOSuUgc5Dgg.JPEG.effy0424/1656823763773.jpg?type=w800"
-          alt="" />
+        <img class="img-fluid rounded" :src="place.imgUrl" alt="" />
       </div>
 
       <div class="col" style="font-size: 13px">
