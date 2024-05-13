@@ -20,29 +20,19 @@
               src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
           <div class="mt-3" style="max-height: 70vh; overflow-y: auto">
-            <!-- <draggable
+            <draggable
               class="dragArea list-group"
               :list="searchResult"
               :group="{ name: 'people', pull: 'clone', put: false, move: null }"
               :sort="false"
               @change="log"
               item-key="name">
-              <template #item="{ element }">
+              <template #item="{ element, index }">
                 <div class="list-group-item">
-                  
+                  <PlaceCard :place="element" :key="index" @click="addRoute(index)"> </PlaceCard>
                 </div>
               </template>
-            </draggable> -->
-
-            <PlaceCard
-              :place="searchPlace"
-              v-for="(searchPlace, index) in searchResult"
-              :key="index"
-              @mouseover="displayInfowindow(markers[index], positions[index].title)"
-              @mouseout="infowindow.close()"
-              @click="addRoute(index)">
-              {{ searchPlace }}
-            </PlaceCard>
+            </draggable>
           </div>
         </div>
       </div>
@@ -64,11 +54,18 @@
           </div>
         </div>
         <div style="max-height: 90vh; overflow-y: auto; overflow-x: hidden">
-          <RouteCard
+          <draggable class="dragArea list-group" :list="selectedPlaceList" group="people" @change="log" item-key="name">
+            <template #item="{ element, index }">
+              <div class="list-group-item">
+                <RouteCard :place="element" :id="index + 1" :key="index"></RouteCard>
+              </div>
+            </template>
+          </draggable>
+          <!-- <RouteCard
             v-for="(place, index) in selectedPlaceList"
             :place="place"
             :id="index + 1"
-            :key="index"></RouteCard>
+            :key="index"></RouteCard> -->
         </div>
       </div>
       <!-- Right Section -->
@@ -79,6 +76,9 @@
 </template>
 
 <script setup>
+// import axios from "axios";
+// import cheerio from "cheerio";
+
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 
@@ -261,12 +261,9 @@ var testPath = [],
 
 // 선택한 여행지 추가
 const addRoute = (index) => {
-  console.log("== addRoute == ");
-  console.log(index);
-
   const selectedPlaceInfo = {
-    title: searchResult.value[index].place_name,
-    address: searchResult.value[index].address_name,
+    place_name: searchResult.value[index].place_name,
+    address_name: searchResult.value[index].address_name,
     currPos: new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x),
   };
 

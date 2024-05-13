@@ -4,7 +4,7 @@ const props = defineProps({
   id: Number,
 });
 
-console.log(props.place.title);
+console.log(props.place);
 </script>
 
 <template>
@@ -23,9 +23,9 @@ console.log(props.place.title);
               alt="" />
           </div>
           <div class="col-md-8 pb-3" style="font-size: 13px; overflow: hidden">
-            <div class="pt-1" style="font-weight: bold; color: black">{{ place.title }}</div>
+            <div class="pt-1" style="font-weight: bold; color: black">{{ place.place_name }}</div>
             <div class="pt-1 pb-2" style="color: gray; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-              명소 {{ place.address }}
+              명소 {{ place.address_name }}
             </div>
           </div>
         </div>
