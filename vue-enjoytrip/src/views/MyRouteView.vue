@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-// import axios from "axios";
+import axios from "axios";
 // import cheerio from "cheerio";
 
 import PlaceCard from "@/components/trip/PlaceCard.vue";
@@ -170,7 +170,7 @@ const placesSearchCB = (data, status) => {
     // 검색 목록과 마커를 표출합니다
 
     searchResult.value = data;
-
+    getImg();
     displayMarkers(data);
 
     // displayPlaces(data);
@@ -183,6 +183,36 @@ const placesSearchCB = (data, status) => {
     alert("검색 결과 중 오류가 발생했습니다.");
     return;
   }
+};
+
+// getNaver();
+
+const getImg = async () => {
+  for (let i = 0; i < searchResult.value.length; i++) {
+    const resp = await getNaver(i);
+
+    searchResult.value[i].imgUrl = resp;
+  }
+
+  for (let i = 0; i < searchResult.value.length; i++) {
+    console.log(searchResult.value[i].imgUrl);
+  }
+};
+
+const getNaver = async (i) => {
+  return axios
+    .get("/v1/search/image?", {
+      params: {
+        query: searchResult.value[i].place_name,
+        display: 1,
+      },
+      headers: {
+        "X-Naver-Client-Id": "4xqEe9q8UpnLzt_zPegz",
+        "X-Naver-Client-Secret": "oCZfB1x_b_",
+      }, // 인증 헤더 추가
+    })
+    .then((res) => res.data.items[0].link)
+    .catch((err) => console.error(err));
 };
 
 //  {title: '명동교자 이태원점', latlng: qa}
