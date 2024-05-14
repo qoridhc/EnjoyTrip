@@ -1,173 +1,195 @@
 <template>
-    <!-- 여행지 검색 MODAL -->
-    <div class="modal" id="centerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="false">
-        <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- modal-lg에서 modal-xl로 변경 -->
-            <div class="modal-content rounded-modal">
-                <div class="modal-body d-flex justify-content-between">
-                    <div class="d-flex flex-column left-content">
-                        <h5 class="jeju-title">JEJU</h5>
-                        <h4 class="modal-subtitle">대한민국 제주</h4>
-                        <div class="modal-description">
-                            섬 전체가 하나의 거대한 관광자원인 제주도. 에메랄드빛 물빛이 인상적인 협재 해수욕장은 제주 대표 여행지며, 파도가 넘보는 주상절리와 바다 위 산책로인 용머리 해안은
-                            제주에서만 볼 수 있는 천혜의 자연경관으로 손꼽힌다. 드라마 촬영지로 알려진 섭지코스는 꾸준한 사랑을 받고 있으며 한라봉과 흑돼지, 은갈치 등은 제주를 대표하는
-                            음식이다.
-                        </div>
-                        <div class="modal-info row">
-                            <div class="info-item col">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <font-awesome-icon :icon="['fas', 'plane']" />
-                                        <div class="info-text">&nbsp;항공</div>
-                                    </div>
-                                </div>
-                                <div class="info-subtext">없음</div>
-                            </div>
-                            <div class="info-item col">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <font-awesome-icon :icon="['fas', 'passport']" />
-                                        <div class="info-text">&nbsp;비자</div>
-                                    </div>
-                                </div>
-                                <div class="info-subtext">없음</div>
-                            </div>
-                            <div class="info-item col">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <font-awesome-icon :icon="['fas', 'bolt']" />
-                                        <div class="info-text">&nbsp;전압</div>
-                                    </div>
-                                </div>
-                                <div class="info-subtext">콘센트</div>
-                                <div>220V</div>
-                            </div>
-                            <div class="info-item col">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <font-awesome-icon :icon="['fas', 'clock']" />
-                                        <div class="info-text">&nbsp;시차</div>
-                                    </div>
-                                </div>
-                                <div class="info-subtext">한국 대비</div>
-                                <div>없음</div>
-                            </div>
-                        </div>
-                        <!-- 일정 만들기 버튼 -->
-                        <router-link class="btn btn-dark" @click="closeModal()" :to="{name:'myroute'}" >일정 만들기</router-link>
-                    </div>
-                    <div class="right-content">
-                        <img src="/src/assets/img-main/carousel1.jpg" class="img-fluid modal-image"/>
-                        <div class="button-group">
-                            <button class="btn btn-secondary">항공권 예매</button>
-                            <button class="btn btn-secondary">숙박 예약</button>
-                        </div>
-                    </div>
-                </div>
+  <!-- 여행지 검색 MODAL -->
+  <div
+    class="modal"
+    id="centerModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <!-- modal-lg에서 modal-xl로 변경 -->
+      <div class="modal-content rounded-modal">
+        <button type="button" class="btn-close close-button" aria-label="Close" @click="closeModal()"></button>
+        <!-- X 버튼 추가 -->
+
+        <div class="modal-body d-flex justify-content-between">
+          <div class="d-flex flex-column left-content">
+            <h5 class="jeju-title">JEJU</h5>
+            <h4 class="modal-subtitle">대한민국 제주</h4>
+            <div class="modal-description">
+              섬 전체가 하나의 거대한 관광자원인 제주도. 에메랄드빛 물빛이 인상적인 협재 해수욕장은 제주 대표 여행지며,
+              파도가 넘보는 주상절리와 바다 위 산책로인 용머리 해안은 제주에서만 볼 수 있는 천혜의 자연경관으로
+              손꼽힌다. 드라마 촬영지로 알려진 섭지코스는 꾸준한 사랑을 받고 있으며 한라봉과 흑돼지, 은갈치 등은 제주를
+              대표하는 음식이다.
             </div>
+            <div class="modal-info row">
+              <div class="info-item col">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <font-awesome-icon :icon="['fas', 'plane']" />
+                    <div class="info-text">&nbsp;항공</div>
+                  </div>
+                </div>
+                <div class="info-subtext">없음</div>
+              </div>
+              <div class="info-item col">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <font-awesome-icon :icon="['fas', 'passport']" />
+                    <div class="info-text">&nbsp;비자</div>
+                  </div>
+                </div>
+                <div class="info-subtext">없음</div>
+              </div>
+              <div class="info-item col">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <font-awesome-icon :icon="['fas', 'bolt']" />
+                    <div class="info-text">&nbsp;전압</div>
+                  </div>
+                </div>
+                <div class="info-subtext">콘센트</div>
+                <div>220V</div>
+              </div>
+              <div class="info-item col">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <font-awesome-icon :icon="['fas', 'clock']" />
+                    <div class="info-text">&nbsp;시차</div>
+                  </div>
+                </div>
+                <div class="info-subtext">한국 대비</div>
+                <div>없음</div>
+              </div>
+            </div>
+            <!-- 일정 만들기 버튼 -->
+            <router-link class="btn btn-dark" @click="closeModal()" :to="{ name: 'myroute' }">일정 만들기</router-link>
+          </div>
+          <div class="right-content">
+            <img src="/src/assets/img-main/carousel1.jpg" class="img-fluid modal-image" />
+            <div class="button-group">
+              <button class="btn btn-secondary">항공권 예매</button>
+              <button class="btn btn-secondary">숙박 예약</button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const back = ref(true)
+import { ref } from "vue";
+const back = ref(true);
 const closeModal = () => {
-    back.value = false
-}
+  back.value = false;
+  console.log("click");
+};
 </script>
 
 <style scoped>
+/* 스타일 생략 */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1050;
+  color: #000;
+  opacity: 1;
+}
+
 @font-face {
-    font-family: 'NotoSansKR';
-    src: url('/src/assets/fonts/NotoSansKR-Regular.ttf') format('truetype');
+  font-family: "NotoSansKR";
+  src: url("/src/assets/fonts/NotoSansKR-Regular.ttf") format("truetype");
 }
 
 .modal-body {
-    background-color: #f8f9fa;
-    padding: 80px;
-    border-radius: 20px;
-    font-family: 'NotoSansKR', sans-serif;
+  background-color: #f8f9fa;
+  padding: 80px;
+  border-radius: 20px;
+  font-family: "NotoSansKR", sans-serif;
 }
 
 .modal-content {
-    border-radius: 20px;
+  border-radius: 20px;
 }
 
 .left-content,
 .right-content {
-    flex: 1;
-    padding: 20px;
+  flex: 1;
+  padding: 20px;
 }
 
 .jeju-title {
-    font-size: 1.25rem;
-    color: #6c757d;
-    margin-bottom: 10px;
+  font-size: 1.25rem;
+  color: #6c757d;
+  margin-bottom: 10px;
 }
 
 .modal-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .modal-subtitle {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .modal-description {
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    line-height: 1.5;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
 .modal-info {
-    font-size: 1rem;
-    color: #000000;
-    margin-bottom: 20px;
+  font-size: 1rem;
+  color: #000000;
+  margin-bottom: 20px;
 }
 
 .modal-info .info-item {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .modal-info .info-text {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .modal-info .info-subtext {
-    font-size: 0.75rem;
-    color: #6c757d;
-    margin-top: 9px;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 9px;
 }
 
 .right-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-image {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-    border-radius: 5px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 5px;
 }
 
 .button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
 }
 
 .button-group .btn {
-    flex: 1;
+  flex: 1;
 }
 
 .info-item font-awesome-icon {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 </style>
