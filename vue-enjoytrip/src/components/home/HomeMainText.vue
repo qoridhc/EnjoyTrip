@@ -16,7 +16,7 @@ import HomeMainCollapse from './HomeMainCollapse.vue';
             </button>
         </p>
         <HomeMainCollapse />
-        <HomeMainModal />   
+        <HomeMainModal @close="closeModal" v-show="isClosed" />   
     </div>
 
 </template>
