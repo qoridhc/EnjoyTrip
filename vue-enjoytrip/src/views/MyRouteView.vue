@@ -7,7 +7,6 @@
         <div class="border p-4 h-100">
           <div style="font-size: 25px; font-weight: bold">부산</div>
           <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.10(금) ~ 2024.05.11(토)</div>
-          <!-- <div class="pt-2 pb-2">장소 선택</div> -->
           <div class="search">
             <input
               @keyup.enter="searchPlaces"
@@ -16,6 +15,7 @@
               value="이태원맛집"
               placeholder="장소명을 입력해 주세요" />
             <img
+              class="pt-1"
               @click="searchPlaces()"
               src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
@@ -29,7 +29,13 @@
               item-key="name">
               <template #item="{ element, index }">
                 <div class="list-group-item">
-                  <PlaceCard :place="element" :key="index" @click="addRoute(index)"> </PlaceCard>
+                  <PlaceCard
+                    :place="element"
+                    :key="index"
+                    @mouseover="displayInfowindow(markers[index], positions[index].title)"
+                    @mouseout="infowindow.close()"
+                    @click="addRoute(index)">
+                  </PlaceCard>
                 </div>
               </template>
             </draggable>
@@ -53,23 +59,23 @@
             초기화
           </div>
         </div>
-        <div style="max-height: 90vh; overflow-y: auto; overflow-x: hidden">
+        <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden">
           <draggable class="dragArea list-group" :list="selectedPlaceList" group="people" @change="log" item-key="name">
             <template #item="{ element, index }">
               <div class="list-group-item">
-                <RouteCard :place="element" :id="index + 1" :key="index"></RouteCard>
+                <RouteCard :place="element" :id="index + 1" :key="index" @click="removeRoute(index)"></RouteCard>
               </div>
             </template>
           </draggable>
-          <!-- <RouteCard
-            v-for="(place, index) in selectedPlaceList"
-            :place="place"
-            :id="index + 1"
-            :key="index"></RouteCard> -->
+        </div>
+        <div
+          class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
+          @click="saveRoute()"
+          style="font-size: 14px; height: 30px">
+          경로저장
         </div>
       </div>
       <!-- Right Section -->
-      <!-- <KakaoMap class="h-100" /> -->
       <div id="map" class="col"></div>
     </div>
   </div>
@@ -86,6 +92,7 @@ import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 
 onMounted(() => {
+  console.log("Mounted");
   window.kakao && window.kakao.maps ? initMap() : addScript();
 });
 
@@ -168,14 +175,12 @@ const placesSearchCB = (data, status) => {
   if (status === kakao.maps.services.Status.OK) {
     // 정상적으로 검색이 완료됐으면
     // 검색 목록과 마커를 표출합니다
-
     searchResult.value = data;
-    getImg();
-    displayMarkers(data);
 
-    // displayPlaces(data);
-    // // 페이지 번호를 표출합니다
-    // displayPagination(pagination);
+    // Naver Api를 활용해서 장소 제목에 맞는 이미지를 배열에 푸시
+    getImg();
+
+    displayMarkers(data);
   } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
     alert("검색 결과가 존재하지 않습니다.");
     return;
@@ -185,18 +190,22 @@ const placesSearchCB = (data, status) => {
   }
 };
 
-// getNaver();
-
+// Naver Api로 장소 title을 검색해서 이미지 불러오기
 const getImg = async () => {
   for (let i = 0; i < searchResult.value.length; i++) {
     const resp = await getNaver(i);
 
     searchResult.value[i].imgUrl = resp;
   }
+};
 
-  for (let i = 0; i < searchResult.value.length; i++) {
-    console.log(searchResult.value[i].imgUrl);
-  }
+// 확장자가 이미지파일(.jpg, .png ... )로 끝나는지 확인
+// http://post ... 주소는 이미지 못불러오므로 걸러줌
+const isValidImageUrl = (url) => {
+  // 시작 주소가 post인지 확인 (네이버 포스트 이미지는 못불러 오므로 걸러줌)
+  const postPattern = /^http:\/\/post\./i;
+
+  return url.match(/\.(jpeg|jpg|gif|png)/) != null && !postPattern.test(url);
 };
 
 const getNaver = async (i) => {
@@ -204,14 +213,21 @@ const getNaver = async (i) => {
     .get("/v1/search/image?", {
       params: {
         query: searchResult.value[i].place_name,
-        display: 1,
+        display: 4,
       },
       headers: {
         "X-Naver-Client-Id": "4xqEe9q8UpnLzt_zPegz",
         "X-Naver-Client-Secret": "oCZfB1x_b_",
       }, // 인증 헤더 추가
     })
-    .then((res) => res.data.items[0].link)
+    .then((res) => {
+      const ret = res.data.items[0].link;
+      for (let i = 1; i < 4; i++) {
+        const url = res.data.items[i].link;
+        if (isValidImageUrl(url)) return url;
+      }
+      return ret;
+    })
     .catch((err) => console.error(err));
 };
 
@@ -219,8 +235,6 @@ const getNaver = async (i) => {
 var positions = [];
 
 const displayMarkers = (places) => {
-  // const bounds = new kakao.maps.LatLngBounds();
-
   positions = [];
 
   places.forEach((place) => {
@@ -271,10 +285,6 @@ const displayMarkers = (places) => {
 
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
   map.setBounds(bounds);
-
-  console.log(searchResult.value[0]);
-
-  // displayInfowindow(markers[0], positions[0].title);
 };
 
 // 인포 윈도우 생성
@@ -286,15 +296,18 @@ const displayInfowindow = (marker, title) => {
 };
 
 var selectedPlaceList = ref([]);
+
 var testPath = [],
   polylines = [];
 
 // 선택한 여행지 추가
 const addRoute = (index) => {
+  console.log("selectedRoute : ", selectedPlaceList.value);
   const selectedPlaceInfo = {
     place_name: searchResult.value[index].place_name,
     address_name: searchResult.value[index].address_name,
     currPos: new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x),
+    imgUrl: searchResult.value[index].imgUrl,
   };
 
   // 같은 장소 중복 선택 방지
@@ -324,6 +337,13 @@ const addRoute = (index) => {
 
   // 선 배열에 저장
   polylines.push(polyline);
+};
+
+const saveRoute = () => {};
+
+const removeRoute = (index) => {
+  console.log(index);
+  selectedPlaceList.value.splice(index, 1);
 };
 
 // 지도 위에 표시되고 있는 마커를 모두 제거합니다
@@ -388,14 +408,10 @@ const getShortestPath = () => {
       arr[j][i] = dist;
     }
   }
-
-  console.log("arr : ", arr);
   dijkstra();
 };
 
 const dijkstra = () => {
-  console.log("다익 실행");
-
   dp[0] = 0;
   for (let i = 0; i < size; i++) {
     let min = Infinity;
@@ -444,8 +460,6 @@ const dijkstra = () => {
     strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
     strokeStyle: "solid", // 선의 스타일입니다
   });
-
-  console.log("testPath2 : ", testPath);
 
   // 지도에 선을 표시합니다
   polyline.setMap(map);

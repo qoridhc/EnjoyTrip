@@ -3,7 +3,7 @@ const props = defineProps({
   place: Object,
 });
 
-// console.log("routecard");
+console.log(props.place.imgUrl);
 </script>
 
 <template>
@@ -25,12 +25,12 @@ const props = defineProps({
       </div>
     </div>
   </div>
-  <hr style="margin-top: 0px; margin-bottom: 0px" />
+  <hr style="margin-top: 0px; margin-bottom: 0px; width: 0" />
 </template>
 
 <style scoped>
 img {
-  max-width: 110%;
-  height: 70%;
+  width: 75%;
+  height: 60%;
 }
 </style>
