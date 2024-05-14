@@ -28,11 +28,11 @@ console.log(route.path);
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><router-link class="nav-link" :to="{ name: 'myroute' }">지역별여행지</router-link></li>
-          <li class="nav-item"><a class="nav-link" href="${root}/article/list">여행정보공유</a></li>
+          <li class="nav-item"><router-link class="nav-link" :to="{name: 'board'}">여행정보공유</router-link></li>
 
           <!-- <div> -->
           <template v-if="condition">
-            <li class="nav-item"><a class="nav-link" href="${root}/user/signup">회원가입</a></li>
+            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'signup'}">회원가입</router-link></li>
             <li class="nav-item"><router-link class="nav-link" :to="{ name: 'login' }">로그인</router-link></li>
           </template>
 

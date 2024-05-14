@@ -19,6 +19,8 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="${root}/assets/css/styles.css" rel="stylesheet" />
   </head>
+  
+  
   <body class="d-flex flex-column">
     <main class="flex-shrink-0">
       <!-- Navigation-->
@@ -107,24 +109,6 @@
                       A name is required.
                     </div>
                   </div>
-                  
-                <!--   
-                  Phone number input
-                  <div class="form-floating mb-3">
-                    <input
-                      class="form-control"
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="(123) 456-7890"
-                      data-sb-validations="required"
-                    />
-                    <label for="phone">전화번호</label>
-                    <div class="invalid-feedback" data-sb-feedback="phone:required">
-                      A phone number is required.
-                    </div>
-                  </div>
-                   -->
                    
                   <!-- Email address input-->
                   <div class="form-floating mb-3">
@@ -171,6 +155,7 @@
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    
     <script>
     document.getElementById("signupForm").addEventListener("submit", function(event) {
         var password = document.getElementById("pwd").value;
