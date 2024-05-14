@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.user.model.UserDto;
 import com.ssafy.user.model.service.UserService;
@@ -20,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
@@ -37,7 +38,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public String login(UserDto userDto, Model model, HttpSession session) {
+	public String login(UserDto userDto) {
 
 		try {
 
@@ -47,19 +48,21 @@ public class UserController {
 			
 			if (targetUser != null && targetUser.getId().equals(userDto.getId())
 					&& targetUser.getPw().equals(userDto.getPw())) {
-				session.setAttribute("user", targetUser);
-				return "redirect:/";
+//				session.setAttribute("user", targetUser);
+				return targetUser.toString();
 
 			} else {
-				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 다시 로그인하세요!");
+//				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 다시 로그인하세요!");
 				System.out.println("login: fail(null)");
-				return "index";
+				return "invalidIdOrPassword";
 			}
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("msg", "로그인 중 문제 발생!!!");
-			return "/error";
+//			model.addAttribute("msg", "로그인 중 문제 발생!!!");
+//			return "/error";
+			return "err";
 		}
 	}
 

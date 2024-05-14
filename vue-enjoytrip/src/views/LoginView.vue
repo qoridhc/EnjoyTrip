@@ -1,10 +1,14 @@
-<script setup></script>
+<script setup>
+const loginBtnClick = () => {
+  console.log("loginBtnClick");
+};
+</script>
 
 <template>
   <div>
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh">
       <div class="col-lg-4">
-        <form id="signup" method="post" action="${root}/user/login">
+        <form v-on:submit.prevent="loginBtnClick" id="signup" method="post" action="${root}/user/login">
           <!-- ID input -->
           <div class="form-floating mb-3">
             <input
@@ -50,4 +54,17 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 테두리 스타일 추가 */
+#signup {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* 로그인 요소 넓이 축소 */
+.col-lg-4 {
+  max-width: 400px; /* 넓이를 조절하려면 이 값을 조절하세요 */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+</style>
