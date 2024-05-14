@@ -91,6 +91,8 @@ import RouteCard from "@/components/trip/RouteCard.vue";
 import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 
+const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
+
 onMounted(() => {
   console.log("Mounted");
   window.kakao && window.kakao.maps ? initMap() : addScript();
@@ -152,8 +154,7 @@ const addScript = () => {
   const script = document.createElement("script");
   /* global kakao */
   script.onload = () => kakao.maps.load(this.initMap);
-  script.src =
-    "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=ddc364239cacaf34eca092d84b347a73&libraries=services";
+  script.src = `http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${VITE_KAKAO_MAP_SERVICE_KEY}&libraries=services`;
   document.head.appendChild(script);
 };
 
