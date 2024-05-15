@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 <template>
     <div class="row align-self-center mb-2">
         <div class="col-md-7 offset-3">

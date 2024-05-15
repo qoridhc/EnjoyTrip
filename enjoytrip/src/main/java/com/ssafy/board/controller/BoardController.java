@@ -3,13 +3,17 @@ package com.ssafy.board.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.service.BoardService;
@@ -20,8 +24,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@Controller()
+@RestController
 @RequestMapping("/article")
+@CrossOrigin("*")
 public class BoardController {
 	private static final long serialVersionUID = 1L;
 
@@ -32,30 +37,34 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 	
-	@GetMapping("/list")
-	public String list(HttpServletRequest request, HttpServletResponse response) {
+	private ResponseEntity<String> checkUser(HttpServletRequest request){
 		HttpSession session = request.getSession();
 		UserDto userDto = (UserDto) session.getAttribute("user");
 		System.out.println(userDto);
-		
-		if (userDto != null) 
-		{
-			try 
-			{
-				List<BoardDto> list = boardService.listArticle();
-				request.setAttribute("articles", list);
-				return "board/list";
-			} 
-			catch (Exception e) 
-			{
-				e.printStackTrace();
-				return "redirect:/error";
-			}
-		} 
-		else
-		{
-			return "redirect:/user/login";
+		if (userDto == null) {
+			return new ResponseEntity<String>("no user", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return null;
+	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<?> list(HttpServletRequest request, HttpServletResponse response) {
+//		ResponseEntity<String> result = checkUser(request);
+//		if(result != null) return result;
+		
+		try {
+			List<BoardDto> list = boardService.listArticle();
+			if(list != null && !list.isEmpty()) {
+				return new ResponseEntity<List<BoardDto>>(list, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 	
 	@GetMapping("/view/{articleNo}")

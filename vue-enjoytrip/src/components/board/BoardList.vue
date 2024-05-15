@@ -1,8 +1,22 @@
 <script setup>
-import BoardHeader from '@/components/board/list/BoardListHeader.vue';
-import BoardTableHead from '@/components/board/list/BoardListTableHead.vue';
-import BoardTableBody from '@/components/board/list/BoardListTableBody.vue';
-import BoardPagination from '@/components/board/list/BoardListPagination.vue';
+import BoardListHeader from '@/components/board/list/BoardListHeader.vue';
+import BoardListTableHead from '@/components/board/list/BoardListTableHead.vue';
+import BoardListTableBody from '@/components/board/list/BoardListTableBody.vue';
+import BoardListPagination from '@/components/board/list/BoardListPagination.vue';
+
+import axios from 'axios'
+import { useArticleStore } from '@/stores/article';
+import { storeToRefs } from 'pinia';
+
+const articleStore = useArticleStore()
+
+axios.get('http://localhost/article/list')
+    .then(function(response){
+        articleStore.readArticles(response)
+    })
+    .catch(function(error){
+        console.log(error)
+    })
 </script>
 
 <template>
@@ -10,14 +24,17 @@ import BoardPagination from '@/components/board/list/BoardListPagination.vue';
         <div class="flex-shrink-0 row justify-content-center py-5">
             <hr class="mt-2" />
             <div class="col-lg-8 col-md-10 col-sm-12">
-                <BoardHeader />
+                <BoardListHeader />
 
                 <table class="table table-hover">
-                    <BoardTableHead />
-                    <BoardTableBody />
+                    <BoardListTableHead />
+                    <BoardListTableBody 
+                        v-for="(article) in articleStore.articles" :key="article.articleNo" 
+                        :article="article"
+                    />
                 </table>
             </div>
-            <BoardPagination />
+            <BoardListPagination />
         </div>
     </div>
 </template>

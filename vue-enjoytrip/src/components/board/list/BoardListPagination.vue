@@ -1,3 +1,9 @@
+<script setup>
+import { useArticleStore } from '@/stores/article';
+
+const articleStore = useArticleStore()
+</script>
+
 <template>
     <div class="row">
         <ul class="pagination justify-content-center">

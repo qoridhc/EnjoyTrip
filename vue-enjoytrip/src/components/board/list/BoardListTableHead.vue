@@ -1,3 +1,8 @@
+<script setup>
+import { useArticleStore } from '@/stores/article';
+const articleStore = useArticleStore()
+</script>
+
 <template>
     <thead>
         <tr class="text-center">
