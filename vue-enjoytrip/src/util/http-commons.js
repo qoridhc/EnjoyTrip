@@ -4,15 +4,15 @@ import axios from "axios";
 const { VITE_VUE_API_URL } = import.meta.env;
 
 // station vue api axios instance
-function naverAxios() {
-  const instance = axios.create({
-    baseURL: VITE_ELECTRIC_CHARGING_STATION_URL,
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-    },
-  });
-  return instance;
-}
+// function naverAxios() {
+//   const instance = axios.create({
+//     baseURL: VITE_ELECTRIC_CHARGING_STATION_URL,
+//     headers: {
+//       "Content-Type": "application/json;charset=utf-8",
+//     },
+//   });
+//   return instance;
+// }
 
 // local vue api axios instance
 function localAxios() {
@@ -21,6 +21,7 @@ function localAxios() {
     // withCredentials: true,
     // headers: {
     //   "Content-Type": "application/json;charset=utf-8",
+    //   "Access-Control-Allow-Origin": "http://localhost:5173",
     // },
   });
   // Request 발생 시 적용할 내용.
@@ -87,4 +88,4 @@ function localAxios() {
   return instance;
 }
 
-export { localAxios, stationAxios };
+export { localAxios };

@@ -32,8 +32,8 @@ console.log(route.path);
 
           <!-- <div> -->
           <template v-if="condition">
-            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'signup'}">회원가입</router-link></li>
-            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'login' }">로그인</router-link></li>
+            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-signup' }">회원가입</router-link></li>
+            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-login' }">로그인</router-link></li>
           </template>
 
           <!-- <div> -->

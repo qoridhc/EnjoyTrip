@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MyRouteView from "@/views/MyRouteView.vue";
 import HomeView from "@/views/HomeView.vue";
-import LoginView from "@/views/LoginView.vue";
+import UserView from "@/views/UserView.vue";
 import BoardView from "@/views/BoardView.vue";
 
 const router = createRouter({
@@ -21,27 +21,28 @@ const router = createRouter({
       path: "/board",
       name: "board",
       component: BoardView,
-      redirect: { name: 'board-list' },
+      redirect: { name: "board-list" },
       children: [
         {
           path: "list",
           name: "board-list",
           component: () => import("@/components/board/BoardList.vue"),
         },
-      ]
+      ],
     },
     {
       path: "/user",
       name: "user",
+      component: UserView,
       children: [
         {
           path: "login",
-          name: "login",
-          component: LoginView,
+          name: "user-login",
+          component: () => import("@/components/user/UserLogin.vue"),
         },
         {
           path: "signup",
-          name: "signup",
+          name: "user-signup",
           component: () => import("@/components/user/UserSignup.vue"),
         },
       ],

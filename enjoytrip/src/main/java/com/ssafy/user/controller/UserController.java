@@ -1,11 +1,15 @@
 package com.ssafy.user.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +24,11 @@ import com.ssafy.user.model.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
 	private UserService userService;
@@ -37,33 +43,54 @@ public class UserController {
 		return "/user/login";
 	}
 	
+	@CrossOrigin
 	@PostMapping("/login")
-	public String login(UserDto userDto) {
+	public ResponseEntity<Map<String, Object>> login(UserDto userDto) {
 
+		System.out.println("login user : {}" + userDto.toString());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = HttpStatus.ACCEPTED;
 		try {
-
+			System.out.println(userDto.getId());
+			
 			UserDto targetUser = userService.login(userDto.getId());
 			
 			System.out.println("targetUser : " + targetUser);
-			
-			if (targetUser != null && targetUser.getId().equals(userDto.getId())
-					&& targetUser.getPw().equals(userDto.getPw())) {
-//				session.setAttribute("user", targetUser);
-				return targetUser.toString();
+			System.out.println("userDto : " + userDto);
+			if(targetUser != null) {
+				
+				if (targetUser != null && targetUser.getId().equals(userDto.getId())
+						&& targetUser.getPw().equals(userDto.getPw())) {
+					System.out.println("로그인 성공");
+					resultMap.put("user", userDto);
+					status = HttpStatus.CREATED;
+				}
+				else {
+					status = HttpStatus.UNAUTHORIZED;
+				}
+				
+//				String accessToken = jwtUtil.createAccessToken(loginUser.getUserId());
+//				String refreshToken = jwtUtil.createRefreshToken(loginUser.getUserId());
+//				log.debug("access token : {}", accessToken);
+//				log.debug("refresh token : {}", refreshToken);
+//				
+////				발급받은 refresh token 을 DB에 저장.
+//				memberService.saveRefreshToken(loginUser.getUserId(), refreshToken);
+//				
+////				JSON 으로 token 전달.
+//				resultMap.put("access-token", accessToken);
+//				resultMap.put("refresh-token", refreshToken);
 
-			} else {
-//				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 다시 로그인하세요!");
-				System.out.println("login: fail(null)");
-				return "invalidIdOrPassword";
 			}
-			
 
 		} catch (Exception e) {
-			e.printStackTrace();
-//			model.addAttribute("msg", "로그인 중 문제 발생!!!");
-//			return "/error";
-			return "err";
+			System.out.println("로그인 에러 발생 : {}" + e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+		
 	}
 
 //	===== 2. 로그아웃 =====
