@@ -1,6 +1,40 @@
 <script setup>
-const loginBtnClick = () => {
-  console.log("loginBtnClick");
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/member";
+import axios from "axios";
+// import { useMenuStore } from "@/stores/menu";
+
+const router = useRouter();
+
+const memberStore = useMemberStore();
+
+const { isLogin, isLoginError } = storeToRefs(memberStore);
+const { userLogin, getUserInfo } = memberStore;
+// const { changeMenuState } = useMenuStore();
+
+const loginUser = ref({
+  id: "",
+  pw: "",
+});
+
+const login = async () => {
+  console.log("login 실행");
+  console.log(loginUser.value);
+
+  //   axios.post("http://localhost/user/login?id=ssafy&pw=1234").then((res) => console.log(res));
+
+  await userLogin(loginUser.value);
+
+  //   let token = sessionStorage.getItem("accessToken");
+  //   console.log(token);
+  console.log("isLogin: " + isLogin.value);
+  if (isLogin.value) {
+    // getUserInfo(token);
+    // changeMenuState();
+    router.replace("/");
+  }
 };
 </script>
 
@@ -13,9 +47,7 @@ const loginBtnClick = () => {
           <div class="form-floating mb-3">
             <input
               class="form-control"
-              id="id"
-              name="id"
-              type="text"
+              v-model="loginUser.id"
               placeholder="Enter your ID..."
               data-sb-validations="required" />
             <label for="id">아이디</label>
@@ -25,9 +57,9 @@ const loginBtnClick = () => {
           <div class="form-floating mb-3">
             <input
               class="form-control"
-              id="password"
-              name="pw"
               type="password"
+              v-model="loginUser.pw"
+              @keyup.enter="login"
               placeholder="Enter your password..."
               data-sb-validations="required" />
             <label for="password">비밀번호</label>
@@ -35,13 +67,7 @@ const loginBtnClick = () => {
           </div>
           <!-- Submit button -->
           <div class="d-grid">
-            <input
-              class="btn btn-dark btn-lg"
-              id="submitButton"
-              type="submit"
-              name="action"
-              value="Login"
-              style="background-color: #e9859e" />
+            <Button class="btn btn-dark btn-lg" @click="login" style="background-color: #e9859e">로그인</Button>
           </div>
           <!-- Links -->
           <div class="d-flex justify-content-end mt-3">
@@ -54,17 +80,4 @@ const loginBtnClick = () => {
   </div>
 </template>
 
-<style scoped>
-/* 테두리 스타일 추가 */
-#signup {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-/* 로그인 요소 넓이 축소 */
-.col-lg-4 {
-  max-width: 400px; /* 넓이를 조절하려면 이 값을 조절하세요 */
-  margin: 0 auto; /* 가운데 정렬 */
-}
-</style>
+<style scoped></style>
