@@ -1,11 +1,13 @@
-# EnjoyTrip_Vue_구미_4반_허동원_이성현
+# EnjoyTrip*Vue*구미*4반*허동원\_이성현
 
 ## 개발 환경, 사용언어 및 프레임워크
+
 - Windows 11
 - Springboot
 - Vue.js
 
 ## 사용 라이브러리
+
 - axios
 - bootstrap
 - vue draggable
@@ -14,4 +16,6 @@
 npm i axios bootstrap
 npm i -S vuedraggable@next
 npm install --save @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/vue-fontawesome
+npm i pinia-plugin-persistedstate
+npm i jwt-decode
 ```
