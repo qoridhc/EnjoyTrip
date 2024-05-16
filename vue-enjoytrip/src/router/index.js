@@ -29,6 +29,21 @@ const router = createRouter({
           name: "board-list",
           component: () => import("@/components/board/BoardList.vue"),
         },
+        {
+          path: "view/:articleNo",
+          name: "board-detail",
+          component: () => import("@/components/board/BoardDetail.vue"),
+        },
+        {
+          path: "write",
+          name: "board-write",
+          component: () => import("@/components/board/BoardWrite.vue"),
+        },
+        {
+          path: "modify/:articleNo",
+          name: "board-modify",
+          component: () => import("@/components/board/BoardModify.vue"),
+        },
       ],
     },
     {
@@ -55,5 +70,4 @@ const router = createRouter({
     },
   ],
 });
-
 export default router;

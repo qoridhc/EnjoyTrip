@@ -1,4 +1,6 @@
 <script setup>
+import { useFooterStore } from '@/stores/footer';
+useFooterStore().isFixed = true
 </script>
 
 <template>
