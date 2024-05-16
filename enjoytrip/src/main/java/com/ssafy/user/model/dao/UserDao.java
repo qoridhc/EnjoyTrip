@@ -19,5 +19,12 @@ public interface UserDao
 	public void modify(Map<String, String> map);
 	
     public void delete(String id);
+    
+	UserDto userInfo(String userId) throws SQLException;
+    
+	void saveRefreshToken(Map<String, String> map) throws SQLException;
+	Object getRefreshToken(String userid) throws SQLException;
+	void deleteRefreshToken(Map<String, String> map) throws SQLException;
 	
+    
 }

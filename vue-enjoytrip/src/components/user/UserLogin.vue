@@ -4,7 +4,7 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
-// import { useMenuStore } from "@/stores/menu";
+import { useMenuStore } from "@/stores/menu";
 
 const router = useRouter();
 
@@ -12,7 +12,7 @@ const memberStore = useMemberStore();
 
 const { isLogin, isLoginError } = storeToRefs(memberStore);
 const { userLogin, getUserInfo } = memberStore;
-// const { changeMenuState } = useMenuStore();
+const { changeMenuState } = useMenuStore();
 
 const loginUser = ref({
   id: "",
@@ -22,17 +22,14 @@ const loginUser = ref({
 const login = async () => {
   console.log("login 실행");
   console.log(loginUser.value);
-
-  //   axios.post("http://localhost/user/login?id=ssafy&pw=1234").then((res) => console.log(res));
-
   await userLogin(loginUser.value);
 
-  //   let token = sessionStorage.getItem("accessToken");
-  //   console.log(token);
+  let token = sessionStorage.getItem("accessToken");
+  console.log("token : ", token);
   console.log("isLogin: " + isLogin.value);
   if (isLogin.value) {
-    // getUserInfo(token);
-    // changeMenuState();
+    getUserInfo(token);
+    changeMenuState();
     router.replace("/");
   }
 };

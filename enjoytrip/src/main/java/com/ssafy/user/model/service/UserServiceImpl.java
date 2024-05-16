@@ -1,6 +1,7 @@
 package com.ssafy.user.model.service;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.tags.shaded.org.apache.regexp.recompile;
@@ -45,24 +46,32 @@ public class UserServiceImpl implements UserService
 	public void delete(String id) {
 		userDao.delete(id);
 	}
+	
 
+	@Override
+	public UserDto userInfo(String userId) throws Exception {
+		return userDao.userInfo(userId);
+	}
 
-//	@Override
-//	public void signup(UserDto dto) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void modify(UserDto dto) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void delete(String id) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public void saveRefreshToken(String userId, String refreshToken) throws Exception {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", userId);
+		map.put("token", refreshToken);
+		userDao.saveRefreshToken(map);
+	}
+
+	@Override
+	public Object getRefreshToken(String userId) throws Exception {
+		return userDao.getRefreshToken(userId);
+	}
+
+	@Override
+	public void deleRefreshToken(String userId) throws Exception {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", userId);
+		map.put("token", null);
+		userDao.deleteRefreshToken(map);
+	}
 	
 }

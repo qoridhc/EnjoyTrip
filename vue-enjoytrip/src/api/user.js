@@ -4,13 +4,10 @@ import axios from "axios";
 const local = localAxios();
 
 async function userConfirm(param, success, fail) {
-  console.log("userConfirm", param.id);
-  //   axios.post("http://localhost/user/login?id=ssafy&pw=1234").then(success).catch(fail);
+  console.log("userConfirm param : ", param);
 
-  //   await axios.post("http://localhost/user/login?id=ssafy&pw=1234").then(success).catch(fail);
-
-  await axios
-    .post("http://localhost/user/login", null, {
+  await local
+    .post("/user/login", null, {
       params: {
         id: param.id,
         pw: param.pw,
@@ -19,12 +16,12 @@ async function userConfirm(param, success, fail) {
     .then(success)
     .catch(fail);
 
-  //   await local.post(`/user/login`, param).then(success).catch(fail);
+  // await local.post(`/user/login?${param.}`, param).then(success).catch(fail);
 }
 
 async function findById(userid, success, fail) {
   local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
-  await local.get(`//user/info/${userid}`).then(success).catch(fail);
+  await local.get(`/user/info/${userid}`).then(success).catch(fail);
 }
 
 async function tokenRegeneration(user, success, fail) {

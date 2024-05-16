@@ -13,4 +13,11 @@ public interface UserService
 	public void modify(Map<String, String> map);
  
     public void delete(String id);
+    
+	UserDto userInfo(String userId) throws Exception;
+	
+	void saveRefreshToken(String userId, String refreshToken) throws Exception;
+	Object getRefreshToken(String userId) throws Exception;
+	void deleRefreshToken(String userId) throws Exception;
+	
 }

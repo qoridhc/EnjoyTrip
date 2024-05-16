@@ -1,13 +1,28 @@
 <script setup>
-import { vShow, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { useMenuStore } from "@/stores/menu";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
 
-const root = "";
 const condition = ref(true);
 
 const route = useRoute();
-const router = useRouter();
 
+const menuStore = useMenuStore();
+const memberStore = useMemberStore();
+
+// 반응형을 유지하면서 스토어에서 속성을 추출하려면, storeToRefs()를 사용
+// https://pinia.vuejs.kr/core-concepts/
+const { menuList } = storeToRefs(menuStore);
+const { changeMenuState } = menuStore;
+
+const { userLogout } = memberStore;
+
+const logout = () => {
+  userLogout();
+  changeMenuState();
+};
 console.log(route.path);
 </script>
 
@@ -30,19 +45,35 @@ console.log(route.path);
           <li class="nav-item"><router-link class="nav-link" :to="{ name: 'myroute' }">지역별여행지</router-link></li>
           <li class="nav-item"><router-link class="nav-link" :to="{ name: 'board' }">여행정보공유</router-link></li>
 
-          <!-- <div> -->
-          <template v-if="condition">
-            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-signup' }">회원가입</router-link></li>
-            <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-login' }">로그인</router-link></li>
+          <template v-for="menu in menuList" :key="menu.routeName">
+            <template v-if="menu.show">
+              <template v-if="menu.routeName === 'user-logout'">
+                <li class="nav-item">
+                  <router-link to="/" @click.prevent="logout" class="nav-link">{{ menu.name }}</router-link>
+                </li>
+              </template>
+
+              <template v-else>
+                <li class="nav-item">
+                  <router-link :to="{ name: menu.routeName }" class="nav-link">{{ menu.name }}</router-link>
+                </li>
+              </template>
+            </template>
           </template>
 
           <!-- <div> -->
-          <template v-if="!condition">
-            <li class="nav-item"><a class="nav-link" href="${root}/attractoin/myroute">나의여행계획</a></li>
+          <!-- <template v-if="condition"> -->
+          <!-- <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-signup' }">회원가입</router-link></li> -->
+          <!-- <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-login' }">로그인</router-link></li> -->
+          <!-- </template> -->
+
+          <!-- <div> -->
+          <!-- <template v-if="!condition"> -->
+          <!-- <li class="nav-item"><a class="nav-link" href="${root}/attractoin/myroute">나의여행계획</a></li>
             <li class="nav-item"><a class="nav-link" href="${root}/attraction/myplace">핫플자랑하기</a></li>
             <li class="nav-item"><a class="nav-link" href="${root}/user/profile">마이페이지</a></li>
-            <li class="nav-item"><a class="nav-link" href="${root}/user/logout">로그아웃</a></li>
-          </template>
+            <li class="nav-item"><a class="nav-link" href="${root}/user/logout">로그아웃</a></li> -->
+          <!-- </template> -->
         </ul>
       </div>
     </div>

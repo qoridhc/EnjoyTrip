@@ -32,7 +32,12 @@ public class AttractionServiceImpl implements AttractionService
 	}
 
 	@Override
-	public List<AttractionDto> getAttractionList(String sido, String gugun, String keyword) throws Exception {
-		return dao.getAttractionList(sido, gugun, keyword);
+	public List<AttractionDto> getAttractionList(String content_id, String sido_code, String gugun_code) throws Exception {
+		return dao.getAttractionList(content_id, sido_code, gugun_code);
+	}
+
+	@Override
+	public List<AttractionDto> searchByKeyword(String keyword) throws Exception {
+		return dao.searchByKeyword(keyword);
 	}
 }

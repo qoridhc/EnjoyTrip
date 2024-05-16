@@ -22,10 +22,9 @@
           <div class="mt-3" style="max-height: 70vh; overflow-y: auto">
             <draggable
               class="dragArea list-group"
-              :list="searchResult"
-              :group="{ name: 'people', pull: 'clone', put: false, move: null }"
+              :list="searchPlaceList"
+              :group="{ name: 'people', pull: 'clone', put: false }"
               :sort="false"
-              @change="log"
               item-key="name">
               <template #item="{ element, index }">
                 <div class="list-group-item">
@@ -60,10 +59,23 @@
           </div>
         </div>
         <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden">
-          <draggable class="dragArea list-group" :list="selectedPlaceList" group="people" @change="log" item-key="name">
+          <draggable
+            class="dragArea list-group"
+            :list="selectedPlaceList"
+            group="people"
+            item-key="name"
+            @update:model-value="(newValue) => console.log(newValue)"
+            @change="console.log(index)">
             <template #item="{ element, index }">
               <div class="list-group-item">
-                <RouteCard :place="element" :id="index + 1" :key="index" @click="removeRoute(index)"></RouteCard>
+                <RouteCard
+                  :place="element"
+                  :id="index + 1"
+                  :key="index"
+                  :move="(e) => console.log(e)"
+                  @click="removeRoute(index)"
+
+                </RouteCard>
               </div>
             </template>
           </draggable>
@@ -88,8 +100,15 @@ import axios from "axios";
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch} from "vue";
 import draggable from "vuedraggable";
+import { useMapStore } from "@/stores/map";
+import { storeToRefs } from "pinia";
+
+const mapStore = useMapStore();
+
+const { searchPlaceList } = storeToRefs(mapStore);
+const { getPlaceByKeyword } = mapStore;
 
 const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 
@@ -98,28 +117,20 @@ onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 });
 
+
+watch(selectedPlaceList, (newValue, oldValue) => {
+  console.log("newValue : ", newValue)
+  console.log("oldValue : ", oldValue)
+  
+  // oldList.value = [...newValue]; // 변경 전의 상태를 저장
+});
+
 var map, ps, infowindow;
 
 // default 검색
-var searchKeyword = ref("이태원맛집");
+var searchKeyword = ref("제주도");
 
 // 검색 결과 담는 배열
-/*
-searchResult[idx].value :
-{
-  address_name: "서울 용산구 이태원동 34-149"
-  category_group_code: "FD6"
-  category_group_name: "음식점"
-  category_name: "음식점 > 분식"
-  distance: ""id: "1952478679"
-  phone: "02-790-7300"
-  place_name: "명동교자 이태원점"
-  place_url: "http://place.map.kakao.com/1952478679"
-  road_address_name: "서울 용산구 녹사평대로 136"
-  x: "126.990949104616"
-  y: "37.5308561175718"
-}
-*/
 var searchResult = ref([]);
 
 // 생성된 마커들 담는 배열열
@@ -159,7 +170,7 @@ const addScript = () => {
 };
 
 // 검색어 기반으로 장소 검색
-const searchPlaces = () => {
+const searchPlaces = async () => {
   var keyword = searchKeyword.value;
 
   if (!keyword.replace(/^\s+|\s+$/g, "")) {
@@ -167,79 +178,25 @@ const searchPlaces = () => {
     return false;
   }
 
-  // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-  ps.keywordSearch(keyword, placesSearchCB);
+  await getPlaceByKeyword(keyword);
+
+  displayMarkers();
+
+  // 카카오 api 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
+  // ps.keywordSearch(keyword, placesSearchCB);
 };
 
-// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-const placesSearchCB = (data, status) => {
-  if (status === kakao.maps.services.Status.OK) {
-    // 정상적으로 검색이 완료됐으면
-    // 검색 목록과 마커를 표출합니다
-    searchResult.value = data;
-
-    // Naver Api를 활용해서 장소 제목에 맞는 이미지를 배열에 푸시
-    getImg();
-
-    displayMarkers(data);
-  } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-    alert("검색 결과가 존재하지 않습니다.");
-    return;
-  } else if (status === kakao.maps.services.Status.ERROR) {
-    alert("검색 결과 중 오류가 발생했습니다.");
-    return;
-  }
-};
-
-// Naver Api로 장소 title을 검색해서 이미지 불러오기
-const getImg = async () => {
-  for (let i = 0; i < searchResult.value.length; i++) {
-    const resp = await getNaver(i);
-
-    searchResult.value[i].imgUrl = resp;
-  }
-};
-
-// 확장자가 이미지파일(.jpg, .png ... )로 끝나는지 확인
-// http://post ... 주소는 이미지 못불러오므로 걸러줌
-const isValidImageUrl = (url) => {
-  // 시작 주소가 post인지 확인 (네이버 포스트 이미지는 못불러 오므로 걸러줌)
-  const postPattern = /^http:\/\/post\./i;
-
-  return url.match(/\.(jpeg|jpg|gif|png)/) != null && !postPattern.test(url);
-};
-
-const getNaver = async (i) => {
-  return axios
-    .get("/v1/search/image?", {
-      params: {
-        query: searchResult.value[i].place_name,
-        display: 4,
-      },
-      headers: {
-        "X-Naver-Client-Id": "4xqEe9q8UpnLzt_zPegz",
-        "X-Naver-Client-Secret": "oCZfB1x_b_",
-      }, // 인증 헤더 추가
-    })
-    .then((res) => {
-      const ret = res.data.items[0].link;
-      for (let i = 1; i < 4; i++) {
-        const url = res.data.items[i].link;
-        if (isValidImageUrl(url)) return url;
-      }
-      return ret;
-    })
-    .catch((err) => console.error(err));
-};
-
-//  {title: '명동교자 이태원점', latlng: qa}
 var positions = [];
 
-const displayMarkers = (places) => {
+const displayMarkers = () => {
   positions = [];
 
+  const places = searchPlaceList.value;
+
   places.forEach((place) => {
-    positions.push({ title: place.place_name, latlng: new kakao.maps.LatLng(place.y, place.x) });
+    // console.log("place : ", place);
+
+    positions.push({ title: place.title, latlng: place.latlng });
   });
 
   // 기존에 생성된 마커가 있으면 마커 반복문 돌면서 지우기
@@ -303,12 +260,11 @@ var testPath = [],
 
 // 선택한 여행지 추가
 const addRoute = (index) => {
-  console.log("selectedRoute : ", selectedPlaceList.value);
   const selectedPlaceInfo = {
-    place_name: searchResult.value[index].place_name,
-    address_name: searchResult.value[index].address_name,
-    currPos: new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x),
-    imgUrl: searchResult.value[index].imgUrl,
+    title: searchPlaceList.value[index].title,
+    addr1: searchPlaceList.value[index].addr1,
+    currPos: searchPlaceList.value[index].latlng,
+    first_image: searchPlaceList.value[index].first_image,
   };
 
   // 같은 장소 중복 선택 방지
@@ -323,7 +279,7 @@ const addRoute = (index) => {
 
   selectedPlaceList.value.push(selectedPlaceInfo);
 
-  testPath.push(new kakao.maps.LatLng(searchResult.value[index].y, searchResult.value[index].x));
+  testPath.push(searchPlaceList.value[index].latlng);
 
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
@@ -466,6 +422,73 @@ const dijkstra = () => {
   polyline.setMap(map);
   polylines.push(polyline);
 };
+
+// const placesSearch = (keyword) => {
+//   getPlaceByKeyword(keyword);
+
+//   // displayMarkers(data);
+// };
+
+// // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+// const placesSearchCB = (data, status) => {
+//   if (status === kakao.maps.services.Status.OK) {
+//     // 정상적으로 검색이 완료됐으면
+//     // 검색 목록과 마커를 표출합니다
+//     searchResult.value = data;
+
+//     // Naver Api를 활용해서 장소 제목에 맞는 이미지를 배열에 푸시
+//     getImg();
+
+//     displayMarkers(data);
+//   } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+//     alert("검색 결과가 존재하지 않습니다.");
+//     return;
+//   } else if (status === kakao.maps.services.Status.ERROR) {
+//     alert("검색 결과 중 오류가 발생했습니다.");
+//     return;
+//   }
+// };
+
+// // Naver Api로 장소 title을 검색해서 이미지 불러오기
+// const getImg = async () => {
+//   for (let i = 0; i < searchResult.value.length; i++) {
+//     const resp = await getNaver(i);
+
+//     searchResult.value[i].imgUrl = resp;
+//   }
+// };
+
+// // 확장자가 이미지파일(.jpg, .png ... )로 끝나는지 확인
+// // http://post ... 주소는 이미지 못불러오므로 걸러줌
+// const isValidImageUrl = (url) => {
+//   // 시작 주소가 post인지 확인 (네이버 포스트 이미지는 못불러 오므로 걸러줌)
+//   const postPattern = /^http:\/\/post\./i;
+
+//   return url.match(/\.(jpeg|jpg|gif|png)/) != null && !postPattern.test(url);
+// };
+
+// const getNaver = async (i) => {
+//   return axios
+//     .get("/v1/search/image?", {
+//       params: {
+//         query: searchResult.value[i].place_name,
+//         display: 4,
+//       },
+//       headers: {
+//         "X-Naver-Client-Id": "4xqEe9q8UpnLzt_zPegz",
+//         "X-Naver-Client-Secret": "oCZfB1x_b_",
+//       }, // 인증 헤더 추가
+//     })
+//     .then((res) => {
+//       const ret = res.data.items[0].link;
+//       for (let i = 1; i < 4; i++) {
+//         const url = res.data.items[i].link;
+//         if (isValidImageUrl(url)) return url;
+//       }
+//       return ret;
+//     })
+//     .catch((err) => console.error(err));
+// };
 </script>
 
 <style scoped>
