@@ -3,28 +3,32 @@ import axios from 'axios';
 import { useArticleStore } from '@/stores/article';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import CommonSpinner from '../common/CommonSpinner.vue';
 
 const articleStore = useArticleStore()
 const router = useRouter()
 const route = useRoute()
 const article = ref({})
 
-onMounted(() => {
+onMounted(async () => {
     article.value = articleStore.setNowArticle(route.params.articleNo)
+    console.log("im mounted")
     if (!article.value) {
-        axios.get(`http://localhost/article/view/${route.params.articleNo}`)
-            .then(function (response) {
-                article.value = response.data
-                useArticleStore.article = article
-            })
-            .catch(function (error) {
-                console.log(error)
-            })
+        try {
+            const response = await axios.get(`http://localhost/article/view/${route.params.articleNo}`)
+            article.value = response.data
+            useArticleStore.article = article
+        } 
+        catch (error) {
+            console.error(error)
+        }
     }
 })
 
 //삭제
 function remove() {
+    if(article.value) {
     const url = `${import.meta.env.VITE_VUE_API_URL}:${import.meta.env.VITE_BE_API_PORT}/article/delete/${article.value.articleNo}`
     axios.get(url)
         .then((response) => {
@@ -33,11 +37,15 @@ function remove() {
         .catch((error) => {
             console.log(error)
         })
+    }
+    else{
+        console.log('wtf')
+    }
 }
 </script>
 
 <template>
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column" v-if="article">
         <div class="flex-shrink-0">
             <div class="py-5">
                 <div class="row justify-content-center">
@@ -65,7 +73,8 @@ function remove() {
                                     class="btn btn-outline-primary mb-3">
                                     글목록
                                 </router-link>
-                                <router-link :to="{name: 'board-modify', params: article.articleNo } " class="btn btn-outline-success mb-3 ms-1">
+                                <router-link :to="{ name: 'board-modify', params: article.articleNo }"
+                                    class="btn btn-outline-success mb-3 ms-1">
                                     글수정
                                 </router-link>
                                 <button type="button" @click="remove" class="btn btn-outline-danger mb-3 ms-1">
@@ -78,6 +87,7 @@ function remove() {
             </div>
         </div>
     </div>
+    <CommonSpinner v-else />
 </template>
 
 <style scoped></style>
