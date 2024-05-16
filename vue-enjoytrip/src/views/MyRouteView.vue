@@ -33,7 +33,7 @@
                     :key="index"
                     @mouseover="displayInfowindow(markers[index], positions[index].title)"
                     @mouseout="infowindow.close()"
-                    @click="addRoute(index)">
+                    @click="addRoute(index, -1)">
                   </PlaceCard>
                 </div>
               </template>
@@ -64,17 +64,16 @@
             :list="selectedPlaceList"
             group="people"
             item-key="name"
-            @update:model-value="(newValue) => console.log(newValue)"
-            @change="console.log(index)">
+            @move="(e) => console.log(e)"
+            @add="addRouteCard">
             <template #item="{ element, index }">
               <div class="list-group-item">
                 <RouteCard
                   :place="element"
                   :id="index + 1"
                   :key="index"
-                  :move="(e) => console.log(e)"
-                  @click="removeRoute(index)"
-
+                  :move="moveRouteCard"
+                  @click="removeRoute(index)">
                 </RouteCard>
               </div>
             </template>
@@ -100,7 +99,7 @@ import axios from "axios";
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 
-import { onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { storeToRefs } from "pinia";
@@ -117,13 +116,7 @@ onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 });
 
-
-watch(selectedPlaceList, (newValue, oldValue) => {
-  console.log("newValue : ", newValue)
-  console.log("oldValue : ", oldValue)
-  
-  // oldList.value = [...newValue]; // 변경 전의 상태를 저장
-});
+var selectedPlaceList = ref([]);
 
 var map, ps, infowindow;
 
@@ -253,13 +246,12 @@ const displayInfowindow = (marker, title) => {
   infowindow.open(map, marker);
 };
 
-var selectedPlaceList = ref([]);
-
 var testPath = [],
   polylines = [];
 
 // 선택한 여행지 추가
-const addRoute = (index) => {
+const addRoute = (index, insertPos) => {
+  console.log("addRoute");
   const selectedPlaceInfo = {
     title: searchPlaceList.value[index].title,
     addr1: searchPlaceList.value[index].addr1,
@@ -277,9 +269,14 @@ const addRoute = (index) => {
     return;
   }
 
-  selectedPlaceList.value.push(selectedPlaceInfo);
+  if (insertPos === -1) {
+    selectedPlaceList.value.push(selectedPlaceInfo);
+    testPath.push(searchPlaceList.value[index].latlng);
+  } else {
+    testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
+  }
 
-  testPath.push(searchPlaceList.value[index].latlng);
+  console.log(testPath.value);
 
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
@@ -319,6 +316,24 @@ const clearSelectedRoute = () => {
   selectedPlaceList.value = [];
   testPath = [];
   polylines = [];
+};
+
+const handleListChange = (e) => {
+  console.log(e);
+  // console.log(e.added.newIndex);
+  // addRoute()
+};
+
+const addRouteCard = (e) => {
+  // const addedItem = e.item._underlying_vm_
+  const preIndex = e.oldIndex;
+  const addedIndex = e.newIndex;
+
+  addRoute(preIndex, addedIndex);
+
+  console.log(e);
+
+  // addRoute()
 };
 
 // ====== 최단 경로  구하는 로직 ======
