@@ -13,7 +13,7 @@
     <select id="listArticle" resultMap="article">
         select article_no, user_id, subject, content, register_time
         from board
-        order by article_no desc limit 10;
+        order by article_no desc limit 12;
     </select>
 
     <select id="getArticle" parameterType="int" resultMap="article">

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,6 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/article")
-@CrossOrigin("*")
 public class BoardController {
 	private static final long serialVersionUID = 1L;
 
@@ -68,96 +68,79 @@ public class BoardController {
 	}
 	
 	@GetMapping("/view/{articleNo}")
-	public String view(@PathVariable(value = "articleNo") int articleNo, Model model, HttpSession session) {
-		UserDto userDto = (UserDto) session.getAttribute("user");
+	public ResponseEntity<?> view(@PathVariable(value = "articleNo") int articleNo, Model model, HttpSession session) {
+//		ResponseEntity<String> result = checkUser(request);
+//		if(result != null) return result;
 		
-		if (userDto != null) {
-			try {
-				BoardDto boardDto = boardService.getArticle(articleNo);
-				model.addAttribute("article", boardDto);
-				return "board/view";
-			} catch (Exception e) {
-				e.printStackTrace();
-				return "redirect:/error";
+		try {
+			BoardDto boardDto = boardService.getArticle(articleNo);
+			if(boardDto != null) {
+				return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK); 
 			}
-		} 
-		else {
-			return "redirect:/user/login";
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
 		}
-	}
-	
-	@GetMapping("/write")
-	public String write() {
-		return "board/write";
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 	
 	@PostMapping("/write")
-	public String write(BoardDto boardDto, Model model, HttpSession session) {
+	public ResponseEntity<?> write(@RequestBody BoardDto boardDto, HttpSession session) {
+//		ResponseEntity<String> result = checkUser(request);
+//		if(result != null) return result;
 		
-		UserDto userDto = (UserDto) session.getAttribute("user");
-		if (userDto != null) {
-			try 
-			{
-				boardDto.setUserId(userDto.getId());
-				boardService.writeArticle(boardDto);
-				return "redirect:list";
-			} 
-			catch (Exception e) 
-			{
-				e.printStackTrace();
-				return "index";
-			}
-		} 
-		else {
-			return "login";
-		}
-	}
-	
-	@GetMapping("/delete/{articleNo}")
-	public String delete(@PathVariable(value = "articleNo") int articleNo, Model model) {
+		//Get Uesr
+		UserDto userDto = new UserDto();
+		userDto.setId("ssafy");
+		
 		try 
 		{
-			boardService.deleteArticle(articleNo);
-			return "redirect:/article/list";
-		} 
-		catch(Exception e) 
-		{
-			e.printStackTrace();
-			model.addAttribute("msg", "글 삭제 중 문제 발생!!!");
-		}
-		return "index";
-	}
-	
-	@GetMapping("/modify/{articleNo}")
-	public String mvModify(@PathVariable(value = "articleNo") int articleNo, Model model ) {
-		
-		BoardDto boardDto = new BoardDto();
-		try 
-		{
-			boardDto = boardService.getArticle(articleNo);
-			model.addAttribute("article", boardDto);
-			return "board/modify";
+			boardDto.setUserId(userDto.getId());
+			boardService.writeArticle(boardDto);
+			return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK);
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			model.addAttribute("msg", "글 수정 중 문제 발생!!!");
-			return "redirect:/article/list";
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@PostMapping("/modify")
-	public String modify(BoardDto boardDto, Model model) {
+	@GetMapping("/delete/{articleNo}")
+	public ResponseEntity<?> delete(@PathVariable(value = "articleNo") int articleNo, Model model) {
+//		ResponseEntity<String> result = checkUser(request);
+//		if(result != null) return result;
+		
 		try 
 		{
-			boardService.modifyArticle(boardDto);
-			return "redirect:/article/view/"+ boardDto.getArticleNo();
+			System.out.println(articleNo);
+			boardService.deleteArticle(articleNo);
+			return new ResponseEntity<String>("complete", HttpStatus.OK);
 		} 
 		catch(Exception e) 
 		{
 			e.printStackTrace();
-			model.addAttribute("msg", "글 수정 중 문제 발생!!!");
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return "index";
+	}
+	
+	@PostMapping("/modify")
+	public ResponseEntity<?> modify(@RequestBody BoardDto boardDto, Model model) {
+//		ResponseEntity<String> result = checkUser(request);
+//		if(result != null) return result;
+		
+		try 
+		{
+			boardService.modifyArticle(boardDto);
+			return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK);
+		} 
+		catch(Exception e) 
+		{
+			System.out.println(e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

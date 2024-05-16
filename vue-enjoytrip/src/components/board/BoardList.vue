@@ -6,13 +6,12 @@ import BoardListPagination from '@/components/board/list/BoardListPagination.vue
 
 import axios from 'axios'
 import { useArticleStore } from '@/stores/article';
-import { storeToRefs } from 'pinia';
 
 const articleStore = useArticleStore()
 
 axios.get('http://localhost/article/list')
     .then(function(response){
-        articleStore.readArticles(response)
+        articleStore.fetchArticles(response)
     })
     .catch(function(error){
         console.log(error)
@@ -26,7 +25,7 @@ axios.get('http://localhost/article/list')
             <div class="col-lg-8 col-md-10 col-sm-12">
                 <BoardListHeader />
 
-                <table class="table table-hover">
+                <table class="table table-hover mt-5">
                     <BoardListTableHead />
                     <BoardListTableBody 
                         v-for="(article) in articleStore.articles" :key="article.articleNo" 

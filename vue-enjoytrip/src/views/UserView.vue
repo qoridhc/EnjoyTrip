@@ -1,4 +1,7 @@
-<script setup></script>
+<script setup>
+import { useFooterStore } from '@/stores/footer';
+useFooterStore().isFixed = true
+</script>
 
 <template>
   <div class="container text-center mt-3">

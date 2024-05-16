@@ -9,13 +9,13 @@ const props = defineProps({
         <tr class="text-center">
             <th scope="row">{{props.article.articleNo}}</th>
             <td>
-                <a href="${root}/article/view/${article.articleNo}" 
+                <router-link 
+                :to="{ name: 'board-detail', params: { articleNo: props.article.articleNo } }"
                    class="article-title link-dark"
-                   :data-no="props.article.articleNo" 
                    style="text-decoration: none"
                 > 
                     {{props.article.subject}}
-                </a>
+                </router-link>
             </td>
             <td>{{props.article.userId}}</td>
             <td>{{props.article.registerTime}}</td>

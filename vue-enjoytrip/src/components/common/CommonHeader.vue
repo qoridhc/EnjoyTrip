@@ -1,14 +1,6 @@
 <script setup>
-import { vShow, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
-const root = "";
-const condition = ref(true);
-
-const route = useRoute();
-const router = useRouter();
-
-console.log(route.path);
+import { ref } from 'vue';
+const condition = ref(true)
 </script>
 
 <template>

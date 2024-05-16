@@ -19,9 +19,9 @@
             </form>
         </div>
         <div class="col-md-2 text-start">
-            <button type="button" id="btn-mv-register" class="btn btn-dark btn-sm">
+            <router-link :to="{name: 'board-write'}" type="button" class="btn btn-dark btn-sm">
                 글쓰기
-            </button>
+            </router-link>
         </div>
     </div>
 </template>
