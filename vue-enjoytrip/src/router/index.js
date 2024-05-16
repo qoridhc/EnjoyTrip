@@ -16,6 +16,7 @@ const router = createRouter({
       path: "/myroute",
       name: "myroute",
       component: MyRouteView,
+      props: true,
     },
     {
       path: "/board",
@@ -59,6 +60,11 @@ const router = createRouter({
           path: "signup",
           name: "user-signup",
           component: () => import("@/components/user/UserSignup.vue"),
+        },
+        {
+          path: "mypage",
+          name: "user-mypage",
+          component: () => import("@/components/user/UserMyPage.vue"),
         },
       ],
     },

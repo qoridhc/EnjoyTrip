@@ -24,13 +24,13 @@ export const useMemberStore = defineStore("memberStore", () => {
         if (response.status === httpStatusCode.CREATE) {
           console.log("로그인 성공!!!!");
           let { data } = response;
-          // let accessToken = data["access-token"];
-          // let refreshToken = data["refresh-token"];
+          let accessToken = data["access-token"];
+          let refreshToken = data["refresh-token"];
           isLogin.value = true;
           isLoginError.value = false;
           isValidToken.value = true;
-          // sessionStorage.setItem("accessToken", accessToken);
-          // sessionStorage.setItem("refreshToken", refreshToken);
+          sessionStorage.setItem("accessToken", accessToken);
+          sessionStorage.setItem("refreshToken", refreshToken);
         }
       },
       (error) => {
@@ -38,7 +38,10 @@ export const useMemberStore = defineStore("memberStore", () => {
         isLogin.value = false;
         isLoginError.value = true;
         isValidToken.value = false;
-        console.error(error);
+
+        if (error.response.status === httpStatusCode.UNAUTHORIZED) {
+          alert("ID / PW를 확인해주세요");
+        }
       }
     );
   };
@@ -69,6 +72,8 @@ export const useMemberStore = defineStore("memberStore", () => {
       JSON.stringify(userInfo.value),
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
+          console.log("재생성 성공");
+
           let accessToken = response.data["access-token"];
           sessionStorage.setItem("accessToken", accessToken);
           isValidToken.value = true;
@@ -104,7 +109,6 @@ export const useMemberStore = defineStore("memberStore", () => {
   };
 
   const userLogout = async () => {
-    console.log("로그아웃 아이디 : " + userInfo.value.userId);
     await logout(
       userInfo.value.userId,
       (response) => {

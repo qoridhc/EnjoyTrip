@@ -3,6 +3,7 @@ package com.ssafy.trip.model;
 public class AttractionDto
 {
 	private String content_id;
+	private String content_type_id;
 	private String title;
 	private String addr1;
 	private String first_image;
@@ -13,8 +14,9 @@ public class AttractionDto
 	
 	// 생성자
 	public AttractionDto() {}
-	public AttractionDto(String content_id, String title, String addr1, String first_image, String sido_code, String latitude,String longitude, String overview) {
+	public AttractionDto(String content_id, String content_type_id, String title, String addr1, String first_image, String sido_code, String latitude,String longitude, String overview) {
 		this.content_id = content_id;
+		this.content_type_id = content_type_id;
 		this.title = title;
 		this.addr1 = addr1;
 		this.first_image = first_image;
@@ -25,8 +27,15 @@ public class AttractionDto
 	}
 
 	// getter & setter
+	
 	public String getContent_id() {
 		return content_id;
+	}
+	public String getContent_type_id() {
+		return content_type_id;
+	}
+	public void setContent_type_id(String content_type_id) {
+		this.content_type_id = content_type_id;
 	}
 	public void setContent_id(String content_id) {
 		this.content_id = content_id;
