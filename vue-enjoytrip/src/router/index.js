@@ -92,7 +92,19 @@ const router = createRouter({
         {
           path: "mypage",
           name: "user-mypage",
-          component: () => import("@/components/user/UserMyPage.vue"),
+          component: () => import("@/components/user/mypage/UserMyPage.vue"),
+          children: [
+            {
+              path: "",
+              name: "user-route",
+              component: () => import("@/components/user/mypage/UserRoute.vue"),
+            },
+            {
+              path: "",
+              name: "user-shared-route",
+              component: () => import("@/components/user/mypage/UserSharedRoute.vue"),
+            },
+          ],
         },
       ],
     },
