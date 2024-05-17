@@ -24,4 +24,6 @@ npm i jwt-decode
 ```
 함수명(실행 위치): 로그 내용  
 logging 대상 변수
+  
+console.log("writeArticle(board.js): 글작성 함수 정상 실행\n", response)  
 ```
