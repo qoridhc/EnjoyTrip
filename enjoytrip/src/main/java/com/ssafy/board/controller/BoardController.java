@@ -1,26 +1,23 @@
 package com.ssafy.board.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.service.BoardService;
 import com.ssafy.user.model.UserDto;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -87,18 +84,13 @@ public class BoardController {
 		
 	}
 	
+//	boardDto, userId	
 	@PostMapping("/write")
-	public ResponseEntity<?> write(@RequestBody BoardDto boardDto, HttpSession session) {
-//		ResponseEntity<String> result = checkUser(request);
-//		if(result != null) return result;
-		
-		//Get Uesr
-		UserDto userDto = new UserDto();
-		userDto.setId("ssafy");
-		
+	public ResponseEntity<?> write(@RequestBody Map<String, String> params, HttpSession session) {
+		BoardDto boardDto = new BoardDto();
 		try 
 		{
-			boardDto.setUserId(userDto.getId());
+			boardDto.setArticle(params);
 			boardService.writeArticle(boardDto);
 			return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK);
 		} 

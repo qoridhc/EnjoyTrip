@@ -15,8 +15,6 @@ async function userConfirm(param, success, fail) {
     })
     .then(success)
     .catch(fail);
-
-  // await local.post(`/user/login?${param.}`, param).then(success).catch(fail);
 }
 
 async function findById(userid, success, fail) {

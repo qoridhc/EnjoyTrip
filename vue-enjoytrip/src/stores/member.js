@@ -48,20 +48,20 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const getUserInfo = async (token) => {
     let decodeToken = jwtDecode(token);
-    console.log(decodeToken);
     await findById(
       decodeToken.userId,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo;
-        } else {
-          console.log("유저 정보 없음!!!!");
+          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:",userInfo.value)
+        } 
+        else {
+          console.log("getUserInfo(member.js): 토큰 user 식별 실패\n")
         }
       },
       async (error) => {
-        console.error("g[토큰 만료되어 사용 불가능.] : ", error.response.status, error.response.statusText);
+        console.log("getUserInfo(member.js): access token 기한 만료\n",error.response.status, error.response.statusText)
         isValidToken.value = false;
-
         await tokenRegenerate();
       }
     );
@@ -84,7 +84,7 @@ export const useMemberStore = defineStore("memberStore", () => {
         if (error.response.status === httpStatusCode.UNAUTHORIZED) {
           // 다시 로그인 전 DB에 저장된 RefreshToken 제거.
           await logout(
-            userInfo.value.userid,
+            userInfo.value.id,
             (response) => {
               if (response.status === httpStatusCode.OK) {
                 console.log("리프레시 토큰 제거 성공");
@@ -110,7 +110,7 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const userLogout = async () => {
     await logout(
-      userInfo.value.userId,
+      userInfo.value.id,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           isLogin.value = false;
@@ -139,4 +139,4 @@ export const useMemberStore = defineStore("memberStore", () => {
     tokenRegenerate,
     userLogout,
   };
-});
+}, {persist: true});

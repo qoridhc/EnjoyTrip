@@ -1,25 +1,41 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useArticleStore } from '@/stores/article';
-import axios from 'axios';
-const articleStore = useArticleStore()
-const article = articleStore.article
-const router = useRouter()
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useMemberStore } from '@/stores/member';
+import { getArticle, modifyArticle } from '@/api/board';
 
-function modify(){
-    const url = `${import.meta.env.VITE_VUE_API_URL}:${import.meta.env.VITE_BE_API_PORT}/article/modify`
-    axios({
-        method: 'post',
-        url,
-        data: article
-    })
-    .then((response)=>{
-        router.push({name: 'board-detail', params: {articleNo: response.data.articleNo}})
-    })
-    .catch((error)=>{
-        console.log(error)
-    })
+const memberStore = useMemberStore()
+const router = useRouter()
+const route = useRoute()
+const article = ref({})
+
+onMounted(() => {
+    getArticle(
+        route.params.articleNo,
+        function (data) {
+            article.value = data
+        },
+        function (error) {
+            console.log("getArticle(BoardModify.vue): 게시글 읽어오기 실패\n", error)
+        }
+    )
+})
+
+function submit() {
+    modifyArticle(
+        {
+            id: memberStore.userInfo.id,
+            articleNo: article.value.articleNo,
+            subject: article.value.subject,
+            content: article.value.content,
+        },
+        function(response){
+            router.push({name: 'board-detail', params: {articleNo: response.data.articleNo}})  
+        },
+        function(error){
+            console.log("modifyArticle(BoardModify.vue): 게시글 수정 실패\n", error)
+        }
+    )
 }
 </script>
 
@@ -41,7 +57,7 @@ function modify(){
                     </div>
 
                     <div class="col-auto text-end">
-                        <button @click.prevent="modify" class="btn btn-outline-primary mb-3 me-2">
+                        <button @click.prevent="submit" class="btn btn-outline-primary mb-3 me-2">
                             글수정
                         </button>
                         <button type="button" class="btn btn-outline-danger mb-3">

@@ -12,8 +12,15 @@ export const useMenuStore = defineStore("menuStore", () => {
   const changeMenuState = () => {
     menuList.value = menuList.value.map((item) => ({ ...item, show: !item.show }));
   };
+
+  const logoutMenuState = () => {
+    menuList.value[0].show = menuList.value[1].show = true
+    menuList.value[2].show = menuList.value[3].show = false
+  }
+
   return {
     menuList,
     changeMenuState,
+    logoutMenuState,
   };
 }, {persist: true});

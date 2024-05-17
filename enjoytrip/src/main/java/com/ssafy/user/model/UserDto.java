@@ -76,5 +76,10 @@ public class UserDto
 		this.refresh_token = refresh_token;
 	}
 
+	@Override
+	public String toString() {
+		return "UserDto [id=" + id + ", pw=" + pw + ", name=" + name + ", email_1=" + email_1 + ", email_2=" + email_2
+				+ ", join_date=" + join_date + ", refresh_token=" + refresh_token + "]";
+	}
 	
 }

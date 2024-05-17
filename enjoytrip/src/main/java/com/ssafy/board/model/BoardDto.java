@@ -1,5 +1,7 @@
 package com.ssafy.board.model;
 
+import java.util.Map;
+
 public class BoardDto {
 
 	private int articleNo;
@@ -55,6 +57,12 @@ public class BoardDto {
 
 	public void setRegisterTime(String registerTime) {
 		this.registerTime = registerTime;
+	}
+	
+	public void setArticle(Map<String, String> params) {
+		this.setUserId(params.get("id"));
+		this.setSubject(params.get("subject"));
+		this.setContent(params.get("content"));
 	}
 
 	@Override
