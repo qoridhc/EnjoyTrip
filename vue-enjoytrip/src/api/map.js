@@ -11,21 +11,13 @@ async function postRoute(routeList, success, fail) {
 
   const routeInfo = {
     userId: "ssafy",
-    contentInfos: "tmp",
+    contentInfos: routeList,
   };
-  // console.log("routeInfo : ", JSON.stringify(routeInfo));
+  console.log("routeInfo : ", JSON.stringify(routeInfo));
 
   // await local.post("/attraction/route", routeInfo).then(success).catch(fail);
 
-  // await local.post(`/attraction/route`, routeInfo).then(success).catch(fail);
-
-  await axios({
-    method: "post",
-    url: "http://localhost/attraction/api/example",
-    data: routeInfo,
-  })
-    .then(success)
-    .catch(fail);
+  await local.post(`/attraction/route`, routeInfo).then(success).catch(fail);
 }
 
 export { searchByKeyword, postRoute };
