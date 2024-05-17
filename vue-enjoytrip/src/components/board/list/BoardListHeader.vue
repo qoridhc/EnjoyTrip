@@ -1,4 +1,10 @@
 <script setup>
+import { useMemberStore } from '@/stores/member';
+const memberStore = useMemberStore()
+
+function tmp(){
+    console.log(memberStore.getUserInfo())
+}
 
 </script>
 
@@ -14,7 +20,7 @@
                 </select>
                 <div class="input-group input-group-sm">
                     <input type="text" class="form-control" placeholder="검색어..." />
-                    <button class="btn btn-dark" type="button">검색</button>
+                    <button @click="tmp" class="btn btn-dark" type="button">검색</button>
                 </div>
             </form>
         </div>
