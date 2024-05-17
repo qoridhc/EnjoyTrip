@@ -1,45 +1,47 @@
 <script setup>
-import axios from 'axios';
-import { useArticleStore } from '@/stores/article';
+import CommonSpinner from '../common/CommonSpinner.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import CommonSpinner from '../common/CommonSpinner.vue';
 
-const articleStore = useArticleStore()
+import { getArticle, removeArticle } from '@/api/board';
+import { useMemberStore } from '@/stores/member';
+
 const router = useRouter()
 const route = useRoute()
-const article = ref({})
+const memberStore = useMemberStore()
 
-onMounted(async () => {
-    article.value = articleStore.setNowArticle(route.params.articleNo)
-    console.log("im mounted")
-    if (!article.value) {
-        try {
-            const response = await axios.get(`http://localhost/article/view/${route.params.articleNo}`)
-            article.value = response.data
-            useArticleStore.article = article
-        } 
-        catch (error) {
-            console.error(error)
+const article = ref({})
+const isEditable = ref(false)
+
+onMounted(() => {
+    getArticle(
+        route.params.articleNo,
+        function (data) {
+            article.value = data
+            setIsEditable()
+        },
+        function (error) {
+            console.log("getArticle(BoardDetail.vue): 게시글 읽어오기 실패\n", error)
         }
-    }
+    )
 })
 
-//삭제
 function remove() {
-    if(article.value) {
-    const url = `${import.meta.env.VITE_VUE_API_URL}:${import.meta.env.VITE_BE_API_PORT}/article/delete/${article.value.articleNo}`
-    axios.get(url)
-        .then((response) => {
+    removeArticle(
+        article.value.articleNo,
+        function (response) {
             router.push({ name: 'board-list' })
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-    }
-    else{
-        console.log('wtf')
+        },
+        function (error) {
+            console.log("removeArticle(BoardDetail.vue): 게시글 삭제 실패\n", error)
+        },
+    )
+}
+
+function setIsEditable() {
+    const { id } = memberStore.userInfo
+    if (id === article.value.userId || id === 'admin'){
+        isEditable.value = true
     }
 }
 </script>
@@ -73,13 +75,16 @@ function remove() {
                                     class="btn btn-outline-primary mb-3">
                                     글목록
                                 </router-link>
-                                <router-link :to="{ name: 'board-modify', params: article.articleNo }"
-                                    class="btn btn-outline-success mb-3 ms-1">
-                                    글수정
-                                </router-link>
-                                <button type="button" @click="remove" class="btn btn-outline-danger mb-3 ms-1">
-                                    글삭제
-                                </button>
+                                <template v-if="isEditable">
+                                    <router-link :to="{ name: 'board-modify', params: article.articleNo }"
+                                        class="btn btn-outline-success mb-3 ms-1"
+                                    >
+                                        글수정
+                                    </router-link>
+                                    <button type="button" class="btn btn-outline-danger mb-3 ms-1" @click="remove">
+                                        글삭제
+                                    </button>
+                                </template>
                             </div>
                         </div>
                     </div>

@@ -4,18 +4,21 @@ import BoardListTableHead from '@/components/board/list/BoardListTableHead.vue';
 import BoardListTableBody from '@/components/board/list/BoardListTableBody.vue';
 import BoardListPagination from '@/components/board/list/BoardListPagination.vue';
 
-import axios from 'axios'
-import { useArticleStore } from '@/stores/article';
+import { getArticleList } from '@/api/board';
+import { onMounted, ref } from 'vue';
 
-const articleStore = useArticleStore()
+const articleList = ref([])
 
-axios.get('http://localhost/article/list')
-    .then(function(response){
-        articleStore.fetchArticles(response)
-    })
-    .catch(function(error){
-        console.log(error)
-    })
+onMounted(() => {
+    articleList.value = getArticleList(
+        function(data){
+            articleList.value = data
+        },
+        function(error){
+            console.log("getArticleList(BoardList.vue): 게시글 목록 읽어오기 실패\n", error)
+        }
+    )
+})
 </script>
 
 <template>
@@ -28,7 +31,7 @@ axios.get('http://localhost/article/list')
                 <table class="table table-hover mt-5">
                     <BoardListTableHead />
                     <BoardListTableBody 
-                        v-for="(article) in articleStore.articles" :key="article.articleNo" 
+                        v-for="(article) in articleList" :key="article.articleNo" 
                         :article="article"
                     />
                 </table>

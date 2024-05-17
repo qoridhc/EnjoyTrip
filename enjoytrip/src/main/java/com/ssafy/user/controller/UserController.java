@@ -67,25 +67,19 @@ public class UserController {
 			System.out.println("userDto : " + userDto);
 			if(targetUser != null) {
 				
-//				if (targetUser != null && targetUser.getId().equals(userDto.getId())
-//						&& targetUser.getPw().equals(userDto.getPw())) {
-//					System.out.println("로그인 성공");
-//					resultMap.put("user", userDto);
-//					status = HttpStatus.CREATED;
-//				}
-//				else {
-//					status = HttpStatus.UNAUTHORIZED;
-//				}
+				if (!targetUser.getPw().equals(userDto.getPw())) {
+					status = HttpStatus.UNAUTHORIZED;
+					return new ResponseEntity<Map<String, Object>>(resultMap, status);
+				}
 				
 				String accessToken = jwtUtil.createAccessToken(targetUser.getId());
 				String refreshToken = jwtUtil.createRefreshToken(targetUser.getId());
-				log.debug("access token : {}", accessToken);
-				log.debug("refresh token : {}", refreshToken);
 				
 //				발급받은 refresh token 을 DB에 저장.
 				userService.saveRefreshToken(targetUser.getId(), refreshToken);
 				
-//				JSON 으로 token 전달.
+//				JSON 으로 token, userInfo 전달.
+				resultMap.put("user", userDto);
 				resultMap.put("access-token", accessToken);
 				resultMap.put("refresh-token", refreshToken);
 				
@@ -111,7 +105,8 @@ public class UserController {
 	public ResponseEntity<Map<String, Object>> getInfo(
 			@PathVariable("userId") @Parameter(description = "인증할 회원의 아이디.", required = true) String userId,
 			HttpServletRequest request) {
-//		logger.debug("userId : {} ", userId);
+		
+		
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		if (jwtUtil.checkToken(request.getHeader("Authorization"))) {
@@ -120,6 +115,8 @@ public class UserController {
 //				로그인 사용자 정보.
 				UserDto userDto = userService.userInfo(userId);
 				resultMap.put("userInfo", userDto);
+				log.info("server: userDto == " + userDto.toString());
+				
 				status = HttpStatus.OK;
 			} catch (Exception e) {
 				log.error("정보조회 실패 : {}", e);

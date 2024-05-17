@@ -1,25 +1,33 @@
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios'
 import { useRouter } from 'vue-router';
+import { writeArticle } from '@/api/board';
+import { useMemberStore } from '@/stores/member';
+
+const memberStore = useMemberStore()
 const router = useRouter()
-const url = `${import.meta.env.VITE_VUE_API_URL}:${import.meta.env.VITE_BE_API_PORT}/article/write`
 const article = ref({})
 
 function submit() {
-    console.log(article.value)
+    if(article.value.subject.length >= 80){
+        console.log("submit(BoardWrite.vue): 제목 글자수 제한\n", article.value.subject.length)
+        alert("제목 글자수 제한: " + article.value.subject.length + "/80")
+        return
+    }
 
-    axios({
-        method: 'post',
-        url,
-        data: article.value,
-    })
-    .then((response)=>{
-        router.push({name: 'board-detail', params: {articleNo: response.data.articleNo}})  
-    })
-    .catch((error)=>{
-        console.log(error)
-    })
+    writeArticle(
+        {
+            id: memberStore.userInfo.id,
+            subject: article.value.subject,
+            content: article.value.content,
+        },
+        function(response){
+            router.push({name: 'board-detail', params: {articleNo: response.data.articleNo}})  
+        },
+        function(error){
+            console.log("writeArticle(BoardWrite.vue): 게시글 작성 실패\n", error)
+        }
+    )
 }
 
 </script>

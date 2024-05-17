@@ -7,10 +7,11 @@ import BoardView from "@/views/BoardView.vue";
 import { storeToRefs } from "pinia";
 
 import { useMemberStore } from "@/stores/member";
+import { useMenuStore } from "@/stores/menu";
 
 const onlyAuthUser = async (to, from, next) => {
   const memberStore = useMemberStore();
-  const { userInfo, isValidToken } = storeToRefs(memberStore);
+  const { userInfo, isValidToken, isLogin } = storeToRefs(memberStore);
   const { getUserInfo } = memberStore;
 
   let token = sessionStorage.getItem("accessToken");
@@ -19,6 +20,10 @@ const onlyAuthUser = async (to, from, next) => {
     await getUserInfo(token);
   }
   if (!isValidToken.value || userInfo.value === null) {
+    isValidToken.value = isLogin.value = false;
+    userInfo.value = null;
+    useMenuStore().logoutMenuState()
+
     next({ name: "user-login" });
   } else {
     next();
