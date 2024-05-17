@@ -19,3 +19,7 @@ npm install --save @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg
 npm i pinia-plugin-persistedstate
 npm i jwt-decode
 ```
+
+## log convention
+함수명(실행 위치): 로그 내용
+logging 대상 변수
