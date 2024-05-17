@@ -9,7 +9,6 @@ export const useMapStore = defineStore("mapStore", () => {
 
   const getPlaceByKeyword = async (keyword) => {
     await searchByKeyword(keyword, (response) => {
-      console.log(response);
       if (response.status === httpStatusCode.OK) {
         searchPlaceList.value = response.data;
 

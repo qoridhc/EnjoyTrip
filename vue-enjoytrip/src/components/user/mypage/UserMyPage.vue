@@ -23,9 +23,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onBeforeMount, onMounted, onUpdated, ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const isActive = ref(true);
+
+console.log("11");
+
+onMounted(() => {
+  console.log("onMounted");
+  router.push({ name: "user-route" });
+});
 </script>
 
 <style scoped>

@@ -24,7 +24,7 @@
 		SELECT 
 		content_id, content_type_id, title, addr1, first_image, latitude, longitude 
 		FROM attraction_info 
-		 WHERE title LIKE CONCAT('%', #{keyword}, '%') 
+		WHERE title LIKE CONCAT('%', #{keyword}, '%') 
 		limit 10
 	</select>
 	 

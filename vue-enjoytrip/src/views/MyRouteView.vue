@@ -64,7 +64,6 @@
             :list="selectedPlaceList"
             group="people"
             item-key="name"
-            @move="(e) => console.log(e)"
             @add="addRouteCard">
             <template #item="{ element, index }">
               <div class="list-group-item">
@@ -99,10 +98,11 @@ import axios from "axios";
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { storeToRefs } from "pinia";
+import { postRoute } from "@/api/map";
 
 const mapStore = useMapStore();
 
@@ -112,7 +112,6 @@ const { getPlaceByKeyword } = mapStore;
 const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 
 onMounted(() => {
-  console.log("Mounted");
   window.kakao && window.kakao.maps ? initMap() : addScript();
 });
 
@@ -187,8 +186,6 @@ const displayMarkers = () => {
   const places = searchPlaceList.value;
 
   places.forEach((place) => {
-    // console.log("place : ", place);
-
     positions.push({ title: place.title, latlng: place.latlng });
   });
 
@@ -251,8 +248,8 @@ var testPath = [],
 
 // 선택한 여행지 추가
 const addRoute = (index, insertPos) => {
-  console.log("addRoute");
   const selectedPlaceInfo = {
+    content_id: searchPlaceList.value[index].content_id,
     title: searchPlaceList.value[index].title,
     addr1: searchPlaceList.value[index].addr1,
     currPos: searchPlaceList.value[index].latlng,
@@ -276,8 +273,6 @@ const addRoute = (index, insertPos) => {
     testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
   }
 
-  console.log(testPath);
-
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
     path: testPath, // 선을 구성하는 좌표배열 입니다
@@ -293,10 +288,13 @@ const addRoute = (index, insertPos) => {
   polylines.push(polyline);
 };
 
-const saveRoute = () => {};
+const saveRoute = async () => {
+  console.log("saveRoute(MyRouteView) - 루트 저장 확인 \n", selectedPlaceList.value);
+
+  await postRoute(selectedPlaceList.value);
+};
 
 const removeRoute = (index) => {
-  console.log(index);
   selectedPlaceList.value.splice(index, 1);
 };
 
@@ -318,11 +316,7 @@ const clearSelectedRoute = () => {
   polylines = [];
 };
 
-const handleListChange = (e) => {
-  console.log(e);
-  // console.log(e.added.newIndex);
-  // addRoute()
-};
+const handleListChange = (e) => {};
 
 const addRouteCard = (e) => {
   polylines.forEach((polyline) => {
@@ -334,8 +328,6 @@ const addRouteCard = (e) => {
   const addedIndex = e.newIndex;
 
   addRoute(preIndex, addedIndex);
-
-  console.log(e);
 
   // addRoute()
 };
