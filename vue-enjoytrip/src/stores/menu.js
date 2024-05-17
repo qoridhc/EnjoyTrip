@@ -16,4 +16,4 @@ export const useMenuStore = defineStore("menuStore", () => {
     menuList,
     changeMenuState,
   };
-});
+}, {persist: true});
