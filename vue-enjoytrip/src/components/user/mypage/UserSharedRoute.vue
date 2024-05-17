@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div></div>
+  <div>USERSHAREDROUTE</div>
 </template>
 
 <style scoped></style>

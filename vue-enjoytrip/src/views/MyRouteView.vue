@@ -276,7 +276,7 @@ const addRoute = (index, insertPos) => {
     testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
   }
 
-  console.log(testPath.value);
+  console.log(testPath);
 
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
@@ -325,6 +325,10 @@ const handleListChange = (e) => {
 };
 
 const addRouteCard = (e) => {
+  polylines.forEach((polyline) => {
+    polyline.setMap(null);
+  });
+
   // const addedItem = e.item._underlying_vm_
   const preIndex = e.oldIndex;
   const addedIndex = e.newIndex;
