@@ -34,13 +34,10 @@ import { storeToRefs } from "pinia";
 const mapStore = useMapStore();
 
 const { userRouteList } = storeToRefs(mapStore);
-console.log(userRouteList.value[0].description);
 
 const inputText = ref("");
 
 watch(inputText, (newValue, oldValue) => {
-  console.log("inputText 값이 변경되었습니다:", newValue);
-
   userRouteList.value[props.idx].description = newValue;
 });
 </script>

@@ -301,8 +301,6 @@ const addRoute = (index, insertPos) => {
 };
 
 const saveRoute = async () => {
-  console.log("saveRoute(MyRouteView) - 루트 저장 확인 \n", selectedPlaceList.value.length);
-
   // const routeInfo = {
   //   userId: userInfo.id,
   //   contentIdList: selectedPlaceList.value.map((item, index) => {
@@ -322,8 +320,6 @@ const saveRoute = async () => {
       description: "",
     };
   });
-
-  console.log("userRouteList : ", userRouteList.value);
 
   // await postRoute(selectedPlaceList.value);
 };

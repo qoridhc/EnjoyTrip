@@ -44,8 +44,6 @@ const memberStore = useMemberStore();
 const { userRouteList } = storeToRefs(mapStore);
 const { userInfo } = memberStore;
 
-console.log("RouteSaveModal userRouteList", userRouteList);
-
 // const props = defineProps({
 //   place: Object,
 // });
@@ -62,8 +60,7 @@ const save = async () => {
     }),
   };
 
-  console.log(routeInfo);
-
+  // console.log("save(RouteSaveModal.vue): 루트 저장 post 데이터 확인\nrouteInfo", routeInfo);
   await postRoute(routeInfo);
 };
 </script>
