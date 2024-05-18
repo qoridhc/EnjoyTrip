@@ -50,4 +50,9 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardDto> searchArticle(Map<String, String> params) throws Exception {
 		return boardDao.searchArticle(params);
 	}
+
+	@Override
+	public void updateArticleHit(BoardDto boardDto) throws Exception {
+		boardDao.updateArticleHit(boardDto);
+	}
 }

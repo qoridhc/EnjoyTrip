@@ -25,10 +25,9 @@ const login = async () => {
   await userLogin(loginUser.value);
 
   let token = sessionStorage.getItem("accessToken");
-  console.log("token : ", token);
-  console.log("isLogin: " + isLogin.value);
   if (isLogin.value) {
     getUserInfo(token);
+    console.log("login(UserLogin.vue): 로그인 체크\n")
     changeMenuState();
     router.replace("/");
   }

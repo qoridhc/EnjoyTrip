@@ -17,4 +17,5 @@ public interface BoardDao {
 	void deleteArticle(int articleNO) throws SQLException;
 	void modifyArticle(BoardDto boardDto) throws SQLException;
 	List<BoardDto> searchArticle(Map<String, String> params) throws SQLException;
+	void updateArticleHit(BoardDto boardDto) throws SQLException;
 }

@@ -25,7 +25,7 @@
     </select>
 
     <select id="getArticle" parameterType="int" resultMap="article">
-        select article_no, user_id, subject, content, register_time
+        select *
         from board where article_no = #{articleNo}
     </select>
     
@@ -45,7 +45,13 @@
     
     <update id="modifyArticle" parameterType="boardDto">
         update board
-        set subject = #{subject}, content = #{content}
+        set subject = #{subject}, content = #{content}, register_time = now()
         where article_no = #{articleNo}
+    </update>
+    
+    <update id="updateArticleHit" parameterType="boardDto">
+    	update board
+    	set hit = #{hit}
+    	where article_no = #{articleNo}
     </update>
 </mapper>
