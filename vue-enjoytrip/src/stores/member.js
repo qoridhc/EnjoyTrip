@@ -53,14 +53,14 @@ export const useMemberStore = defineStore("memberStore", () => {
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo;
-          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:",userInfo.value)
-        } 
+          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:", userInfo.value)
+        }
         else {
           console.log("getUserInfo(member.js): 토큰 user 식별 실패\n")
         }
       },
       async (error) => {
-        console.log("getUserInfo(member.js): access token 기한 만료\n",error.response.status, error.response.statusText)
+        console.log("getUserInfo(member.js): access token 기한 만료\n", error.response.status, error.response.statusText)
         isValidToken.value = false;
         await tokenRegenerate();
       }
@@ -139,4 +139,10 @@ export const useMemberStore = defineStore("memberStore", () => {
     tokenRegenerate,
     userLogout,
   };
-}, {persist: true});
+},
+  {
+    persist: {
+      storage: sessionStorage
+    }
+  }
+);
