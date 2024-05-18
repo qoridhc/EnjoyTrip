@@ -16,7 +16,7 @@ export const useMemberStore = defineStore("memberStore", () => {
   const isValidToken = ref(false);
 
   const userLogin = async (loginUser) => {
-    console.log("member.js : ", loginUser);
+    console.log("userLogin(member.js): MemberStore에서 로그인 함수 실행\nuser: ", loginUser);
 
     await userConfirm(
       loginUser,

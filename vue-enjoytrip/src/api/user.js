@@ -5,8 +5,6 @@ const local = localAxios();
 
 // 유저 로그인
 async function userConfirm(param, success, fail) {
-  console.log("userConfirm param : ", param);
-
   await local
     .post("/user/login", null, {
       params: {

@@ -19,18 +19,26 @@ const loginUser = ref({
   pw: "",
 });
 
+const isSubmitting = ref(false);
+
 const login = async () => {
-  console.log("login 실행");
-  console.log(loginUser.value);
+  if (isSubmitting.value) return;
+
+  // 로그인 시작, axios 요청
+  isSubmitting.value = true;
+  console.log("login(UserLogin.vue): 로그인 실행\nuser: ", loginUser.value);
   await userLogin(loginUser.value);
 
+  // 토큰 설정
   let token = sessionStorage.getItem("accessToken");
   if (isLogin.value) {
     getUserInfo(token);
-    console.log("login(UserLogin.vue): 로그인 체크\n")
     changeMenuState();
     router.replace("/");
   }
+
+  // 로그인 끝
+  isSubmitting.value = false;
 };
 </script>
 
@@ -38,7 +46,7 @@ const login = async () => {
   <div>
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh">
       <div class="col-lg-4">
-        <form v-on:submit.prevent="loginBtnClick" id="signup" method="post" action="${root}/user/login">
+        <form v-on:submit.prevent="login" id="signup" method="post" action="${root}/user/login">
           <!-- ID input -->
           <div class="form-floating mb-3">
             <input
@@ -63,7 +71,7 @@ const login = async () => {
           </div>
           <!-- Submit button -->
           <div class="d-grid">
-            <Button class="btn btn-dark btn-lg" @click="login" style="background-color: #e9859e">로그인</Button>
+            <button class="btn btn-dark btn-lg" @click="login" :disabled="isSubmitting" style="background-color: #e9859e">로그인</button>
           </div>
           <!-- Links -->
           <div class="d-flex justify-content-end mt-3">
