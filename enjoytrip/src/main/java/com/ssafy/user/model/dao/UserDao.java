@@ -23,8 +23,8 @@ public interface UserDao
 	UserDto userInfo(String userId) throws SQLException;
     
 	void saveRefreshToken(Map<String, String> map) throws SQLException;
-	Object getRefreshToken(String userid) throws SQLException;
-	void deleteRefreshToken(Map<String, String> map) throws SQLException;
 	
-    
+	Object getRefreshToken(String userid) throws SQLException;
+	
+	void deleteRefreshToken(Map<String, String> map) throws SQLException;
 }

@@ -1,6 +1,7 @@
 package com.ssafy.board.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,15 @@ public class BoardServiceImpl implements BoardService {
 	public void modifyArticle(BoardDto boardDto) throws Exception {
 		// TODO : BoardDaoImpl의 modifyArticle 호출
 		boardDao.modifyArticle(boardDto);
+	}
+
+	@Override
+	public List<BoardDto> searchArticle(Map<String, String> params) throws Exception {
+		return boardDao.searchArticle(params);
+	}
+
+	@Override
+	public void updateArticleHit(BoardDto boardDto) throws Exception {
+		boardDao.updateArticleHit(boardDto);
 	}
 }

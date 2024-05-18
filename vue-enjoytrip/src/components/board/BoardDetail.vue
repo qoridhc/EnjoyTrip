@@ -64,7 +64,7 @@ function setIsEditable() {
                                     <p> <span class="fw-bold">{{ article.userId }}</span> <br /> </p>
                                 </div>
                             </div>
-                            <div class="col-md-4 align-self-center text-end">댓글 : 0</div>
+                            <div class="col-md-4 align-self-center text-end">조회수 : {{ article.hit }}</div>
 
                             <div class="divider mb-3" />
                             <div class="text-secondary"> {{ article.content }} </div>
@@ -77,8 +77,7 @@ function setIsEditable() {
                                 </router-link>
                                 <template v-if="isEditable">
                                     <router-link :to="{ name: 'board-modify', params: article.articleNo }"
-                                        class="btn btn-outline-success mb-3 ms-1"
-                                    >
+                                        class="btn btn-outline-success mb-3 ms-1">
                                         글수정
                                     </router-link>
                                     <button type="button" class="btn btn-outline-danger mb-3 ms-1" @click="remove">

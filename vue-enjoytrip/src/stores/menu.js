@@ -26,5 +26,9 @@ export const useMenuStore = defineStore(
       logoutMenuState,
     };
   },
-  { persist: true }
+  {
+    persist: {
+      storage: sessionStorage
+    }
+  }
 );

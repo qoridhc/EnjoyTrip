@@ -16,13 +16,14 @@ export const useMemberStore = defineStore("memberStore", () => {
   const isValidToken = ref(false);
 
   const userLogin = async (loginUser) => {
-    console.log("member.js : ", loginUser);
+    console.log("userLogin(member.js): MemberStore에서 로그인 함수 실행\nuser: ", loginUser);
 
     await userConfirm(
       loginUser,
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
-          console.log("로그인 성공!!!!");
+          console.log("userLogin(member.js): 로그인 성공");
+
           let { data } = response;
           let accessToken = data["access-token"];
           let refreshToken = data["refresh-token"];
@@ -34,7 +35,7 @@ export const useMemberStore = defineStore("memberStore", () => {
         }
       },
       (error) => {
-        console.log("로그인 실패!!!!");
+        console.log("userLogin(member.js): 로그인 실패");
         isLogin.value = false;
         isLoginError.value = true;
         isValidToken.value = false;
@@ -53,14 +54,14 @@ export const useMemberStore = defineStore("memberStore", () => {
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo;
-          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:",userInfo.value)
-        } 
+          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:", userInfo.value)
+        }
         else {
           console.log("getUserInfo(member.js): 토큰 user 식별 실패\n")
         }
       },
       async (error) => {
-        console.log("getUserInfo(member.js): access token 기한 만료\n",error.response.status, error.response.statusText)
+        console.log("getUserInfo(member.js): access token 기한 만료\n", error.response.status, error.response.statusText)
         isValidToken.value = false;
         await tokenRegenerate();
       }
@@ -139,4 +140,10 @@ export const useMemberStore = defineStore("memberStore", () => {
     tokenRegenerate,
     userLogout,
   };
-}, {persist: true});
+},
+  {
+    persist: {
+      storage: sessionStorage
+    }
+  }
+);
