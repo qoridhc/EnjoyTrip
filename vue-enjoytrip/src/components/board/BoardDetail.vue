@@ -77,8 +77,7 @@ function setIsEditable() {
                                 </router-link>
                                 <template v-if="isEditable">
                                     <router-link :to="{ name: 'board-modify', params: article.articleNo }"
-                                        class="btn btn-outline-success mb-3 ms-1"
-                                    >
+                                        class="btn btn-outline-success mb-3 ms-1">
                                         글수정
                                     </router-link>
                                     <button type="button" class="btn btn-outline-danger mb-3 ms-1" @click="remove">

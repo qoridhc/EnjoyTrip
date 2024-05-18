@@ -39,7 +39,7 @@ public class BoardController {
 			@RequestParam(value = "category", required = false) String category,
 			@RequestParam(value = "keyword", required = false) String keyword) 
 	{
-		System.out.println("list(BoardController.java): parameter check\ncategory: " + category + "\nkeyword: " + keyword);
+		System.out.println("list(BoardController.java): parameter check\ncategory: " + category + ", keyword: " + keyword);
 		List<BoardDto> list;
 		try {
 			if(keyword == null) {
