@@ -25,9 +25,9 @@
 	</select>
 	
 
-	<insert id="signUp">
+	<insert id="signUp" parameterType="Map">
 		insert into members 
-		values(#{id}, #{name}, #{pwd}, substring_index(#{email},'@',1), substring_index(#{email},'@',-1), now(), null);
+		values(#{id}, #{name}, #{pw}, substring_index(#{email},'@',1), substring_index(#{email},'@',-1), null, now(), null);
 	</insert>
 	
 	<select id="idCheck" parameterType="String" resultType="int">

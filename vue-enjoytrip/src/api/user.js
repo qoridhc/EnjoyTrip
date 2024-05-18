@@ -32,6 +32,10 @@ async function logout(userid, success, fail) {
   await local.get(`/user/logout/${userid}`).then(success).catch(fail);
 }
 
-//
+function signup(user, success, fail){
+  local.post(`/user/signup`, user)
+  .then(success)
+  .catch(fail)
+}
 
-export { userConfirm, findById, tokenRegeneration, logout };
+export { userConfirm, findById, tokenRegeneration, logout, signup };

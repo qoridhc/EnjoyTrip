@@ -4,30 +4,26 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.user.model.UserDto;
 import com.ssafy.user.model.service.UserService;
-import com.ssafy.user.model.service.UserServiceImpl;
 import com.ssafy.util.JWTUtil;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -186,31 +182,26 @@ public class UserController {
 	}
 	
 	@PostMapping("/signup")
-	public String signup(@RequestParam Map<String,String> map, Model model) throws IOException {
-		
-		System.out.println(map);
+	public ResponseEntity<?> signup(@RequestBody Map<String,String> map) throws IOException {
+		log.info("signup(UserController.java): 회원가입 파라미터 확인");
+		log.info("map");
+		for(String key: map.keySet()) log.info(key + ": " + map.get(key));
 		
 		try {
 			int existIdCnt = userService.idCheck(map.get("id"));
-			System.out.println(existIdCnt);
+			log.info("signup(UserController.java): 회원가입 id 존재 유무 확인\nexistIdCnt: " + existIdCnt);
 			
-			if(existIdCnt != 0) {
-				model.addAttribute("msg", "이미 존재하는 아이디 입니다.");
-				return "/user/signup";
-			}else {
-				userService.signUp(map);
-				
-				//회원가입 성공
-				System.out.println("회원가입 성공");
-				return "/user/login";
-				
+			if(existIdCnt != 0){
+				return new ResponseEntity<String>("이미 존재하는 id입니다.", HttpStatus.OK);
 			}
-			
+			else{
+				userService.signUp(map);
+				return new ResponseEntity<String>("회원가입 성공", HttpStatus.OK);
+			}
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("msg", "회원가입 중 문제 발생!!!");
-			return "/error";
+			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}

@@ -22,7 +22,8 @@ export const useMemberStore = defineStore("memberStore", () => {
       loginUser,
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
-          console.log("로그인 성공!!!!");
+          console.log("userLogin(member.js): 로그인 성공");
+
           let { data } = response;
           let accessToken = data["access-token"];
           let refreshToken = data["refresh-token"];
@@ -34,7 +35,7 @@ export const useMemberStore = defineStore("memberStore", () => {
         }
       },
       (error) => {
-        console.log("로그인 실패!!!!");
+        console.log("userLogin(member.js): 로그인 실패");
         isLogin.value = false;
         isLoginError.value = true;
         isValidToken.value = false;
