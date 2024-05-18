@@ -13,6 +13,16 @@ function getArticleList(success, fail) {
     })
 }
 
+function searchArticleList(search ,success, fail) {
+    axios.get(`${api_url}/article/list?category=${search.category}&keyword=${search.keyword}`)
+    .then(function (response) {
+        success(response.data)
+    })
+    .catch(function (error) {
+        fail(error)
+    })
+}
+
 // board-detail 접속 시 articleNo 게시글 read
 function getArticle(articleNo, success, fail) {
     axios.get(`${api_url}/article/view/${articleNo}`)
@@ -64,4 +74,4 @@ function modifyArticle(article, success, fail) {
         fail(error)
     })
 }
-export { getArticleList, getArticle, writeArticle, removeArticle, modifyArticle }
+export { getArticleList, searchArticleList, getArticle, writeArticle, removeArticle, modifyArticle }

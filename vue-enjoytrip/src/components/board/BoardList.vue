@@ -10,7 +10,7 @@ import { onMounted, ref } from 'vue';
 const articleList = ref([])
 
 onMounted(() => {
-    articleList.value = getArticleList(
+    getArticleList(
         function(data){
             articleList.value = data
         },
@@ -19,6 +19,11 @@ onMounted(() => {
         }
     )
 })
+
+function updateArticleList(newArticleList){
+    console.log("updateArticleList(BoardList.vue): 업데이트 확인\nnew: ", newArticleList)
+    articleList.value = newArticleList
+}
 </script>
 
 <template>
@@ -26,7 +31,7 @@ onMounted(() => {
         <div class="flex-shrink-0 row justify-content-center py-5">
             <hr class="mt-2" />
             <div class="col-lg-8 col-md-10 col-sm-12">
-                <BoardListHeader />
+                <BoardListHeader @search="updateArticleList" />
 
                 <table class="table table-hover mt-5">
                     <BoardListTableHead />

@@ -15,6 +15,14 @@
         from board
         order by article_no desc limit 12;
     </select>
+    
+    <select id="searchArticle" parameterType="Map" resultMap="article">
+        select article_no, user_id, subject, content, register_time
+        from board
+        where ${category} like '%${keyword}%'
+        order by article_no desc 
+        limit 12;
+    </select>
 
     <select id="getArticle" parameterType="int" resultMap="article">
         select article_no, user_id, subject, content, register_time

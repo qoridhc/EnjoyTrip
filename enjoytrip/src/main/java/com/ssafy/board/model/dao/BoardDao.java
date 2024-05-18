@@ -2,6 +2,7 @@ package com.ssafy.board.model.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -15,4 +16,5 @@ public interface BoardDao {
 	void writeArticle(BoardDto boardDto) throws SQLException;
 	void deleteArticle(int articleNO) throws SQLException;
 	void modifyArticle(BoardDto boardDto) throws SQLException;
+	List<BoardDto> searchArticle(Map<String, String> params) throws SQLException;
 }
