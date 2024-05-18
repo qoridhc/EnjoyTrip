@@ -78,12 +78,22 @@
             </template>
           </draggable>
         </div>
+
         <div
           class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
           @click="saveRoute()"
+          v-if="selectedPlaceList.length > 0"
+          data-bs-toggle="modal"
+          data-bs-target="#routeSaveModal"
           style="font-size: 14px; height: 30px">
           경로저장
         </div>
+
+        <RouteSaveModal />
+
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#routeSaveModal">
+          일정 보기
+        </button> -->
       </div>
       <!-- Right Section -->
       <div id="map" class="col"></div>
@@ -92,22 +102,24 @@
 </template>
 
 <script setup>
-import axios from "axios";
-// import cheerio from "cheerio";
-
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
+import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
 
 import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
+import { useMemberStore } from "@/stores/member";
+
 import { storeToRefs } from "pinia";
 import { postRoute } from "@/api/map";
 
 const mapStore = useMapStore();
-
-const { searchPlaceList } = storeToRefs(mapStore);
+const { searchPlaceList, userRouteList } = storeToRefs(mapStore);
 const { getPlaceByKeyword } = mapStore;
+
+const memberStore = useMemberStore();
+const { userInfo } = memberStore;
 
 const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 
@@ -289,9 +301,31 @@ const addRoute = (index, insertPos) => {
 };
 
 const saveRoute = async () => {
-  console.log("saveRoute(MyRouteView) - 루트 저장 확인 \n", selectedPlaceList.value);
+  console.log("saveRoute(MyRouteView) - 루트 저장 확인 \n", selectedPlaceList.value.length);
 
-  await postRoute(selectedPlaceList.value);
+  // const routeInfo = {
+  //   userId: userInfo.id,
+  //   contentIdList: selectedPlaceList.value.map((item, index) => {
+  //     return {
+  //       sequence: index,
+  //       content_id: item.content_id,
+  //     };
+  //   }),
+  // };
+
+  // console.log(routeInfo);
+
+  // store/map.js - userRouteList에 현재 선택한 여행 경로 배열 저장 -> 전역 상태관리
+  userRouteList.value = selectedPlaceList.value.map((e) => {
+    return {
+      ...e,
+      description: "",
+    };
+  });
+
+  console.log("userRouteList : ", userRouteList.value);
+
+  // await postRoute(selectedPlaceList.value);
 };
 
 const removeRoute = (index) => {

@@ -7,17 +7,10 @@ async function searchByKeyword(keyword, success, fail) {
 }
 
 async function postRoute(routeList, success, fail) {
-  console.log("postRoute(api/map.js) - 루트 저장 확인 \n param : ", routeList);
-
-  const routeInfo = {
-    userId: "ssafy",
-    contentInfos: routeList,
-  };
-  console.log("routeInfo : ", JSON.stringify(routeInfo));
-
+  console.log("postRoute(api/map.js) - 루트 저장 확인 \nrouteList : ", routeList);
   // await local.post("/attraction/route", routeInfo).then(success).catch(fail);
 
-  await local.post(`/attraction/route`, routeInfo).then(success).catch(fail);
+  await local.post(`/attraction/route`, routeList).then(success).catch(fail);
 }
 
 export { searchByKeyword, postRoute };
