@@ -2,24 +2,29 @@ package com.ssafy.trip.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RouteDto {
-	private String userId;
-    private List<String> contentInfos;
+		private String userId;
+	    private List<RouteInfo> infoList;
+	    private int route_id;
 
-    // Getters and setters
-    public String getUserId() {
-        return userId;
-    }
+	    @Data
+	    @NoArgsConstructor
+	    @AllArgsConstructor
+	    public static class RouteInfo {
+	        private int sequence;
+	        
+	        @JsonProperty("content_id")
+	        private int contentId;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public List<String> getContentInfos() {
-        return contentInfos;
-    }
-
-    public void setContentInfos(List<String> contentInfos) {
-        this.contentInfos = contentInfos;
-    }
+	        private String description;
+	    }
 }

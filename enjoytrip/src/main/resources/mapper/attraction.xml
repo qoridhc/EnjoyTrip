@@ -27,6 +27,18 @@
 		WHERE title LIKE CONCAT('%', #{keyword}, '%') 
 		limit 10
 	</select>
+	
+
+    <insert id="insertRoute" useGeneratedKeys="true" keyProperty="route_id">
+	    INSERT INTO route (user_id)
+	    VALUES (#{userId})
+	</insert>
+
+    
+    <insert id="insertRouteDetail" parameterType="map">
+        INSERT INTO route_detail (route_id, sequence, content_id, description)
+        VALUES (#{routeId}, #{sequence}, #{contentId}, #{description})
+    </insert>
 	 
 
 </mapper>

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.trip.model.AttractionDto;
 import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.RouteDto;
+import com.ssafy.trip.model.RouteDto.RouteInfo;
 import com.ssafy.trip.model.SidoDto;
 import com.ssafy.trip.model.SidoGugunCodeDto;
 import com.ssafy.trip.model.service.AttractionService;
@@ -98,11 +99,23 @@ public class AttractionController
 	
 
     @PostMapping("/route")
-    public ResponseEntity<Void> receiveData(			
-    		@RequestBody Map<String,Object> routeContents
-			) {
-        System.out.println("Received routeContents: " + routeContents);
-
+    public ResponseEntity<Void> receiveData(@RequestBody RouteDto routeDto) throws Exception {
+    	
+    	attractionService.insertRoute(routeDto);
+    	
+    	int routeId = routeDto.getRoute_id();
+    	
+        List<RouteInfo> infoList = routeDto.getInfoList();
+        
+        for (RouteInfo info : infoList) {
+        	Map<String, Object> map = new HashMap<String, Object>();
+        	map.put("routeId", routeId);
+        	map.put("contentId", info.getContentId());
+        	map.put("sequence", info.getSequence());
+        	map.put("description", info.getDescription());
+        	
+        	attractionService.insertRouteDetail(map);
+        }
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
