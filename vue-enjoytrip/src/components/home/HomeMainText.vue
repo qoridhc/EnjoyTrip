@@ -8,7 +8,6 @@ const closeModal = () => {
   isShow.value = false;
 };
 const openModal = () => {
-  console.log("openModal(HomeMainText.vue): 부모 open");
   isShow.value = true;
 }
 </script>

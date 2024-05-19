@@ -32,7 +32,6 @@ const filteredAttractionList = computed(() => {
 });
 
 const openModal = (sido) => {
-    console.log("openModal(HomeMainCollapse.vue): collapse open");
     emit('open')
     routeStore.sido_code = sido.sido_code;
 }

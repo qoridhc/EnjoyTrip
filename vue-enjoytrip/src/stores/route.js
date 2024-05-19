@@ -5,6 +5,6 @@ export const useRouteStore = defineStore('route', () => {
 
     const sido_code = ref()
 
-
-    return {  }
+    return { sido_code }
+    
 })

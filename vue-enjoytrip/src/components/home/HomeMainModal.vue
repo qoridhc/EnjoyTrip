@@ -6,7 +6,9 @@ import { storeToRefs } from "pinia";
 const { sido_code } = storeToRefs(useRouteStore());
 
 onMounted(() => {
-  console.log("onMounted(HomeMainModal.vue): onMounted 함수 실행 확인");
+  console.log("onMounted(HomeMainModal.vue): Modal창 onMounted\nsido_code: ", sido_code.value);
+
+  
 });
 
 const emit = defineEmits(["close"]);
