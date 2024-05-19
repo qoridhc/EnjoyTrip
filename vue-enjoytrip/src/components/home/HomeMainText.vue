@@ -1,16 +1,16 @@
 <script setup>
 import { ref } from "vue";
-
 import HomeMainModal from "./HomeMainModal.vue";
 import HomeMainCollapse from "./HomeMainCollapse.vue";
 
-// const isClosed = ref(false);
-
-const isShow = ref(true);
-
+const isShow = ref(false);
 const closeModal = () => {
-  console.log("123");
+  isShow.value = false;
 };
+const openModal = () => {
+  console.log("openModal(HomeMainText.vue): 부모 open");
+  isShow.value = true;
+}
 </script>
 
 <template>
@@ -30,10 +30,11 @@ const closeModal = () => {
         시작하기
       </button>
     </p>
-    <HomeMainCollapse />
-    <HomeMainModal @click="isShow = !isShow" v-show="isShow" />
+    <HomeMainCollapse @open="openModal" />
+    <HomeMainModal v-if="isShow" @close="closeModal" />
   </div>
 </template>
+
 
 <style scoped>
 .main-text {

@@ -1,5 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineEmits } from 'vue';
+import { useRouteStore } from '@/stores/route';
+
+const routeStore = useRouteStore()
+const emit = defineEmits(["open"])
 
 const attractionList = [
     { "sido_code": "1", "sido_name": "서울" }, 
@@ -22,15 +26,16 @@ const attractionList = [
 ];
 
 const inputRoute = ref("");
-
 const filteredAttractionList = computed(() => {
     const searchTerm = inputRoute.value.toLowerCase();
     return attractionList.filter(attraction => attraction.sido_name.toLowerCase().includes(searchTerm));
 });
 
-const handleEnter = () => {
-    document.querySelector('#inputButton').click();
-};
+const openModal = (sido) => {
+    console.log("openModal(HomeMainCollapse.vue): collapse open");
+    emit('open')
+    routeStore.sido_code = sido.sido_code;
+}
 </script>
 
 <template>
@@ -44,16 +49,16 @@ const handleEnter = () => {
         </div>
         <ul v-if="inputRoute" class="list-group position-absolute">
             <li 
-                class="list-group-item" 
                 v-for="(sido, index) in filteredAttractionList" :key="index"
-                data-bs-toggle="modal"
-                data-bs-target="#centerModal"
+                class="list-group-item" 
+                @click.prevent="openModal(sido)"
             >
                 {{ sido.sido_name }}
             </li>
         </ul>
     </div>
 </template>
+
 
 <style scoped>
 .custom-input {

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useRouteStore = defineStore('route', () => {
 
-    const route = ref("")
+    const sido_code = ref()
 
 
     return {  }
