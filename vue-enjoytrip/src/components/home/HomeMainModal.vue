@@ -1,18 +1,35 @@
+<script setup>
+import { ref, onMounted, defineEmits } from "vue";
+import { useRouteStore } from "@/stores/route";
+import { storeToRefs } from "pinia";
+
+const { sido_code } = storeToRefs(useRouteStore());
+
+onMounted(() => {
+  console.log("onMounted(HomeMainModal.vue): onMounted 함수 실행 확인");
+});
+
+const emit = defineEmits(["close"]);
+const closeModal = () => {
+  emit('close');
+  console.log("closeModal(HomeMainModal.vue): 모달 닫기");
+};
+
+</script>
+
 <template>
-  <!-- 여행지 검색 MODAL -->
-  <div
-    class="modal"
-    id="centerModal"
-    tabindex="-1"
+  <div 
+    class="modal" 
+    id="centerModal" 
+    tabindex="-1" 
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
-    data-bs-backdrop="false">
+    style="display: block;" 
+    @click.self="closeModal"
+  >
     <div class="modal-dialog modal-dialog-centered modal-xl">
-      <!-- modal-lg에서 modal-xl로 변경 -->
       <div class="modal-content rounded-modal">
-        <button type="button" class="btn-close close-button" aria-label="Close" @click="closeModal()"></button>
-        <!-- X 버튼 추가 -->
-
+        <button type="button" class="btn-close close-button" aria-label="Close" @click="closeModal"></button>
         <div class="modal-body d-flex justify-content-between">
           <div class="d-flex flex-column left-content">
             <h5 class="jeju-title">JEJU</h5>
@@ -63,8 +80,7 @@
                 <div>없음</div>
               </div>
             </div>
-            <!-- 일정 만들기 버튼 -->
-            <router-link class="btn btn-dark" @click="closeModal()" :to="{ name: 'myroute' }">일정 만들기</router-link>
+            <router-link class="btn btn-dark" @click="closeModal" :to="{ name: 'myroute' }">일정 만들기</router-link>
           </div>
           <div class="right-content">
             <img src="/src/assets/img-main/carousel1.jpg" class="img-fluid modal-image" />
@@ -79,14 +95,6 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-const back = ref(true);
-const closeModal = () => {
-  back.value = false;
-  console.log("click");
-};
-</script>
 
 <style scoped>
 /* 스타일 생략 */
