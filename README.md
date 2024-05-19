@@ -20,8 +20,8 @@ npm i pinia-plugin-persistedstate
 npm i jwt-decode
 ```
 
-## 주의사항  
-resources/enjoytrip_sido_info.sql 실행 필요(모달창 DB 연동)  
+## DB 변경사항  
+05/19(일): resources/enjoytrip_sido_info.sql 실행 필요(모달창 DB 연동)  
 
 
 ## log convention
