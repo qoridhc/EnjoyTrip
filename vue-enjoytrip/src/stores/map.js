@@ -6,6 +6,7 @@ import { httpStatusCode } from "@/util/http-status";
 
 export const useMapStore = defineStore("mapStore", () => {
   const searchPlaceList = ref([]);
+  const userRouteList = ref([]);
 
   const getPlaceByKeyword = async (keyword) => {
     await searchByKeyword(keyword, (response) => {
@@ -21,5 +22,5 @@ export const useMapStore = defineStore("mapStore", () => {
     // await searchByKeyword(keyword).then((res) => console.log(res));
   };
 
-  return { getPlaceByKeyword, searchPlaceList };
+  return { getPlaceByKeyword, searchPlaceList, userRouteList };
 });
