@@ -27,6 +27,10 @@
 		WHERE title LIKE CONCAT('%', #{keyword}, '%') 
 		limit 10
 	</select>
+	
+	<select id="getSidoInfo" parameterType="String">
+		select * from sido_info where sido_code = #{sido_code}
+	</select>
 	 
 
 </mapper>

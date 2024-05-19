@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.ssafy.trip.model.AttractionDto;
 import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.SidoDto;
+import com.ssafy.trip.model.SidoInfo;
 
 @Mapper
 public interface AttractionDao
@@ -16,5 +17,6 @@ public interface AttractionDao
 	public List<GugunDto> getGugun(String sido_code) throws SQLException;
 	public List<AttractionDto> getAttractionList(String content_id, String sido_code, String gugun_code) throws SQLException;
 	public List<AttractionDto> searchByKeyword(String keyword) throws SQLException;
+	public SidoInfo getSidoInfo(String sidoCode) throws SQLException;
 	
 }

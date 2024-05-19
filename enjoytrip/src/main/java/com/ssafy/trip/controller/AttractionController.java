@@ -23,6 +23,7 @@ import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.RouteDto;
 import com.ssafy.trip.model.SidoDto;
 import com.ssafy.trip.model.SidoGugunCodeDto;
+import com.ssafy.trip.model.SidoInfo;
 import com.ssafy.trip.model.service.AttractionService;
 import com.ssafy.trip.model.service.AttractionServiceImpl;
 
@@ -84,6 +85,31 @@ public class AttractionController
 		log.info("search - 호출");
 		
 		return new ResponseEntity<List<AttractionDto>>(attractionService.searchByKeyword(keyword), HttpStatus.OK);
+	}
+	
+	@GetMapping("/sido_info")
+	public ResponseEntity<?> sidoInfo(@RequestParam Map<String, String> params){
+		if(!params.containsKey("sido_code"))
+			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		
+		String sidoCode = params.get("sido_code");
+		log.info("sidoInfo(AttractionController): 여행지 정보 요청, 파라미터 확인");
+		log.info("parameter: "+sidoCode);
+		
+		
+		try {
+			SidoInfo sinfo = attractionService.getSidoInfo(sidoCode);
+			
+			if(sinfo != null) {
+				return new ResponseEntity<SidoInfo>(sinfo, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		}
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 //	
 //	

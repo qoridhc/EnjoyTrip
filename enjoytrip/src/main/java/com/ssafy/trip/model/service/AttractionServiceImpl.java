@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.trip.model.AttractionDto;
 import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.SidoDto;
+import com.ssafy.trip.model.SidoInfo;
 import com.ssafy.trip.model.dao.AttractionDao;
 
 @Service
@@ -39,5 +40,10 @@ public class AttractionServiceImpl implements AttractionService
 	@Override
 	public List<AttractionDto> searchByKeyword(String keyword) throws Exception {
 		return dao.searchByKeyword(keyword);
+	}
+
+	@Override
+	public SidoInfo getSidoInfo(String sidoCode) throws Exception {
+		return dao.getSidoInfo(sidoCode);
 	}
 }

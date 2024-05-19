@@ -5,6 +5,7 @@ import java.util.List;
 import com.ssafy.trip.model.AttractionDto;
 import com.ssafy.trip.model.GugunDto;
 import com.ssafy.trip.model.SidoDto;
+import com.ssafy.trip.model.SidoInfo;
 
 public interface AttractionService
 {
@@ -12,5 +13,6 @@ public interface AttractionService
 	public List<GugunDto> getGugun(String sido_code) throws Exception;
 	public List<AttractionDto> getAttractionList(String content_id, String sido_code, String gugun_code) throws Exception;	
 	public List<AttractionDto> searchByKeyword(String keyword) throws Exception;
+	public SidoInfo getSidoInfo(String sidoCode) throws Exception;
 	
 }
