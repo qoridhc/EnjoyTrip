@@ -70,7 +70,6 @@ public class BoardController {
 	public ResponseEntity<?> view(@PathVariable(value = "articleNo") int articleNo) {
 		try {
 			BoardDto boardDto = boardService.getArticle(articleNo);
-			System.out.println("view(BoardController.java): 조회수 변경 후 데이터 확인\nboardDto: "+boardDto);
 			
 			if(boardDto != null) 
 			{	
@@ -78,7 +77,6 @@ public class BoardController {
 				int hit = Integer.parseInt(boardDto.getHit())+1;
 				boardDto.setHit(String.valueOf(hit));
 				boardService.updateArticleHit(boardDto);
-				
 				return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK); 
 			}
 			else {
@@ -144,6 +142,64 @@ public class BoardController {
 			
 			if(!list.isEmpty()) {
 				return new ResponseEntity<List<MemoDto>>(list, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		}
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/comment/write")
+	public ResponseEntity<?> writeComment(@RequestBody Map<String, String> params){
+		if(!params.containsKey("articleNo") || !params.containsKey("userId") || !params.containsKey("comment"))
+			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		
+		try {
+			log.info("writeComment(BoardController): 댓글 작성");
+			for(String key: params.keySet()) log.info(key + ": " + params.get(key));
+			
+			int res = boardService.writeMemo(params);
+			if(res != 0) {
+				return new ResponseEntity<Void>(HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		}
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/comment/delete/{memoNo}")
+	public ResponseEntity<?> deleteComment(@PathVariable(value="memoNo")int memoNo){
+		try {
+			int res = boardService.deleteMemo(memoNo);
+			if(res != 0) {
+				return new ResponseEntity<Void>(HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<String>(String.valueOf(memoNo)+"에 해당하는 댓글이 없습니다.", HttpStatus.BAD_REQUEST);
+			}
+		}
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/comment/modify")
+	public ResponseEntity<?> modifyComment(@RequestBody Map<String, String> params){
+		if(!params.containsKey("memoNo")) {
+			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			int res = boardService.modifyMemo(params);
+			if(res != 0) {
+				return new ResponseEntity<Void>(HttpStatus.OK);
 			}
 			else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);

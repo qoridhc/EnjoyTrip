@@ -1,14 +1,19 @@
 <script setup>
 import CommonSpinner from '../common/CommonSpinner.vue';
+import BoardCommentList from './comment/BoardCommentList.vue';
+import BoardCommentWrite from './comment/BoardCommentWrite.vue';
+
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
+
 import { getArticle, removeArticle } from '@/api/board';
 import { useMemberStore } from '@/stores/member';
-import BoardCommentList from './comment/BoardCommentList.vue';
+import { useCommentStore } from '@/stores/comment';
 
 const router = useRouter()
 const route = useRoute()
 const memberStore = useMemberStore()
+const commentStore = useCommentStore()
 
 const article = ref({})
 const isEditable = ref(false)
@@ -26,6 +31,7 @@ onMounted(() => {
     )
 })
 
+// 게시글 삭제
 function remove() {
     removeArticle(
         article.value.articleNo,
@@ -38,12 +44,18 @@ function remove() {
     )
 }
 
+// admin이거나 글쓴이인 경우 수정, 삭제 버튼 출력
 function setIsEditable() {
+    if(memberStore.userInfo == null){
+        isEditable.value = false
+        return
+    }
     const { id } = memberStore.userInfo
     if (id === article.value.userId || id === 'admin'){
         isEditable.value = true
     }
 }
+
 </script>
 
 <template>
@@ -96,7 +108,8 @@ function setIsEditable() {
                             </div>
 
                             <!-- 댓글 리스트 -->
-                            <BoardCommentList :articleNo="article.articleNo" />
+                            <BoardCommentList :key="commentStore.key" />
+                            <BoardCommentWrite @writeComment="commentStore.increment" />
 
                         </div>
                     </div>

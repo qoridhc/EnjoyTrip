@@ -4,6 +4,7 @@ import BoardCommentListItem from './BoardCommentListItem.vue';
 import { getCommentList } from '@/api/board';
 import { useRoute } from 'vue-router';
 
+
 const route = useRoute()
 const comments = ref([])
 
@@ -26,7 +27,7 @@ onMounted(() => {
         <h4 class="mb-2">댓글</h4>
         <div v-if="comments.length === 0" class="text-secondary">댓글이 없습니다.</div>
         <div v-else>
-            <BoardCommentListItem v-for="(comment) in comments" :key="comment.memoNo" :comment="comment" />
+            <BoardCommentListItem v-for="(comment) in comments" :key="comment.memoNo" :comment="comment"/>
         </div>
     </div>
 </template>
