@@ -1,14 +1,29 @@
 <script setup>
-import { deleteComment } from '@/api/board';
+import { onMounted, ref } from 'vue';
+import { deleteComment, modifyComment } from '@/api/board';
 import { useCommentStore } from '@/stores/comment';
-import { ref } from 'vue';
-import { modifyComment } from '@/api/board';
+import { useMemberStore } from '@/stores/member';
+
 
 const commentStore = useCommentStore()
 const modifing = ref(false)
+const isShow = ref(false)
 
 const props = defineProps({
     comment: Object,
+})
+
+onMounted(()=>{
+    const memberStore = useMemberStore()
+    if(memberStore.userInfo == null) return;
+    if(memberStore.userInfo.id === 'admin') {
+        isShow.value = true
+        return;
+    }
+    if(memberStore.userInfo.id === props.comment.userId) {
+        isShow.value = true
+        return;
+    }
 })
 
 function remove(){
@@ -63,7 +78,7 @@ function modify(){
         <div class="d-flex justify-content-between">
             <div v-if="!modifing">{{ comment.comment }}</div>
             <input v-if="modifing" type="text" v-model="comment.comment" class="form-control">
-            <div>   
+            <div v-if="isShow">   
                 <button class="btn" @click.prevent="modify">수정</button>
                 <button class="btn" @click.prevent="remove">삭제</button>
             </div>
