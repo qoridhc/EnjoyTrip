@@ -2,7 +2,7 @@
   <div class="" style="height: 15vh"></div>
   <div class="profile-container text-center">
     <img class="img-fluid" src="@/assets/img/like.png" />
-    <h4 class="pt-2">userName</h4>
+    <h4 class="pt-2"> {{ userInfo.name }}</h4>
     <div class="pt-2" style="font-size: 14px; color: blue">프로필 관리</div>
   </div>
   <div id="route-container" class="text-start mx-auto pt-3" style="height: 30vh; padding: 10px; width: 80%">
@@ -25,14 +25,17 @@
 <script setup>
 import { onBeforeMount, onMounted, onUpdated, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
+
 
 const router = useRouter();
 const isActive = ref(true);
-
-console.log("11");
+const { userInfo } = storeToRefs(useMemberStore())
 
 onMounted(() => {
-  console.log("onMounted");
+  console.log("onMounted(UserMyPage.vue): 마이페이지 user 식별\nuser: ", userInfo.value);
+
   router.push({ name: "user-route" });
 });
 </script>
