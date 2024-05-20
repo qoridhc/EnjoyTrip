@@ -71,7 +71,7 @@ const login = async () => {
           </div>
           <!-- Submit button -->
           <div class="d-grid">
-            <button class="btn btn-dark btn-lg" @click="login" :disabled="isSubmitting" style="background-color: #e9859e">로그인</button>
+            <button class="btn btn-dark btn-lg" @click="login" :disabled="isSubmitting">로그인</button>
           </div>
           <!-- Links -->
           <div class="d-flex justify-content-end mt-3">
