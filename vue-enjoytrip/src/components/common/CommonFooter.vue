@@ -23,4 +23,5 @@ const footerStore = useFooterStore()
     </footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

@@ -110,9 +110,13 @@ import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
+import { useFooterStore } from "@/stores/footer";
 
 import { storeToRefs } from "pinia";
 import { postRoute } from "@/api/map";
+
+// footer 고정
+useFooterStore().isFixed = false;
 
 const mapStore = useMapStore();
 const { searchPlaceList, userRouteList } = storeToRefs(mapStore);

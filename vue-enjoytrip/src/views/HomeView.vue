@@ -5,7 +5,6 @@ import HomeInfo1 from '@/components/home/HomeInfo1.vue';
 import HomeInfo2 from '@/components/home/HomeInfo2.vue';
 import HomeInfo3 from '@/components/home/HomeInfo3.vue';
 import HomeInfo4 from '@/components/home/HomeInfo4.vue';
-import { onBeforeRouteLeave } from 'vue-router';
 import { useFooterStore } from '@/stores/footer';
 useFooterStore().isFixed = false
 

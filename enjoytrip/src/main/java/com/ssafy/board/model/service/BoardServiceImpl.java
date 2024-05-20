@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.MemoDto;
 import com.ssafy.board.model.dao.BoardDao;
 
 @Service
@@ -54,5 +55,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void updateArticleHit(BoardDto boardDto) throws Exception {
 		boardDao.updateArticleHit(boardDto);
+	}
+
+	@Override
+	public List<MemoDto> getMemoList(int articleNo) throws Exception {
+		return boardDao.getMemoList(articleNo);
 	}
 }

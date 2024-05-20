@@ -9,6 +9,13 @@
 		<result column="user_id" property="userId"/>
 		<result column="register_time" property="registerTime"/>
 	</resultMap>
+	
+	<resultMap type="MemoDto" id="memo">
+		<result column="memo_no" property="memoNo" />
+		<result column="memo_time" property="memoTime" />
+		<result column="article_no" property="articleNo" />
+		<result column="user_id" property="userId" />
+	</resultMap>
    
     <select id="listArticle" resultMap="article">
         select article_no, user_id, subject, content, register_time
@@ -54,4 +61,8 @@
     	set hit = #{hit}
     	where article_no = #{articleNo}
     </update>
+    
+    <select id="getMemoList" resultMap="memo">
+    	select * from memo where article_no = #{articleNo}
+    </select>
 </mapper>

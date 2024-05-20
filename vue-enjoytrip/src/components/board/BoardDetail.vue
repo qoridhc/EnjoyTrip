@@ -2,9 +2,9 @@
 import CommonSpinner from '../common/CommonSpinner.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-
 import { getArticle, removeArticle } from '@/api/board';
 import { useMemberStore } from '@/stores/member';
+import BoardCommentList from './comment/BoardCommentList.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -53,10 +53,15 @@ function setIsEditable() {
                 <div class="row justify-content-center">
                     <hr class="mt-2" />
                     <div class="col-lg-8 col-md-10 col-sm-12">
+
+                        <!-- 타이틀 -->
                         <div class="row my-2">
                             <h2 class="text-dark fw-bolder">{{ article.articleNo }}. {{ article.subject }}</h2>
                         </div>
+
                         <div class="row">
+
+                            <!-- 작성자 정보 -->
                             <div class="col-md-8">
                                 <div class="clearfix align-content-center">
                                     <img class="avatar me-2 float-md-start bg-light p-2"
@@ -64,12 +69,16 @@ function setIsEditable() {
                                     <p> <span class="fw-bold">{{ article.userId }}</span> <br /> </p>
                                 </div>
                             </div>
+
+                            <!-- 조회수 -->
                             <div class="col-md-4 align-self-center text-end">조회수 : {{ article.hit }}</div>
 
+                            <!-- 글내용 -->
                             <div class="divider mb-3" />
-                            <div class="text-secondary"> {{ article.content }} </div>
+                            <div class="content-container text-secondary"> {{ article.content }} </div>
                             <div class="divider mt-3 mb-3"></div>
 
+                            <!-- 기타 버튼 -->
                             <div class="d-flex justify-content-end">
                                 <router-link :to="{ name: 'board-list' }" type="button" id="btn-list"
                                     class="btn btn-outline-primary mb-3">
@@ -85,6 +94,10 @@ function setIsEditable() {
                                     </button>
                                 </template>
                             </div>
+
+                            <!-- 댓글 리스트 -->
+                            <BoardCommentList :articleNo="article.articleNo" />
+
                         </div>
                     </div>
                 </div>
@@ -94,4 +107,10 @@ function setIsEditable() {
     <CommonSpinner v-else />
 </template>
 
-<style scoped></style>
+<style scoped>
+.content-container {
+    min-height: 50vh;
+    height: auto;
+}
+</style>
+

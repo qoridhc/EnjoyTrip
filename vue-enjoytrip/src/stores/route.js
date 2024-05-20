@@ -15,5 +15,4 @@ export const useRouteStore = defineStore('route', () => {
     }
 
     return { sido_code, sido_name_kor, sido_name_eng, sido_description, setSidoInfo }
-
 })

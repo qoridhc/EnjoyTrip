@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.MemoDto;
 
 public interface BoardService {
 
@@ -14,4 +15,5 @@ public interface BoardService {
 	void modifyArticle(BoardDto boardDto) throws Exception;
 	List<BoardDto> searchArticle(Map<String, String> params) throws Exception;
 	void updateArticleHit(BoardDto boardDto) throws Exception;
+	List<MemoDto> getMemoList(int articleNo) throws Exception;
 }
