@@ -10,7 +10,7 @@ export const useRouteStore = defineStore('route', () => {
 
     function setSidoInfo(data){
         sido_name_kor.value = data.sido_name_kor
-        sido_name_eng.vlaue = data.sido_name_eng
+        sido_name_eng.value = data.sido_name_eng
         sido_description.value = data.sido_description
     }
 

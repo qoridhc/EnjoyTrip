@@ -6,6 +6,7 @@ import { storeToRefs } from "pinia";
 
 const { sido_code, sido_name_eng, sido_name_kor, sido_description } = storeToRefs(useRouteStore());
 const { setSidoInfo } = useRouteStore()
+const img_url = ref("")
 
 onMounted(() => {
   console.log("onMounted(HomeMainModal.vue): Modal창 onMounted\nsido_code: ", sido_code.value);
@@ -15,9 +16,10 @@ onMounted(() => {
     function(data){
       console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인\nresponse: ", data)
       setSidoInfo(data)
+      img_url.value = `/src/assets/img/sido/${sido_name_eng.value}.jpg`;
     },
     function(error){
-      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인 중 에러\nerror: ", data)
+      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인 중 에러\nerror: ", error)
     }
   )
 
@@ -94,7 +96,7 @@ const closeModal = () => {
             <router-link class="btn btn-dark" @click="closeModal" :to="{ name: 'myroute' }">일정 만들기</router-link>
           </div>
           <div class="right-content">
-            <img src="/src/assets/img-main/carousel1.jpg" class="img-fluid modal-image" />
+            <img :src="img_url" class="img-fluid modal-image" />
             <div class="button-group">
               <button class="btn btn-secondary">항공권 예매</button>
               <button class="btn btn-secondary">숙박 예약</button>
@@ -108,7 +110,6 @@ const closeModal = () => {
 
 
 <style scoped>
-/* 스타일 생략 */
 .close-button {
   position: absolute;
   top: 10px;
@@ -132,6 +133,10 @@ const closeModal = () => {
 
 .modal-content {
   border-radius: 20px;
+}
+
+.modal-description{
+  height: 107px;
 }
 
 .left-content,
