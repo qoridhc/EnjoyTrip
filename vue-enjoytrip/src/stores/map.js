@@ -1,12 +1,15 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { searchByKeyword } from "@/api/map";
+import { searchByKeyword, getRouteDetail } from "@/api/map";
 
 import { httpStatusCode } from "@/util/http-status";
 
 export const useMapStore = defineStore("mapStore", () => {
-  const searchPlaceList = ref([]);
-  const userRouteList = ref([]);
+  const searchPlaceList = ref([]); // 검색 결과값을 리턴하는 배열
+  const selectedPlaceList = ref([]); // 유저가 저장한 경로를 담는 배열
+  const userRouteList = ref([]); // 저장 경로 post 요청을 하기 위한 데이터를 담는 배열
+  const userRouteDetailList = ref([]); // 저장한 경로 detail GET 결과를 담는 배열
+  const currSidoCode = ref("");
 
   const getPlaceByKeyword = async (keyword) => {
     await searchByKeyword(keyword, (response) => {
@@ -22,5 +25,28 @@ export const useMapStore = defineStore("mapStore", () => {
     // await searchByKeyword(keyword).then((res) => console.log(res));
   };
 
-  return { getPlaceByKeyword, searchPlaceList, userRouteList };
+  const fetchGetRouteDetail = async (userId) => {
+    await getRouteDetail(
+      userId,
+      (response) => {
+        if (response.status === httpStatusCode.OK) {
+          userRouteDetailList.value = response.data;
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    // await searchByKeyword(keyword).then((res) => console.log(res));
+  };
+
+  return {
+    getPlaceByKeyword,
+    searchPlaceList,
+    selectedPlaceList,
+    userRouteList,
+    fetchGetRouteDetail,
+    userRouteDetailList,
+    currSidoCode,
+  };
 });

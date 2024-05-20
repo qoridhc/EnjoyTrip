@@ -22,7 +22,7 @@ const onlyAuthUser = async (to, from, next) => {
   if (!isValidToken.value || userInfo.value === null) {
     isValidToken.value = isLogin.value = false;
     userInfo.value = null;
-    useMenuStore().logoutMenuState()
+    useMenuStore().logoutMenuState();
 
     next({ name: "user-login" });
   } else {

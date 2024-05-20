@@ -23,7 +23,13 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="save" type="button" class="btn" style="background-color: #a6e3e9; color: white">Save</button>
+          <button
+            class="rounded border-0"
+            @click="save"
+            data-bs-dismiss="modal"
+            style="background-color: #a6e3e9; color: white">
+            Save
+          </button>
         </div>
       </div>
     </div>
@@ -44,10 +50,6 @@ const memberStore = useMemberStore();
 const { userRouteList } = storeToRefs(mapStore);
 const { userInfo } = memberStore;
 
-// const props = defineProps({
-//   place: Object,
-// });
-
 const save = async () => {
   const routeInfo = {
     userId: userInfo.id,
@@ -60,42 +62,9 @@ const save = async () => {
     }),
   };
 
-  // console.log("save(RouteSaveModal.vue): 루트 저장 post 데이터 확인\nrouteInfo", routeInfo);
   await postRoute(routeInfo);
 };
 </script>
-
-<!-- export default defineComponent({
-  components: {
-    TimelineItem,
-  },
-  setup() {
-    const timelineItems = ref([
-      {
-        title: "제주여행",
-        description: "음식점",
-        imageSrc: "jeju1.jpg",
-        badgeIcon: "icon1.png",
-      },
-      {
-        title: "장생포 고래바다여행선",
-        description: "관광지",
-        imageSrc: "whale.jpg",
-        badgeIcon: "icon2.png",
-      },
-      {
-        title: "제주 추억여행",
-        description: "숙박",
-        imageSrc: "jeju2.jpg",
-        badgeIcon: "icon3.png",
-      },
-    ]);
-
-    return {
-      timelineItems,
-    };
-  },
-}); -->
 
 <style scoped>
 .timeline {

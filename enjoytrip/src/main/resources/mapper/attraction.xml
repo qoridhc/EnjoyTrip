@@ -64,6 +64,12 @@
         ORDER BY r.route_id, rd.sequence;
     </select>
     
+    <select id="searchByContentId">
+    	select content_id, sido_code, first_image, title, addr1, latitude, longitude 
+		from attraction_info 
+		where content_id = #{content_id}
+    </select>
+    
     
 <!--       <select id="getRouteDetail"  resultType="routeDto" >
         SELECT r.route_id, rd.sequence, rd.content_id, rd.description

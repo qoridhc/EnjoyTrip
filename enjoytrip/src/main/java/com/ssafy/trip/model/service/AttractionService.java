@@ -21,4 +21,5 @@ public interface AttractionService
 	public int insertRoute(RouteDto routeDto) throws Exception;
 	public void insertRouteDetail(Map<String, Object> routeInfo)throws Exception;
 	public List<RouteDto> getRouteDetail(String userId)throws Exception;
+	public AttractionDto searchByContentId(String contentId) throws Exception;
 }

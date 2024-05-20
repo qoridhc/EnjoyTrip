@@ -5,7 +5,7 @@
       <div class="col-md-3">
         <!-- Left Section -->
         <div class="border p-4 h-100">
-          <div style="font-size: 25px; font-weight: bold">부산</div>
+          <div style="font-size: 25px; font-weight: bold">{{ routeStore.sido_name_kor }}</div>
           <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.10(금) ~ 2024.05.11(토)</div>
           <div class="search">
             <input
@@ -106,20 +106,19 @@ import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUpdated } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
 import { useFooterStore } from "@/stores/footer";
+import { useRouteStore } from "@/stores/route";
+
+const routeStore = useRouteStore();
 
 import { storeToRefs } from "pinia";
-import { postRoute } from "@/api/map";
-
-// footer 고정
-useFooterStore().isFixed = false;
 
 const mapStore = useMapStore();
-const { searchPlaceList, userRouteList } = storeToRefs(mapStore);
+const { searchPlaceList, userRouteList, selectedPlaceList } = storeToRefs(mapStore);
 const { getPlaceByKeyword } = mapStore;
 
 const memberStore = useMemberStore();
@@ -127,12 +126,16 @@ const { userInfo } = memberStore;
 
 const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 
+// footer 고정
+useFooterStore().isFixed = false;
+
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 });
 
-var selectedPlaceList = ref([]);
-
+onUpdated(() => {
+  if (selectedPlaceList.value.length > 0) addSelectedRoute();
+});
 var map, ps, infowindow;
 
 // default 검색
@@ -302,6 +305,55 @@ const addRoute = (index, insertPos) => {
 
   // 선 배열에 저장
   polylines.push(polyline);
+};
+
+const addSelectedRoute = () => {
+  polylines.forEach((polyline) => {
+    polyline.setMap(null);
+  });
+
+  testPath = [];
+  polylines = [];
+
+  selectedPlaceList.value.forEach((e) => {
+    // testPath.push()
+    testPath.push(e.currPos);
+
+    // 지도에 표시할 선을 생성합니다
+    var polyline = new kakao.maps.Polyline({
+      path: testPath, // 선을 구성하는 좌표배열 입니다
+      strokeWeight: 5, // 선의 두께 입니다
+      strokeColor: "#FF204E", // 선의 색깔입니다
+      strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: "solid", // 선의 스타일입니다
+    });
+
+    polyline.setMap(map);
+
+    // 선 배열에 저장
+    polylines.push(polyline);
+  });
+
+  // if (insertPos === -1) {
+  //   selectedPlaceList.value.push(selectedPlaceInfo);
+  //   testPath.push(searchPlaceList.value[index].latlng);
+  // } else {
+  //   testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
+  // }
+
+  // // 지도에 표시할 선을 생성합니다
+  // var polyline = new kakao.maps.Polyline({
+  //   path: testPath, // 선을 구성하는 좌표배열 입니다
+  //   strokeWeight: 5, // 선의 두께 입니다
+  //   strokeColor: "#FF204E", // 선의 색깔입니다
+  //   strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+  //   strokeStyle: "solid", // 선의 스타일입니다
+  // });
+
+  // polyline.setMap(map);
+
+  // // 선 배열에 저장
+  // polylines.push(polyline);
 };
 
 const saveRoute = async () => {
