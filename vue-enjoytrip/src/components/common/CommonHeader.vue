@@ -1,13 +1,7 @@
 <script setup>
-import { ref } from "vue";
-import { useRoute } from "vue-router";
 import { useMenuStore } from "@/stores/menu";
 import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
-
-const condition = ref(true);
-
-const route = useRoute();
 
 const menuStore = useMenuStore();
 const memberStore = useMemberStore();
@@ -59,20 +53,6 @@ const logout = () => {
               </template>
             </template>
           </template>
-
-          <!-- <div> -->
-          <!-- <template v-if="condition"> -->
-          <!-- <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-signup' }">회원가입</router-link></li> -->
-          <!-- <li class="nav-item"><router-link class="nav-link" :to="{ name: 'user-login' }">로그인</router-link></li> -->
-          <!-- </template> -->
-
-          <!-- <div> -->
-          <!-- <template v-if="!condition"> -->
-          <!-- <li class="nav-item"><a class="nav-link" href="${root}/attractoin/myroute">나의여행계획</a></li>
-            <li class="nav-item"><a class="nav-link" href="${root}/attraction/myplace">핫플자랑하기</a></li>
-            <li class="nav-item"><a class="nav-link" href="${root}/user/profile">마이페이지</a></li>
-            <li class="nav-item"><a class="nav-link" href="${root}/user/logout">로그아웃</a></li> -->
-          <!-- </template> -->
         </ul>
       </div>
     </div>
