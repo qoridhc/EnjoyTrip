@@ -61,4 +61,19 @@ public class BoardServiceImpl implements BoardService {
 	public List<MemoDto> getMemoList(int articleNo) throws Exception {
 		return boardDao.getMemoList(articleNo);
 	}
+
+	@Override
+	public int writeMemo(Map<String, String> params) throws Exception {
+		return boardDao.writeMemo(params);
+	}
+
+	@Override
+	public int deleteMemo(int memoNo) throws Exception {
+		return boardDao.deleteMemo(memoNo);
+	}
+
+	@Override
+	public int modifyMemo(Map<String, String> params) throws Exception {
+		return boardDao.modifyMemo(params);
+	}
 }

@@ -65,4 +65,19 @@
     <select id="getMemoList" resultMap="memo">
     	select * from memo where article_no = #{articleNo}
     </select>
+    
+    <insert id="writeMemo" parameterType="Map">
+    	insert into memo(comment, memo_time, article_no, user_id)
+    	values(#{comment}, now(), #{articleNo}, #{userId})
+    </insert>
+    
+    <delete id="deleteMemo">
+    	delete from memo where memo_no = #{memoNo}
+    </delete>
+    
+    <update id="modifyMemo" parameterType="Map">
+    	update memo
+    	set comment = #{comment}, memo_time = now()
+    	where memo_no = ${memoNo}
+    </update>
 </mapper>

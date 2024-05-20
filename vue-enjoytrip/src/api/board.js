@@ -1,3 +1,4 @@
+import { faI } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 
 const api_url = import.meta.env.VITE_VUE_API_URL
@@ -86,5 +87,49 @@ function getCommentList(articleNo, success, fail) {
     })
 }
 
+// board-comment-write 댓글 작성
+function writeComment(commentData, success, fail){
+    axios({
+        url: `${api_url}/article/comment/write`,
+        method: 'post',
+        data: commentData,
+    })
+    .then((response)=>{
+        success(response)
+    })
+    .catch((error)=>{
+        fail(error)
+    })
+}
 
-export { getArticleList, searchArticleList, getArticle, writeArticle, removeArticle, modifyArticle, getCommentList }
+// board-comment 댓글 삭제
+function deleteComment(memoNo, success, fail){
+    axios({
+        url: `${api_url}/article/comment/delete/${memoNo}`,
+        method: 'get'
+    })
+    .then((response)=>{
+        success(response)
+    })
+    .catch((error)=>{
+        fail(error)
+    })
+}
+
+function modifyComment(memo, success, fail){
+    axios({
+        url: `${api_url}/article/comment/modify`,
+        method: 'post',
+        data: memo
+    })
+    .then((response)=>{
+        success(response)
+    })
+    .catch((error)=>{
+        fail(error)
+    })
+}
+
+
+export { getArticleList, searchArticleList, getArticle, writeArticle, removeArticle, modifyArticle
+    , getCommentList, writeComment, deleteComment, modifyComment }

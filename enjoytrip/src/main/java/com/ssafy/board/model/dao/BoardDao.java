@@ -20,4 +20,7 @@ public interface BoardDao {
 	List<BoardDto> searchArticle(Map<String, String> params) throws SQLException;
 	void updateArticleHit(BoardDto boardDto) throws SQLException;
 	List<MemoDto> getMemoList(int articleNo) throws SQLException;
+	int writeMemo(Map<String, String> params) throws SQLException;
+	int deleteMemo(int memoNo) throws SQLException;
+	int modifyMemo(Map<String, String> params) throws SQLException;
 }
