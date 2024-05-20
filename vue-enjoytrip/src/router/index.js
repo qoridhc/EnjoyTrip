@@ -8,6 +8,7 @@ import { storeToRefs } from "pinia";
 
 import { useMemberStore } from "@/stores/member";
 import { useMenuStore } from "@/stores/menu";
+import SharedRouteView from "@/views/SharedRouteView.vue";
 
 const onlyAuthUser = async (to, from, next) => {
   const memberStore = useMemberStore();
@@ -107,6 +108,11 @@ const router = createRouter({
           ],
         },
       ],
+    },
+    {
+      path: "/share",
+      name: "shared-route",
+      component: SharedRouteView,
     },
   ],
 });

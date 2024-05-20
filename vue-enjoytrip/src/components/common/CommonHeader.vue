@@ -37,6 +37,7 @@ const logout = () => {
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><router-link class="nav-link" :to="{ name: 'myroute' }">지역별여행지</router-link></li>
           <li class="nav-item"><router-link class="nav-link" :to="{ name: 'board' }">여행정보공유</router-link></li>
+          <li class="nav-item"><router-link class="nav-link" :to="{ name: 'shared-route' }">플랜 둘러보기</router-link></li>
 
           <template v-for="menu in menuList" :key="menu.routeName">
             <template v-if="menu.show">
