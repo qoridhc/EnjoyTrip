@@ -23,4 +23,6 @@ public interface AttractionDao
 	public SidoInfo getSidoInfo(String sidoCode) throws SQLException;
 	public int insertRoute(RouteDto routeDto) throws SQLException;
 	public void insertRouteDetail(Map<String, Object> routeInfo)throws SQLException;
+	public List<RouteDto> getRouteDetail(String userId)throws SQLException;
+	
 }

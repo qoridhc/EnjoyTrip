@@ -42,5 +42,36 @@
         INSERT INTO route_detail (route_id, sequence, content_id, description)
         VALUES (#{routeId}, #{sequence}, #{contentId}, #{description})
     </insert>
+
+
+    <resultMap id="RouteInfoMap" type="com.ssafy.trip.model.RouteDto$RouteInfo">
+        <id property="sequence" column="sequence"/>
+        <result property="contentId" column="content_id"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <resultMap id="RouteMap" type="com.ssafy.trip.model.RouteDto">
+        <id property="route_id" column="route_id"/>
+        <result property="userId" column="user_id"/>
+        <collection property="infoList" ofType="com.ssafy.trip.model.RouteDto$RouteInfo" resultMap="RouteInfoMap"/>
+    </resultMap>
+
+    <select id="getRouteDetail" resultMap="RouteMap">
+        SELECT r.route_id, r.user_id, rd.sequence, rd.content_id, rd.description
+        FROM route r
+        LEFT JOIN route_detail rd ON r.route_id = rd.route_id
+        WHERE r.user_id = #{userId}
+        ORDER BY r.route_id, rd.sequence;
+    </select>
+    
+    
+<!--       <select id="getRouteDetail"  resultType="routeDto" >
+        SELECT r.route_id, rd.sequence, rd.content_id, rd.description
+        FROM route r
+        LEFT JOIN route_detail rd ON r.route_id = rd.route_id
+        WHERE r.user_id = #{userId}
+        ORDER BY r.route_id, rd.sequence;
+    </select>
+     -->
 	 
 </mapper>
