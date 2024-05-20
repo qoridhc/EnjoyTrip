@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,6 +89,15 @@ public class AttractionController
 		return new ResponseEntity<List<AttractionDto>>(attractionService.searchByKeyword(keyword), HttpStatus.OK);
 	}
 	
+	@GetMapping("/search/{contentId}")
+	public ResponseEntity<AttractionDto> searchByContentId(
+			@PathVariable("contentId") String contentId
+			) throws Exception {
+		log.info("search/{contentId} - 호출");
+		
+		return new ResponseEntity<AttractionDto>(attractionService.searchByContentId(contentId), HttpStatus.OK);
+	}
+	
 	@GetMapping("/sido_info")
 	public ResponseEntity<?> sidoInfo(@RequestParam Map<String, String> params){
 		if(!params.containsKey("sido_code"))
@@ -149,7 +159,7 @@ public class AttractionController
     
     @GetMapping("/route")
 	public ResponseEntity<?> getRouteDetail(@RequestParam("userId") String userId) throws Exception {
-	    	
+    	
 		try {
 			return new ResponseEntity<List<RouteDto>>(attractionService.getRouteDetail(userId), HttpStatus.OK);
 		}

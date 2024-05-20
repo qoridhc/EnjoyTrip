@@ -1,9 +1,13 @@
 import { localAxios } from "@/util/http-commons";
-import axios from "axios";
+
 const local = localAxios();
 
 async function searchByKeyword(keyword, success, fail) {
   await local.get(`/attraction/search?keyword=${keyword}`).then(success).catch(fail);
+}
+
+async function searchByContentId(contentId, success, fail) {
+  await local.get(`/attraction/search/${contentId}`).then(success).catch(fail);
 }
 
 async function postRoute(routeList, success, fail) {
@@ -13,4 +17,10 @@ async function postRoute(routeList, success, fail) {
   await local.post(`/attraction/route`, routeList).then(success).catch(fail);
 }
 
-export { searchByKeyword, postRoute };
+async function getRouteDetail(userId, success, fail) {
+  console.log("getRouteDetail", userId);
+
+  await local.get(`/attraction/route?userId=${userId}`).then(success).catch(fail);
+}
+
+export { searchByKeyword, postRoute, getRouteDetail, searchByContentId };

@@ -1,24 +1,76 @@
 <template>
-  <div class="image-container" @mouseenter="isHover = true" @mouseleave="isHover = false">
-    <img
-      class="img-fluid rounded"
-      src="https://a.cdn-hotels.com/gdcs/production123/d1230/d3ed36fc-c77c-4843-9b5e-7a5bfe80151d.jpg" />
-    <div class="overlay rounded" id="custom-overay" :class="{ active: isHover }">
-      <div class="text-center" style="font-size: 20px">
-        <div>제주도 올레길</div>
-        <div>제주도</div>
-        <div>1</div>
-        <div>보기</div>
+  <router-link :to="{ name: 'myroute' }">
+    <div
+      class="image-container me-2 mb-2"
+      @click="moveMyRoute()"
+      @mouseenter="isHover = true"
+      @mouseleave="isHover = false">
+      <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
+      <div class="overlay rounded" id="custom-overay" :class="{ active: isHover }">
+        <div class="text-center" style="font-size: 20px">
+          <div style="font-size: 16px">{{ currRouteInfo.title }}</div>
+          <div style="font-size: 16px">{{ sidoName }}</div>
+          <div>{{ idx + 1 }}</div>
+          <div>보기</div>
+        </div>
       </div>
+      <div class="overlay" id="default-overay" :class="{ active: !isHover }">{{ sidoName }}</div>
     </div>
-    <div class="overlay" id="default-overay" :class="{ active: !isHover }">제주</div>
-  </div>
+  </router-link>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useMapStore } from "@/stores/map";
+import { searchByContentId } from "@/api/map";
+import { attractionList } from "@/util/constants.js";
+import { useRouteStore } from "@/stores/route";
 
+const routeStore = useRouteStore();
+const mapStore = useMapStore();
+
+const { selectedPlaceList } = storeToRefs(mapStore);
+
+const currRouteInfo = ref({});
+const sidoName = ref("");
 const isHover = ref(false);
+
+const props = defineProps({
+  route: Object,
+  idx: Number,
+});
+
+const moveMyRoute = async () => {
+  selectedPlaceList.value = [];
+
+  routeStore.sido_code = currRouteInfo.value.sido_code;
+  routeStore.sido_name_kor = sidoName.value;
+
+  for (const element of props.route.infoList) {
+    await searchByContentId(element.content_id, (res) => {
+      const selectedPlaceInfo = {
+        content_id: res.data.content_id,
+        title: res.data.title,
+        addr1: res.data.addr1,
+        currPos: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+        first_image: res.data.first_image,
+      };
+
+      selectedPlaceList.value.push(selectedPlaceInfo);
+    });
+  }
+};
+
+onMounted(async () => {
+  const contentId = props.route.infoList[0].content_id;
+
+  await searchByContentId(contentId, (res) => {
+    currRouteInfo.value = res.data;
+
+    sidoName.value = attractionList.find((item) => item.sido_code === currRouteInfo.value.sido_code)?.sido_name;
+  });
+});
 </script>
 
 <style scoped>
