@@ -125,7 +125,7 @@ public class AttractionController
 	
 
     @PostMapping("/route")
-    public ResponseEntity<Void> receiveData(@RequestBody RouteDto routeDto) throws Exception {
+    public ResponseEntity<Void> postRouteDetail(@RequestBody RouteDto routeDto) throws Exception {
     	
     	attractionService.insertRoute(routeDto);
     	
@@ -146,4 +146,19 @@ public class AttractionController
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
+    
+    @GetMapping("/route")
+	public ResponseEntity<?> getRouteDetail(@RequestParam("userId") String userId) throws Exception {
+	    	
+		try {
+			return new ResponseEntity<List<RouteDto>>(attractionService.getRouteDetail(userId), HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+    }
+	
+    
+    
 }

@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RouteDto {
 		private String userId;
-	    private List<RouteInfo> infoList;
 	    private int route_id;
+	    private List<RouteInfo> infoList;
 
 	    @Data
 	    @NoArgsConstructor

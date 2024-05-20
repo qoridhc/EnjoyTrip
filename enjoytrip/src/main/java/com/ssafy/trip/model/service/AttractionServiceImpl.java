@@ -56,4 +56,9 @@ public class AttractionServiceImpl implements AttractionService
 	public void insertRouteDetail(Map<String, Object> routeInfo) throws Exception {
 		dao.insertRouteDetail(routeInfo);
 	}
+
+	@Override
+	public List<RouteDto> getRouteDetail(String userId) throws Exception {
+		return dao.getRouteDetail(userId);
+	}
 }
