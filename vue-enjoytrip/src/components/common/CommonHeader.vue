@@ -23,7 +23,6 @@ const logout = () => {
   userLogout();
   changeMenuState();
 };
-console.log(route.path);
 </script>
 
 <template>

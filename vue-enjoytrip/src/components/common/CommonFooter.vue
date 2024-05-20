@@ -5,7 +5,7 @@ const footerStore = useFooterStore()
 </script>
 
 <template>
-    <footer class="py-4 mt-auto" :class="{ 'mt-auto': !footerStore.isFixed, 'fixed-bottom': footerStore.isFixed }">
+    <footer class="py-4 mt-auto my-footer" :class="{ 'mt-auto': !footerStore.isFixed, 'fixed-bottom': footerStore.isFixed }">
         <div class="container px-5">
             <div class="row align-items-center justify-content-between flex-column flex-sm-row">
                 <div class="col-auto">
@@ -23,4 +23,5 @@ const footerStore = useFooterStore()
     </footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

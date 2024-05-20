@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.MemoDto;
 import com.ssafy.board.model.service.BoardService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +133,23 @@ public class BoardController {
 		catch(Exception e) 
 		{
 			System.out.println(e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/comment/{articleNo}")
+	public ResponseEntity<?> comment(@PathVariable(value="articleNo") int articleNo){
+		try {
+			List<MemoDto> list = boardService.getMemoList(articleNo);
+			
+			if(!list.isEmpty()) {
+				return new ResponseEntity<List<MemoDto>>(list, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		}
+		catch(Exception e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.MemoDto;
 
 @Mapper
 public interface BoardDao {
@@ -18,4 +19,5 @@ public interface BoardDao {
 	void modifyArticle(BoardDto boardDto) throws SQLException;
 	List<BoardDto> searchArticle(Map<String, String> params) throws SQLException;
 	void updateArticleHit(BoardDto boardDto) throws SQLException;
+	List<MemoDto> getMemoList(int articleNo) throws SQLException;
 }
