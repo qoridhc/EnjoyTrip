@@ -18,8 +18,6 @@ async function postRoute(routeList, success, fail) {
 }
 
 async function getRouteDetail(userId, success, fail) {
-  console.log("getRouteDetail", userId);
-
   await local.get(`/attraction/route?userId=${userId}`).then(success).catch(fail);
 }
 

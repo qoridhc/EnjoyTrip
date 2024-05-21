@@ -33,12 +33,13 @@ import { storeToRefs } from "pinia";
 
 const mapStore = useMapStore();
 
-const { userRouteList } = storeToRefs(mapStore);
+const { selectedPlaceList } = storeToRefs(mapStore);
 
 const inputText = ref("");
+inputText.value = props.place.description;
 
 watch(inputText, (newValue, oldValue) => {
-  userRouteList.value[props.idx].description = newValue;
+  selectedPlaceList.value[props.idx].description = newValue;
 });
 </script>
 

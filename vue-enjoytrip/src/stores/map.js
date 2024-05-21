@@ -12,6 +12,7 @@ export const useMapStore = defineStore("mapStore", () => {
   const currSidoCode = ref("");
 
   const getPlaceByKeyword = async (keyword) => {
+    searchPlaceList.value = [];
     await searchByKeyword(keyword, (response) => {
       if (response.status === httpStatusCode.OK) {
         searchPlaceList.value = response.data;
@@ -37,6 +38,7 @@ export const useMapStore = defineStore("mapStore", () => {
         console.log(error);
       }
     );
+
     // await searchByKeyword(keyword).then((res) => console.log(res));
   };
 

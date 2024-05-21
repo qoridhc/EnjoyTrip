@@ -55,6 +55,7 @@ const moveMyRoute = async () => {
         addr1: res.data.addr1,
         currPos: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
         first_image: res.data.first_image,
+        description: element.description,
       };
 
       selectedPlaceList.value.push(selectedPlaceInfo);

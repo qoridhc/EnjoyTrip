@@ -90,10 +90,6 @@
         </div>
 
         <RouteSaveModal />
-
-        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#routeSaveModal">
-          일정 보기
-        </button> -->
       </div>
       <!-- Right Section -->
       <div id="map" class="col"></div>
@@ -102,6 +98,10 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  param: Object,
+});
+
 import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
@@ -131,6 +131,10 @@ useFooterStore().isFixed = false;
 
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
+  if (routeStore.sido_name_kor) {
+    searchKeyword.value = routeStore.sido_name_kor;
+    searchPlaces();
+  }
 });
 
 onUpdated(() => {
@@ -139,7 +143,7 @@ onUpdated(() => {
 var map, ps, infowindow;
 
 // default 검색
-var searchKeyword = ref("제주도");
+const searchKeyword = ref("제주도");
 
 // 검색 결과 담는 배열
 var searchResult = ref([]);
@@ -168,7 +172,7 @@ const initMap = () => {
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-  searchPlaces();
+  // searchPlaces();
 };
 
 // kakao api 쓰기위한 초기 설정
@@ -182,14 +186,13 @@ const addScript = () => {
 
 // 검색어 기반으로 장소 검색
 const searchPlaces = async () => {
-  var keyword = searchKeyword.value;
-
-  if (!keyword.replace(/^\s+|\s+$/g, "")) {
+  searchResult.value = [];
+  if (!searchKeyword.value.replace(/^\s+|\s+$/g, "")) {
     alert("키워드를 입력해주세요!");
     return false;
   }
 
-  await getPlaceByKeyword(keyword);
+  await getPlaceByKeyword(searchKeyword.value);
 
   displayMarkers();
 
@@ -333,42 +336,9 @@ const addSelectedRoute = () => {
     // 선 배열에 저장
     polylines.push(polyline);
   });
-
-  // if (insertPos === -1) {
-  //   selectedPlaceList.value.push(selectedPlaceInfo);
-  //   testPath.push(searchPlaceList.value[index].latlng);
-  // } else {
-  //   testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
-  // }
-
-  // // 지도에 표시할 선을 생성합니다
-  // var polyline = new kakao.maps.Polyline({
-  //   path: testPath, // 선을 구성하는 좌표배열 입니다
-  //   strokeWeight: 5, // 선의 두께 입니다
-  //   strokeColor: "#FF204E", // 선의 색깔입니다
-  //   strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-  //   strokeStyle: "solid", // 선의 스타일입니다
-  // });
-
-  // polyline.setMap(map);
-
-  // // 선 배열에 저장
-  // polylines.push(polyline);
 };
 
 const saveRoute = async () => {
-  // const routeInfo = {
-  //   userId: userInfo.id,
-  //   contentIdList: selectedPlaceList.value.map((item, index) => {
-  //     return {
-  //       sequence: index,
-  //       content_id: item.content_id,
-  //     };
-  //   }),
-  // };
-
-  // console.log(routeInfo);
-
   // store/map.js - userRouteList에 현재 선택한 여행 경로 배열 저장 -> 전역 상태관리
   userRouteList.value = selectedPlaceList.value.map((e) => {
     return {
@@ -376,8 +346,6 @@ const saveRoute = async () => {
       description: "",
     };
   });
-
-  // await postRoute(selectedPlaceList.value);
 };
 
 const removeRoute = (index) => {
@@ -409,13 +377,10 @@ const addRouteCard = (e) => {
     polyline.setMap(null);
   });
 
-  // const addedItem = e.item._underlying_vm_
   const preIndex = e.oldIndex;
   const addedIndex = e.newIndex;
 
   addRoute(preIndex, addedIndex);
-
-  // addRoute()
 };
 
 // ====== 최단 경로  구하는 로직 ======

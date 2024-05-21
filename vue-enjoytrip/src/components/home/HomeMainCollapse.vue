@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, defineEmits } from "vue";
 import { useRouteStore } from "@/stores/route";
-
 const routeStore = useRouteStore();
+
 const emit = defineEmits(["open"]);
 
 import { attractionList } from "@/util/constants.js";

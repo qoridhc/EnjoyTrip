@@ -18,7 +18,7 @@
           <div class="container mt-5">
             <h2 class="text-center mb-5">My Route</h2>
             <ul class="timeline">
-              <RouteSaveCard v-for="(item, index) in userRouteList" :key="index" :place="item" :idx="index" />
+              <RouteSaveCard v-for="(item, index) in selectedPlaceList" :key="index" :place="item" :idx="index" />
             </ul>
           </div>
         </div>
@@ -47,13 +47,13 @@ import { postRoute } from "@/api/map";
 const mapStore = useMapStore();
 const memberStore = useMemberStore();
 
-const { userRouteList } = storeToRefs(mapStore);
+const { selectedPlaceList } = storeToRefs(mapStore);
 const { userInfo } = memberStore;
 
 const save = async () => {
   const routeInfo = {
     userId: userInfo.id,
-    infoList: userRouteList.value.map((item, index) => {
+    infoList: selectedPlaceList.value.map((item, index) => {
       return {
         sequence: index,
         content_id: item.content_id,
