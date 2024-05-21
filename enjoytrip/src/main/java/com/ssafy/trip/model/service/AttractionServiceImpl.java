@@ -68,7 +68,7 @@ public class AttractionServiceImpl implements AttractionService
 	}
 
 	@Override
-	public List<RouteDto> getSharedRoute(int page) throws Exception {
-		return dao.getSharedRoute(page);
+	public List<RouteDto> getSharedRoute(Map<String, Integer> map) throws Exception {
+		return dao.getSharedRoute(map);
 	}
 }

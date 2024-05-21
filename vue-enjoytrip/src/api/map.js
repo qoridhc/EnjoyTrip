@@ -21,8 +21,8 @@ async function getRouteDetail(userId, success, fail) {
   await local.get(`/attraction/route?userId=${userId}`).then(success).catch(fail);
 }
 
-function getSharedRoute(page, success, fail) {
-  local.get(`/attraction/route/shared?page=${page}`)
+function getSharedRoute(page, pageSize, success, fail) {
+  local.get(`/attraction/route/shared?page=${page}&pageSize=${pageSize}`)
   .then((response)=>{
     success(response.data)
   })

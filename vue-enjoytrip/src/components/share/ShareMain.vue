@@ -12,11 +12,11 @@ const observer = ref(null);
 const loadPlaces = () => {
     let newPlaces = [];
     getSharedRoute(
-        page.value++,
+        page.value++, pageSize,
         function (data) {
             newPlaces = data
             places.value = [...places.value, ...newPlaces];
-            console.log("loadPlaces(ShareMain): 데이터 확인\nplaces: ", newPlaces)
+            console.log("loadPlaces(ShareMain): 데이터 확인\nplaces: ", data)
         },
         function (error) {
             console.log(error)
@@ -47,6 +47,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.container {
+    min-height: 85vh;
+}
+
 .card {
     position: relative;
     overflow: hidden;
