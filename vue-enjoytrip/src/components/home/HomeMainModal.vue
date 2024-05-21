@@ -3,46 +3,47 @@ import { ref, onMounted, defineEmits } from "vue";
 import { getSidoInfo } from "@/api/route";
 import { useRouteStore } from "@/stores/route";
 import { storeToRefs } from "pinia";
+import { useMapStore } from "@/stores/map";
+const mapStore = useMapStore();
 
 const { sido_code, sido_name_eng, sido_name_kor, sido_description } = storeToRefs(useRouteStore());
-const { setSidoInfo } = useRouteStore()
-const img_url = ref("")
+const { setSidoInfo } = useRouteStore();
+const img_url = ref("");
 
 onMounted(() => {
   console.log("onMounted(HomeMainModal.vue): Modal창 onMounted\nsido_code: ", sido_code.value);
 
   getSidoInfo(
     sido_code.value,
-    function(data){
-      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인\nresponse: ", data)
-      setSidoInfo(data)
+    function (data) {
+      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인\nresponse: ", data);
+      setSidoInfo(data);
       img_url.value = `/src/assets/img/sido/${sido_name_eng.value}.jpg`;
     },
-    function(error){
-      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인 중 에러\nerror: ", error)
+    function (error) {
+      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인 중 에러\nerror: ", error);
     }
-  )
-
+  );
 });
 
 const emit = defineEmits(["close"]);
 const closeModal = () => {
-  emit('close');
+  mapStore.selectedPlaceList = [];
+
+  emit("close");
   console.log("closeModal(HomeMainModal.vue): 모달 닫기");
 };
-
 </script>
 
 <template>
-  <div 
-    class="modal" 
-    id="centerModal" 
-    tabindex="-1" 
+  <div
+    class="modal"
+    id="centerModal"
+    tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
-    style="display: block;" 
-    @click.self="closeModal"
-  >
+    style="display: block"
+    @click.self="closeModal">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content rounded-modal">
         <button type="button" class="btn-close close-button" aria-label="Close" @click="closeModal"></button>
@@ -108,7 +109,6 @@ const closeModal = () => {
   </div>
 </template>
 
-
 <style scoped>
 .close-button {
   position: absolute;
@@ -135,7 +135,7 @@ const closeModal = () => {
   border-radius: 20px;
 }
 
-.modal-description{
+.modal-description {
   height: 107px;
 }
 
