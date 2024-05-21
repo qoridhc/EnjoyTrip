@@ -31,9 +31,9 @@
                   <PlaceCard
                     :place="element"
                     :key="index"
-                    @mouseover="displayInfowindow(markers[index], positions[index].title)"
-                    @mouseout="infowindow.close()"
-                    @click="addRoute(index, -1)">
+                    @mouseover="markers[index].setMap(map)"
+                    @mouseout="markers[index].setMap()"
+                    @click="clickPlaceCard(index, -1)">
                   </PlaceCard>
                 </div>
               </template>
@@ -64,15 +64,10 @@
             :list="selectedPlaceList"
             group="people"
             item-key="name"
-            @add="addRouteCard">
+            @add="(e) => addRouteCard(e)">
             <template #item="{ element, index }">
               <div class="list-group-item">
-                <RouteCard
-                  :place="element"
-                  :id="index + 1"
-                  :key="index"
-                  :move="moveRouteCard"
-                  @click="removeRoute(index)">
+                <RouteCard :place="element" :id="index + 1" :key="index" :move="moveRoute" @click="removeRoute(index)">
                 </RouteCard>
               </div>
             </template>
@@ -134,6 +129,12 @@ onMounted(() => {
   if (routeStore.sido_name_kor) {
     searchKeyword.value = routeStore.sido_name_kor;
     searchPlaces();
+  }
+
+  console.log("selectedPlaceList.value : ", selectedPlaceList.value);
+  console.log(selectedPlaceList.value.length);
+  if (selectedPlaceList.value.length > 0) {
+    addSelectedRoute();
   }
 });
 
@@ -224,7 +225,7 @@ const displayMarkers = () => {
   const imgSize = new kakao.maps.Size(24, 35);
   // const markerImage = new kakao.maps.MarkerImage(imgSrc, imgSize);
 
-  positions.forEach((position) => {
+  positions.forEach((position, idx) => {
     // 인포 윈도우 생성
     const infowindow = new kakao.maps.InfoWindow({
       removable: true,
@@ -238,19 +239,63 @@ const displayMarkers = () => {
       // image: markerImage,
     });
 
-    kakao.maps.event.addListener(marker, "click", () => {
-      infowindow.open(map, marker);
+    var content =
+      '<div class="rounded bg-white overlay_info" style="position: relative; width:200px; white-space: nowrap; overflow: hidden;">';
+    content +=
+      '    <div style="background-color:#EE4E4E; font-size:13px; padding:4px; display: block; color: white; text-align: center">' +
+      `${searchPlaceList.value[idx].title}` +
+      "</div>";
+    content += '    <div class="d-flex" style="width:200px">';
+    content += `        <img class="p-2" src="${searchPlaceList.value[idx].first_image}" style="width:60px; height:60px" alt="">`;
+    content += `        <div class="address pt-2 pe-2" style="font-size:12px; width:200px; white-space: pre-wrap;">${searchPlaceList.value[idx].addr1}</div>`;
+    content += "    </div>";
+    content += '            <div class="close" onclick="closeOverlay()" title="닫기"></div>';
+    // content += `<div class="close" onclick="closeOverlay()" style="position: absolute; top: 5px; right: 5px; background-color: transparent; border: none; font-size: 16px; cursor: pointer;">&times;</div>`;
+    content += "</div>";
+
+    // var content =
+    //   '<div class="rounded bg-white overlay_info" style="width:200px; white-space: nowrap; overflow: hidden;">';
+    // content += `    <div style="background-color:#EE4E4E; font-size:13px; padding:4px; display: block; color: white; text-align: center">${searchPlaceList.value[idx].title}</div>`;
+    // content += '    <div class="d-flex" style="width:200px">';
+    // content += `        <img class="p-2" src="${searchPlaceList.value[idx].first_image}" style="width:60px; height:60px" alt="">`;
+    // content += `        <div class="address pt-2 pe-2" style="font-size:12px; width:200px; white-space: pre-wrap;">${searchPlaceList.value[idx].addr1}</div>`;
+    // content += "    </div>";
+    // content += "</div>";
+
+    // 커스텀 오버레이가 표시될 위치입니다
+    // var pos = new kakao.maps.LatLng(33.55635, 126.795841);
+    // 커스텀 오버레이를 생성합니다
+    var customOverlay = new kakao.maps.CustomOverlay({
+      position: position.latlng,
+      content: content,
+      xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+      yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
 
-    kakao.maps.event.addListener(marker, "mouseover", () => {
-      infowindow.open(map, marker);
+    kakao.maps.event.addListener(marker, "click", function () {
+      customOverlay.setMap(map);
     });
 
-    kakao.maps.event.addListener(marker, "mouseout", () => {
-      infowindow.close(map, marker);
-    });
+    // kakao.maps.event.addListener(marker, "mouseover", function () {
+    //   customOverlay.setMap(map);
+    // });
 
-    markers.push(marker);
+    // kakao.maps.event.addListener(marker, "mouseout", function () {
+    //   customOverlay.setMap();
+    // });
+
+    // 커스텀 오버레이를 지도에 표시합니다
+    // customOverlay.setMap(map);
+
+    // kakao.maps.event.addListener(marker, "mouseover", () => {
+    //   infowindow.open(map, marker);
+    // });
+
+    // kakao.maps.event.addListener(marker, "mouseout", () => {
+    //   infowindow.close(map, marker);
+    // });
+
+    markers.push(customOverlay);
   });
 
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
@@ -259,17 +304,18 @@ const displayMarkers = () => {
 
 // 인포 윈도우 생성
 const displayInfowindow = (marker, title) => {
-  var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
-
-  infowindow.setContent(content);
-  infowindow.open(map, marker);
+  // var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+  // infowindow.setContent(content);
+  // infowindow.open(map, marker);
 };
 
 var testPath = [],
   polylines = [];
 
 // 선택한 여행지 추가
-const addRoute = (index, insertPos) => {
+const clickPlaceCard = (index, insertPos) => {
+  markers[index].setMap(map);
+
   const selectedPlaceInfo = {
     content_id: searchPlaceList.value[index].content_id,
     title: searchPlaceList.value[index].title,
@@ -295,6 +341,8 @@ const addRoute = (index, insertPos) => {
     testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
   }
 
+  console.log("selectedPlaceList : ", selectedPlaceList.value);
+
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
     path: testPath, // 선을 구성하는 좌표배열 입니다
@@ -311,6 +359,7 @@ const addRoute = (index, insertPos) => {
 };
 
 const addSelectedRoute = () => {
+  console.log("실행");
   polylines.forEach((polyline) => {
     polyline.setMap(null);
   });
@@ -318,9 +367,12 @@ const addSelectedRoute = () => {
   testPath = [];
   polylines = [];
 
-  selectedPlaceList.value.forEach((e) => {
+  console.log(selectedPlaceList.value);
+
+  selectedPlaceList.value.forEach((item) => {
     // testPath.push()
-    testPath.push(e.currPos);
+
+    testPath.push(item.currPos);
 
     // 지도에 표시할 선을 생성합니다
     var polyline = new kakao.maps.Polyline({
@@ -330,6 +382,8 @@ const addSelectedRoute = () => {
       strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
       strokeStyle: "solid", // 선의 스타일입니다
     });
+
+    console.log("polyline : ", polyline);
 
     polyline.setMap(map);
 
@@ -370,9 +424,9 @@ const clearSelectedRoute = () => {
   polylines = [];
 };
 
-const handleListChange = (e) => {};
-
 const addRouteCard = (e) => {
+  console.log(e);
+
   polylines.forEach((polyline) => {
     polyline.setMap(null);
   });
@@ -380,7 +434,10 @@ const addRouteCard = (e) => {
   const preIndex = e.oldIndex;
   const addedIndex = e.newIndex;
 
-  addRoute(preIndex, addedIndex);
+  console.log(preIndex);
+  console.log(addedIndex);
+
+  clickPlaceCard(preIndex, addedIndex);
 };
 
 // ====== 최단 경로  구하는 로직 ======
