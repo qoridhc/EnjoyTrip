@@ -91,6 +91,11 @@ const router = createRouter({
           component: () => import("@/components/user/UserSignup.vue"),
         },
         {
+          path: "update",
+          name: "user-update",
+          component: () => import("@/components/user/UserUpdate.vue"),
+        },
+        {
           path: "/mypage",
           name: "user-mypage",
           component: () => import("@/components/user/mypage/UserMyPage.vue"),

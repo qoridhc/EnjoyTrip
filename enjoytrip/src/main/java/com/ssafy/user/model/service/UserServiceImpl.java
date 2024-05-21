@@ -73,5 +73,10 @@ public class UserServiceImpl implements UserService
 		map.put("token", null);
 		userDao.deleteRefreshToken(map);
 	}
+
+	@Override
+	public int modifyUser(UserDto user) throws Exception {
+		return userDao.modifyUser(user);
+	}
 	
 }

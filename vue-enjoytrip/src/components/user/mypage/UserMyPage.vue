@@ -3,7 +3,7 @@
   <div class="profile-container text-center">
     <img class="img-fluid" src="@/assets/img/like.png" />
     <h4 class="pt-2"> {{ userInfo.name }}</h4>
-    <div class="pt-2" style="font-size: 14px; color: blue">프로필 관리</div>
+    <div class="pt-2" style="font-size: 14px; color: blue"> <router-link :to="{name: 'user-update'}">프로필 관리</router-link></div>
   </div>
   <div id="route-container" class="text-start mx-auto pt-3" style="height: 30vh; padding: 10px; width: 80%">
     <h3 style="font-weight: 600">나의 일정</h3>

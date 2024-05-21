@@ -36,4 +36,24 @@ function signup(user, success, fail){
   .catch(fail)
 }
 
-export { userConfirm, findById, tokenRegeneration, logout, signup };
+function modifyUser(user, success, fail){
+  local.post('/user/modify', user)
+  .then((response)=>{
+    success(response.data)
+  })
+  .catch((error)=>{
+    fail(error)
+  })
+}
+
+function deleteUser(id, success, fail){
+  local.get(`/user/delete/${id}`)
+  .then((response)=>{
+    success(response)
+  })
+  .catch((error)=>{
+    fail(error)
+  })
+}
+
+export { userConfirm, findById, tokenRegeneration, logout, signup, modifyUser, deleteUser };

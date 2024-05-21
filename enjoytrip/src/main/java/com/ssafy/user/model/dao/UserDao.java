@@ -27,4 +27,6 @@ public interface UserDao
 	Object getRefreshToken(String userid) throws SQLException;
 	
 	void deleteRefreshToken(Map<String, String> map) throws SQLException;
+
+	public int modifyUser(UserDto user) throws SQLException;
 }

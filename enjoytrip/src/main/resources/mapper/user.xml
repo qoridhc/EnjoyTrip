@@ -63,7 +63,11 @@
 		where user_id = #{userId}
 	</update>
 	
-	
+	<update id="modifyUser" parameterType="userDto">
+		update members
+		set user_name = #{name}, user_password = #{pw}, email_id = #{email_1}, email_domain = #{email_2}
+		where user_id = #{id}
+	</update>
 	
 </mapper>
 

@@ -1,69 +1,78 @@
 <script setup>
-import { ref } from 'vue';
-import { signup } from '@/api/user';
+import { onMounted, ref } from 'vue';
+import { useMemberStore } from '@/stores/member';
+import { useMenuStore } from '@/stores/menu';
+import { modifyUser, deleteUser } from '@/api/user';
 import { useRouter } from 'vue-router';
 
-const user = ref({});
-const isFinish = ref(true);
-const emailValid = ref(true);
-const router = useRouter();
+const user = ref({})
+const router = useRouter()
+const memberStore = useMemberStore()
 
-function submit() {
-    console.log("submit(UserSignup.vue): 회원 정보\nuser: ", user.value);
-    const result = validationCheck()
-    if(result){
-        isFinish.value = true
-        alert(result)
+onMounted(() => {
+    user.value = memberStore.userInfo
+    user.value.email = `${user.value.email_1}@${user.value.email_2}`
+    user.value.pw = ""
+    user.value.pwCheck = ""
+})
+
+function submit(){
+    if(!validationCheck()){
+        alert("비밀번호 불일치")
         return;
     }
+    let params = {}
+    params.id = user.value.id
+    if(user.value.name) params.name = user.value.name
+    if(user.value.pw) params.pw = user.value.pw
+    if(user.value.email) params.email = user.value.email
 
-    signup(
-        user.value,
-        function (response) {
-            console.log("submit(UserSignup.vue): 회원가입 결과 확인\nresponse: ", response);
-            alert(response.data);
-
-            if (response.data === "회원가입 성공") {
-                router.push({ name: 'Home' });
-            }
+    modifyUser(
+        params,
+        function(data){
+            useMemberStore().userInfo = data
+            router.push({name: 'user-mypage'})
         },
-        function (error) {
-            console.log("submit(UserSignup.vue): 회원가입 실패\nresponse: ", error);
-        },
-    );
+        function(error){
+            console.log("submit(UserUpdate.vue): 회원 정보 수정 실패\nerror: ", error)
+        }
+    )
 }
 
 function validationCheck() {
-    emailValid.value = validateEmail(user.value.email);
-
-    if (!user.value.name || !user.value.id || !user.value.pw || !user.value.pwCheck || !user.value.email) {
-        console.log("validationCheck(UserSignup.vue): 항목 부재\nuser:", user.value);
-        return "모든 내용을 입력해 주십시오"
-    }
     if (user.value.pw !== user.value.pwCheck) {
-        console.log("validationCheck(UserSignup.vue): 비밀번호 불일치\nuser:", user.value);
-        return "비밀번호가 다릅니다."
+        console.log("validationCheck(UserSignup.vue): 비밀번호 불일치\nuser:", user.value)
+        return false
     }
-    if (!emailValid.value) {
-        console.log("validationCheck(UserSignup.vue): 유효하지 않은 이메일\nuser:", user.value);
-        return "유효하지 않은 이메일입니다."
-    }
-    return ""
+    return true
 }
 
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+function remove(){
+    if(confirm("정말 삭제하시겠습니까?")){
+        memberStore.userLogout()
+        useMenuStore().logoutMenuState()
+
+        deleteUser(
+            user.value.id,
+            function(response){
+                memberStore.userInfo = null
+                router.push({name: 'Home'})
+            },
+            function(error){
+                console.log("remove(UserUpdate.vue): 유저 삭제 실패\nresponse: ", error)
+            }
+        )
+    }
 }
+
 </script>
-
 <template>
     <div class="d-flex flex-column">
         <div class="flex-shrink-0 container px-5 py-5">
             <div class="py-5 px-4 px-md-5 mb-5">
 
                 <!-- title -->
-                <h1 class="fw-bolder text-center mb-5">회원가입</h1>
+                <h1 class="fw-bolder text-center mb-5">프로필 수정</h1>
 
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
@@ -82,7 +91,7 @@ function validateEmail(email) {
 
                             <!-- ID input -->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="id" type="text" v-model="user.id" />
+                                <div class="form-control text-start" id="id" type="text"> {{ user.id }} </div>
                                 <label for="name">아이디</label>
 
                                 <!-- 미입력시 -->
@@ -119,22 +128,21 @@ function validateEmail(email) {
                                 <label for="email">이메일</label>
 
                                 <!-- 미입력, 양식 오류시 -->
-                                <div class="invalid-feedback" v-if="!user.email">
+                                <div class="invalid-feedback">
                                     An email is required.
                                 </div>
-                                <div class="invalid-feedback" v-if="!emailValid">
+                                <div class="invalid-feedback">
                                     Email is not valid.
                                 </div>
                             </div>
 
                             <!-- Submit Button-->
-                            <div class="d-grid">
-                                <input class="btn btn-lg btn-dark" @click.prevent="submit" type="submit">
+                            <div class="d-flex">
+                                <input class="btn btn-lg btn-dark me-3" @click.prevent="submit" type="submit">
+                                <input class="btn btn-lg btn-danger" @click.prevent="remove" type="submit" value="삭제">
                             </div>
+                            
                         </form>
-                        <div v-if="!isFinish">
-                            모든 항목을 입력해 주십시오.
-                        </div>
                     </div>
                 </div>
             </div>
@@ -143,5 +151,10 @@ function validateEmail(email) {
 </template>
 
 <style scoped>
-@import "@/assets/css/styles.css";
+.btn.btn-lg.btn-dark{
+    width: 78%;
+}
+.btn.btn-lg.btn-danger{
+    width: 19%;
+}
 </style>
