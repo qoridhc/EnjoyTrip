@@ -21,4 +21,14 @@ async function getRouteDetail(userId, success, fail) {
   await local.get(`/attraction/route?userId=${userId}`).then(success).catch(fail);
 }
 
-export { searchByKeyword, postRoute, getRouteDetail, searchByContentId };
+function getSharedRoute(page, success, fail) {
+  local.get(`/attraction/route/shared?page=${page}`)
+  .then((response)=>{
+    success(response.data)
+  })
+  .catch((error)=>{
+    fail(error)
+  });
+}
+
+export { searchByKeyword, postRoute, getRouteDetail, searchByContentId, getSharedRoute };

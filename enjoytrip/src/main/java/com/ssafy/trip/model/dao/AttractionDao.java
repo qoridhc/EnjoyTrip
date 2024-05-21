@@ -25,4 +25,5 @@ public interface AttractionDao
 	public void insertRouteDetail(Map<String, Object> routeInfo)throws SQLException;
 	public List<RouteDto> getRouteDetail(String userId)throws SQLException;
 	public AttractionDto searchByContentId(String contentId) throws SQLException;
+	public List<RouteDto> getSharedRoute(int page) throws SQLException;
 }

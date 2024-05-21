@@ -6,7 +6,7 @@
         <!-- Left Section -->
         <div class="border p-4 h-100">
           <div style="font-size: 25px; font-weight: bold">{{ routeStore.sido_name_kor }}</div>
-          <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.10(금) ~ 2024.05.11(토)</div>
+          <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.22(수) ~ 2024.05.23(목)</div>
           <div class="search">
             <input
               @keyup.enter="searchPlaces"
@@ -131,6 +131,8 @@ useFooterStore().isFixed = false;
 
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
+  console.log("onMounted(MyRouteView.vue): 시도 확인\nsido: ", routeStore.sido_name_kor)
+
   if (routeStore.sido_name_kor) {
     searchKeyword.value = routeStore.sido_name_kor;
     searchPlaces();

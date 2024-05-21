@@ -53,6 +53,7 @@
     <resultMap id="RouteMap" type="com.ssafy.trip.model.RouteDto">
         <id property="route_id" column="route_id"/>
         <result property="userId" column="user_id"/>
+        <result property="isShared" column="is_shared" />
         <collection property="infoList" ofType="com.ssafy.trip.model.RouteDto$RouteInfo" resultMap="RouteInfoMap"/>
     </resultMap>
 
@@ -68,6 +69,15 @@
     	select content_id, sido_code, first_image, title, addr1, latitude, longitude 
 		from attraction_info 
 		where content_id = #{content_id}
+    </select>
+    
+    <select id="getSharedRoute" resultMap="RouteMap">
+    	SELECT r.route_id, r.user_id, r.is_shared, rd.sequence, rd.content_id, rd.description
+        FROM route r
+        LEFT JOIN route_detail rd ON r.route_id = rd.route_id
+		WHERE r.is_shared = 1
+        ORDER BY r.route_id, rd.sequence
+        limit ${page}, 12; 
     </select>
     
     

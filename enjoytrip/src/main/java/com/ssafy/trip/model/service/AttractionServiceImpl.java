@@ -66,4 +66,9 @@ public class AttractionServiceImpl implements AttractionService
 	public AttractionDto searchByContentId(String contentId) throws Exception {
 		return dao.searchByContentId(contentId);
 	}
+
+	@Override
+	public List<RouteDto> getSharedRoute(int page) throws Exception {
+		return dao.getSharedRoute(page);
+	}
 }
