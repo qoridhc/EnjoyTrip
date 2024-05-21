@@ -117,6 +117,7 @@ export const useMemberStore = defineStore("memberStore", () => {
           isLogin.value = false;
           userInfo.value = null;
           isValidToken.value = false;
+          userInfo.value = null
 
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("refreshToken");

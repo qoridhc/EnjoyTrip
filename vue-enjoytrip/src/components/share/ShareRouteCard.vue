@@ -124,10 +124,8 @@ a {
 
 .img-fluid {
     width: 220px;
-    /* 원하는 크기로 조절 */
     height: 200px;
     border-radius: 10px;
-    /* 테두리를 둥글게 조절 */
 }
 
 .overlay {
@@ -155,9 +153,8 @@ a {
 #custom-overay {
     background-color: rgba(0, 0, 0, 0.5);
     width: 300px;
-    /* 원하는 크기로 조절 */
     height: 307.59px;
-    /* margin-top: 5px; */
+    cursor: pointer;
 }
 
 .overlay.active {
