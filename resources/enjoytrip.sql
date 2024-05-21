@@ -210,10 +210,9 @@ CREATE TABLE IF NOT EXISTS `enjoytrip`.`route` (
   PRIMARY KEY (`route_id`),
   INDEX `fk_route_members1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_route_members1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `enjoytrip`.`members` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    FOREIGN KEY (`user_id`) REFERENCES `enjoytrip`.`members` (`user_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+)
 ENGINE = InnoDB
 AUTO_INCREMENT = 14
 DEFAULT CHARACTER SET = utf8mb4
@@ -234,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `enjoytrip`.`route_detail` (
   INDEX `fk_route_detail_route1_idx` (`route_id` ASC) ,
   CONSTRAINT `fk_route_detail_route1`
     FOREIGN KEY (`route_id`) REFERENCES `enjoytrip`.`route` (`route_id`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION
+    ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4

@@ -71,4 +71,9 @@ public class AttractionServiceImpl implements AttractionService
 	public List<RouteDto> getSharedRoute(Map<String, Integer> map) throws Exception {
 		return dao.getSharedRoute(map);
 	}
+
+	@Override
+	public int deleteRoute(int routeId) throws Exception {
+		return dao.deleteRoute(routeId);
+	}
 }

@@ -83,7 +83,7 @@ function share(){
 }
 
 function remove(){
-  console.log("remove(UserRouteCard): 삭제하기 버튼 클릭")
+  console.log("remove(UserRouteCard): 삭제하기 버튼 클릭\ncurr: ", props.route)
 }
 </script>
 

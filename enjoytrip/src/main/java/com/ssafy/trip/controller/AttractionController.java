@@ -187,4 +187,10 @@ public class AttractionController
 		}
     }    
     
+    @GetMapping("/route/delete/${routeId}")
+    public ResponseEntity<?> getSharedRoute(@PathVariable int routeId) throws Exception {
+    	
+    	
+    	return null;
+    }
 }
