@@ -23,4 +23,6 @@ public interface UserService
 	Object getRefreshToken(String userId) throws Exception;
 	
 	void deleRefreshToken(String userId) throws Exception;
+
+	public int modifyUser(UserDto user) throws Exception;
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.board.model.service.BoardService;
 import com.ssafy.user.model.UserDto;
 import com.ssafy.user.model.service.UserService;
 import com.ssafy.util.JWTUtil;
@@ -176,11 +177,6 @@ public class UserController {
 
 	
 //	===== 3. 회원가입(C) =====
-	@GetMapping("/signup")
-	public String signup() {
-		return "/user/signup";
-	}
-	
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody Map<String,String> map) throws IOException {
 		log.info("signup(UserController.java): 회원가입 파라미터 확인");
@@ -206,27 +202,31 @@ public class UserController {
 		
 	}
 
-//	===== 4. 회원정보 수정 (profile.jsp) (U) =====
-	@GetMapping("/profile")
-	public String showProfile(HttpSession session) {
-
-		System.out.println("loginUser : " + session.getAttribute("loginUser"));
-		
-		return "/user/profile";
-	}
-	
+//	===== 4. 회원정보 수정(U) =====
 	@PostMapping("/modify")
-	public String modify(@RequestParam Map<String, String> map , Model model) throws IOException {
-		System.out.println(map);
+	public ResponseEntity<?> modify(@RequestBody Map<String, String> params) throws IOException {
+		if(!params.containsKey("id")) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		
 		try {
-			userService.modify(map);
+			UserDto user = userService.userInfo(params.get("id"));
+			if(params.containsKey("name")) user.setName(params.get("name"));
+			if(params.containsKey("pw")) user.setPw(params.get("pw"));
+			if(params.containsKey("email")) {
+				user.setEmail_1(params.get("email").split("@")[0]);
+				user.setEmail_2(params.get("email").split("@")[1]);
+			}
 			
-			//회원정보 수정 성공
-			System.out.println("회원정보 수정 성공");
-			return "redirect:/";
-		} 	catch (Exception e) {
-			model.addAttribute("msg", "회원정보 수정 중 문제 발생!!!");
-			return "/error";
+			int res = userService.modifyUser(user);
+			if(res != 0) {
+				return new ResponseEntity<UserDto>(user, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
