@@ -58,7 +58,7 @@ const moveMyRoute = async () => {
         content_id: res.data.content_id,
         title: res.data.title,
         addr1: res.data.addr1,
-        currPos: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+        latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
         first_image: res.data.first_image,
         description: element.description,
       };
@@ -67,18 +67,16 @@ const moveMyRoute = async () => {
     });
   }
 
-  mapStore.isChanged = true
+  mapStore.isChanged = true;
 };
 
 onMounted(async () => {
   const contentId = props.route.infoList[0].content_id;
 
-  await searchByContentId(
-    contentId, 
-    (res) => {
+  await searchByContentId(contentId, (res) => {
     currRouteInfo.value = res.data;
     sidoName.value = attractionList.find((item) => item.sido_code === currRouteInfo.value.sido_code)?.sido_name;
-    console.log(currRouteInfo.value)
+    console.log(currRouteInfo.value);
   });
 });
 </script>

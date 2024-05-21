@@ -31,9 +31,9 @@
                   <PlaceCard
                     :place="element"
                     :key="index"
-                    @mouseover="displayInfowindow(markers[index], positions[index].title)"
-                    @mouseout="infowindow.close()"
-                    @click="addRoute(index, -1)">
+                    @mouseover="markers[index].setMap(map)"
+                    @mouseout="markers[index].setMap()"
+                    @click="addNewRoute(index, -1)">
                   </PlaceCard>
                 </div>
               </template>
@@ -64,15 +64,11 @@
             :list="selectedPlaceList"
             group="people"
             item-key="name"
-            @add="addRouteCard">
+            @add="(e) => addRouteByDrag(e)"
+            @change="handleDrag">
             <template #item="{ element, index }">
               <div class="list-group-item">
-                <RouteCard
-                  :place="element"
-                  :id="index + 1"
-                  :key="index"
-                  :move="moveRouteCard"
-                  @click="removeRoute(index)">
+                <RouteCard :place="element" :id="index + 1" :key="index" :move="moveRoute" @click="removeRoute(index)">
                 </RouteCard>
               </div>
             </template>
@@ -120,7 +116,7 @@ import { storeToRefs } from "pinia";
 const mapStore = useMapStore();
 const { searchPlaceList, userRouteList, selectedPlaceList } = storeToRefs(mapStore);
 const { getPlaceByKeyword } = mapStore;
-const { isChanged } = storeToRefs(mapStore)
+const { isChanged } = storeToRefs(mapStore);
 
 const memberStore = useMemberStore();
 const { userInfo } = memberStore;
@@ -132,7 +128,6 @@ useFooterStore().isFixed = false;
 
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
-  console.log("onMounted(MyRouteView.vue): 시도 확인\nsido: ", routeStore.sido_name_kor)
 
   if (routeStore.sido_name_kor) {
     searchKeyword.value = routeStore.sido_name_kor;
@@ -140,12 +135,12 @@ onMounted(() => {
   }
 });
 
-watch(isChanged, (newList, oldList)=>{
-  isChanged.value = false
-  if(selectedPlaceList.value.length > 0) addSelectedRoute()
-})
+watch(isChanged, (newList, oldList) => {
+  isChanged.value = false;
+  if (selectedPlaceList.value.length > 0) drawSelectedRouteLine();
+});
 
-var map, ps, infowindow;
+var map;
 
 // default 검색
 const searchKeyword = ref("제주도");
@@ -170,14 +165,6 @@ const initMap = () => {
     position: map.getCenter(),
   });
   marker.setMap(map);
-
-  // 장소 검색 객체를 생성합니다
-  ps = new kakao.maps.services.Places();
-
-  // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-  // searchPlaces();
 };
 
 // kakao api 쓰기위한 초기 설정
@@ -200,9 +187,6 @@ const searchPlaces = async () => {
   await getPlaceByKeyword(searchKeyword.value);
 
   displayMarkers();
-
-  // 카카오 api 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-  // ps.keywordSearch(keyword, placesSearchCB);
 };
 
 var positions = [];
@@ -225,17 +209,7 @@ const displayMarkers = () => {
 
   markers = [];
 
-  const imgSrc = "/src/assets/img/like.png";
-  const imgSize = new kakao.maps.Size(24, 35);
-  // const markerImage = new kakao.maps.MarkerImage(imgSrc, imgSize);
-
-  positions.forEach((position) => {
-    // 인포 윈도우 생성
-    const infowindow = new kakao.maps.InfoWindow({
-      removable: true,
-      content: `<div style="padding:5px;">${position.title}</div>`,
-    });
-
+  positions.forEach((position, idx) => {
     const marker = new kakao.maps.Marker({
       map,
       position: position.latlng,
@@ -243,43 +217,77 @@ const displayMarkers = () => {
       // image: markerImage,
     });
 
-    kakao.maps.event.addListener(marker, "click", () => {
-      infowindow.open(map, marker);
+    var content =
+      '<div class="rounded bg-white overlay_info" style="position: relative; width:200px; white-space: nowrap; overflow: hidden;">';
+    content +=
+      '    <div style="background-color:#EE4E4E; font-size:13px; padding:4px; display: block; color: white; text-align: center">' +
+      `${searchPlaceList.value[idx].title}` +
+      "</div>";
+    content += '    <div class="d-flex" style="width:200px">';
+    content += `        <img class="p-2" src="${searchPlaceList.value[idx].first_image}" style="width:60px; height:60px" alt="">`;
+    content += `        <div class="address pt-2 pe-2" style="font-size:12px; width:200px; white-space: pre-wrap;">${searchPlaceList.value[idx].addr1}</div>`;
+    content += "    </div>";
+    content += '            <div class="close" onclick="closeOverlay()" title="닫기"></div>';
+    // content += `<div class="close" onclick="closeOverlay()" style="position: absolute; top: 5px; right: 5px; background-color: transparent; border: none; font-size: 16px; cursor: pointer;">&times;</div>`;
+    content += "</div>";
+
+    // 커스텀 오버레이를 생성합니다
+    var customOverlay = new kakao.maps.CustomOverlay({
+      position: position.latlng,
+      content: content,
+      xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+      yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
 
-    kakao.maps.event.addListener(marker, "mouseover", () => {
-      infowindow.open(map, marker);
+    kakao.maps.event.addListener(marker, "click", function () {
+      customOverlay.setMap(map);
     });
 
-    kakao.maps.event.addListener(marker, "mouseout", () => {
-      infowindow.close(map, marker);
-    });
+    // kakao.maps.event.addListener(marker, "mouseover", function () {
+    //   customOverlay.setMap(map);
+    // });
 
-    markers.push(marker);
+    // kakao.maps.event.addListener(marker, "mouseout", function () {
+    //   customOverlay.setMap();
+    // });
+
+    // 커스텀 오버레이를 지도에 표시합니다
+    // customOverlay.setMap(map);
+
+    // kakao.maps.event.addListener(marker, "mouseover", () => {
+    //   infowindow.open(map, marker);
+    // });
+
+    // kakao.maps.event.addListener(marker, "mouseout", () => {
+    //   infowindow.close(map, marker);
+    // });
+
+    markers.push(customOverlay);
   });
 
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
   map.setBounds(bounds);
 };
 
-// 인포 윈도우 생성
-const displayInfowindow = (marker, title) => {
-  var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+// // 인포 윈도우 생성
+// const displayInfowindow = (marker, title) => {
+//   // var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+//   // infowindow.setContent(content);
+//   // infowindow.open(map, marker);
+// };
 
-  infowindow.setContent(content);
-  infowindow.open(map, marker);
-};
-
-var testPath = [],
-  polylines = [];
+var drawList = [], // 선을 그어야할 위치 좌표 배열
+  polylines = []; // 선을 긋기위한 polyline 객체를 담은 배열
 
 // 선택한 여행지 추가
-const addRoute = (index, insertPos) => {
+const addNewRoute = (index, insertPos) => {
+  markers[index].setMap(map);
+
   const selectedPlaceInfo = {
     content_id: searchPlaceList.value[index].content_id,
     title: searchPlaceList.value[index].title,
     addr1: searchPlaceList.value[index].addr1,
-    currPos: searchPlaceList.value[index].latlng,
+    latlng: searchPlaceList.value[index].latlng,
     first_image: searchPlaceList.value[index].first_image,
   };
 
@@ -293,43 +301,48 @@ const addRoute = (index, insertPos) => {
     return;
   }
 
+  // PlaceCard를 클릭해서 추가한경우 -> 맨뒤에 push
   if (insertPos === -1) {
     selectedPlaceList.value.push(selectedPlaceInfo);
-    testPath.push(searchPlaceList.value[index].latlng);
+    drawList.push(searchPlaceList.value[index].latlng);
+
+    // 지도에 표시할 선을 생성합니다
+    var polyline = new kakao.maps.Polyline({
+      path: drawList, // 선을 구성하는 좌표배열 입니다
+      strokeWeight: 5, // 선의 두께 입니다
+      strokeColor: "#FF204E", // 선의 색깔입니다
+      strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: "solid", // 선의 스타일입니다
+    });
+
+    polyline.setMap(map);
+
+    // 선 배열에 저장
+    polylines.push(polyline);
   } else {
-    testPath.splice(insertPos, 0, searchPlaceList.value[index].latlng);
+    // PlaceCard를 드래그해서 추가한경우
+    // 이미 selectedPlaceList 배열에 추가되어있으므로 따로 insert해줄필요 X
+    // drawSelectedRouteLine() 호출해서 다시 선 그어주기만 하면됨
+    drawSelectedRouteLine();
   }
-
-  // 지도에 표시할 선을 생성합니다
-  var polyline = new kakao.maps.Polyline({
-    path: testPath, // 선을 구성하는 좌표배열 입니다
-    strokeWeight: 5, // 선의 두께 입니다
-    strokeColor: "#FF204E", // 선의 색깔입니다
-    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: "solid", // 선의 스타일입니다
-  });
-
-  polyline.setMap(map);
-
-  // 선 배열에 저장
-  polylines.push(polyline);
 };
 
-const addSelectedRoute = () => {
+// 지도에 표시한 선을 초기화하고
+// 선택 경로(selectedPlaceList) 기반으로 다시 선을 그어줌
+const drawSelectedRouteLine = () => {
   polylines.forEach((polyline) => {
     polyline.setMap(null);
   });
 
-  testPath = [];
+  drawList = [];
   polylines = [];
 
-  selectedPlaceList.value.forEach((e) => {
-    // testPath.push()
-    testPath.push(e.currPos);
+  selectedPlaceList.value.forEach((item) => {
+    drawList.push(item.latlng);
 
     // 지도에 표시할 선을 생성합니다
     var polyline = new kakao.maps.Polyline({
-      path: testPath, // 선을 구성하는 좌표배열 입니다
+      path: drawList, // 선을 구성하는 좌표배열 입니다
       strokeWeight: 5, // 선의 두께 입니다
       strokeColor: "#FF204E", // 선의 색깔입니다
       strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -353,9 +366,11 @@ const saveRoute = async () => {
   });
 };
 
+// selecteRouteList에서 index 번째 삭제
 const removeRoute = (index) => {
   selectedPlaceList.value.splice(index, 1);
-  addSelectedRoute()
+
+  drawSelectedRouteLine();
 };
 
 // 지도 위에 표시되고 있는 마커를 모두 제거합니다
@@ -366,27 +381,37 @@ const removeRoute = (index) => {
 //   markers = [];
 // };
 
+// 선택한 경로 모두 초기화
 const clearSelectedRoute = () => {
   polylines.forEach((polyline) => {
     polyline.setMap(null);
   });
 
   selectedPlaceList.value = [];
-  testPath = [];
+  drawList = [];
   polylines = [];
 };
 
-const handleListChange = (e) => {};
-
-const addRouteCard = (e) => {
+// 드래그로 여행지를 추가햇을때 콜백함수
+const addRouteByDrag = (e) => {
   polylines.forEach((polyline) => {
     polyline.setMap(null);
   });
 
+  // PlaceCard의 인덱스 (추가하려는 장소정보를 가진 배열의 인덱스)
   const preIndex = e.oldIndex;
+
+  // RouteCard의 인덱스 (선택한 경로들을 담는 배열의 몇번째 순서에 새로운 장소를 추가할지 나타내는 인덱스)
   const addedIndex = e.newIndex;
 
-  addRoute(preIndex, addedIndex);
+  addNewRoute(preIndex, addedIndex);
+};
+
+const handleDrag = (e) => {
+  // selectedRouteList 배열 내에서 순서 변화가 일어난 경우
+  if (e.moved) {
+    drawSelectedRouteLine();
+  }
 };
 
 // ====== 최단 경로  구하는 로직 ======
@@ -416,7 +441,7 @@ let size = 0;
 const getShortestPath = () => {
   for (let j = 0; j < polylines.length; j++) polylines[j].setMap(null);
 
-  size = testPath.length;
+  size = drawList.length;
 
   arr = Array.from(new Array(size), () => new Array(size).fill(Infinity));
   dp = Array.from({ length: size }, () => Infinity);
@@ -424,9 +449,9 @@ const getShortestPath = () => {
   pos = Array.from({ length: size }, () => -1);
 
   for (let i = 0; i < size - 1; i++) {
-    let pos1 = testPath[i];
+    let pos1 = drawList[i];
     for (let j = i + 1; j < size; j++) {
-      let pos2 = testPath[j];
+      let pos2 = drawList[j];
       let dist = distance(pos1.La, pos1.Ma, pos2.La, pos2.Ma);
 
       arr[i][j] = dist;
@@ -473,13 +498,13 @@ const dijkstra = () => {
     }
 
     if (idx !== -1) {
-      testPath[i] = selectedPlaceList.value[idx].currPos;
+      drawList[i] = selectedPlaceList.value[idx].latlng;
       dp[idx] = Infinity; // dp에서 해당 요소를 제거합니다.
     }
   }
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
-    path: testPath, // 선을 구성하는 좌표배열 입니다
+    path: drawList, // 선을 구성하는 좌표배열 입니다
     strokeWeight: 5, // 선의 두께 입니다
     strokeColor: "#FF204E", // 선의 색깔입니다
     strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -490,73 +515,6 @@ const dijkstra = () => {
   polyline.setMap(map);
   polylines.push(polyline);
 };
-
-// const placesSearch = (keyword) => {
-//   getPlaceByKeyword(keyword);
-
-//   // displayMarkers(data);
-// };
-
-// // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-// const placesSearchCB = (data, status) => {
-//   if (status === kakao.maps.services.Status.OK) {
-//     // 정상적으로 검색이 완료됐으면
-//     // 검색 목록과 마커를 표출합니다
-//     searchResult.value = data;
-
-//     // Naver Api를 활용해서 장소 제목에 맞는 이미지를 배열에 푸시
-//     getImg();
-
-//     displayMarkers(data);
-//   } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-//     alert("검색 결과가 존재하지 않습니다.");
-//     return;
-//   } else if (status === kakao.maps.services.Status.ERROR) {
-//     alert("검색 결과 중 오류가 발생했습니다.");
-//     return;
-//   }
-// };
-
-// // Naver Api로 장소 title을 검색해서 이미지 불러오기
-// const getImg = async () => {
-//   for (let i = 0; i < searchResult.value.length; i++) {
-//     const resp = await getNaver(i);
-
-//     searchResult.value[i].imgUrl = resp;
-//   }
-// };
-
-// // 확장자가 이미지파일(.jpg, .png ... )로 끝나는지 확인
-// // http://post ... 주소는 이미지 못불러오므로 걸러줌
-// const isValidImageUrl = (url) => {
-//   // 시작 주소가 post인지 확인 (네이버 포스트 이미지는 못불러 오므로 걸러줌)
-//   const postPattern = /^http:\/\/post\./i;
-
-//   return url.match(/\.(jpeg|jpg|gif|png)/) != null && !postPattern.test(url);
-// };
-
-// const getNaver = async (i) => {
-//   return axios
-//     .get("/v1/search/image?", {
-//       params: {
-//         query: searchResult.value[i].place_name,
-//         display: 4,
-//       },
-//       headers: {
-//         "X-Naver-Client-Id": "4xqEe9q8UpnLzt_zPegz",
-//         "X-Naver-Client-Secret": "oCZfB1x_b_",
-//       }, // 인증 헤더 추가
-//     })
-//     .then((res) => {
-//       const ret = res.data.items[0].link;
-//       for (let i = 1; i < 4; i++) {
-//         const url = res.data.items[i].link;
-//         if (isValidImageUrl(url)) return url;
-//       }
-//       return ret;
-//     })
-//     .catch((err) => console.error(err));
-// };
 </script>
 
 <style scoped>
