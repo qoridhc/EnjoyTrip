@@ -169,6 +169,22 @@ public class AttractionController
 
     }
 	
-    
+    @GetMapping("/route/shared")
+	public ResponseEntity<?> getSharedRoute(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws Exception {
+    	log.info("getSharedRoute(AController): 함수 호출 확인");
+		try {
+			Map<String, Integer> map = new HashMap<>();
+			map.put("start", page*pageSize);
+			map.put("pageSize", pageSize);
+			
+			List<RouteDto> list = attractionService.getSharedRoute(map);
+			log.info(String.format("length: %d", list.size()));
+			return new ResponseEntity<List<RouteDto>>(list, HttpStatus.OK);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }    
     
 }

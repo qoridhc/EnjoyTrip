@@ -43,6 +43,7 @@ const router = createRouter({
       path: "/myroute",
       name: "myroute",
       component: MyRouteView,
+      beforeEnter: onlyAuthUser,
       props: true,
     },
     {
@@ -93,11 +94,13 @@ const router = createRouter({
         {
           path: "update",
           name: "user-update",
+          beforeEnter: onlyAuthUser,
           component: () => import("@/components/user/UserUpdate.vue"),
         },
         {
-          path: "/mypage",
+          path: "mypage",
           name: "user-mypage",
+          beforeEnter: onlyAuthUser,
           component: () => import("@/components/user/mypage/UserMyPage.vue"),
           children: [
             {

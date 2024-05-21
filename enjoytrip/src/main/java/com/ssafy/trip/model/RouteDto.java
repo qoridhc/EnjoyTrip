@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class RouteDto {
 		private String userId;
 	    private int route_id;
+	    private boolean isShared;
 	    private List<RouteInfo> infoList;
 
 	    @Data

@@ -28,7 +28,6 @@ const getRouteDetail = async () => {
   await fetchGetRouteDetail(userId);
 };
 
-onMounted(() => {});
 getRouteDetail();
 </script>
 

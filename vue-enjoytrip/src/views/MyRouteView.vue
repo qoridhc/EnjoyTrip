@@ -6,7 +6,7 @@
         <!-- Left Section -->
         <div class="border p-4 h-100">
           <div style="font-size: 25px; font-weight: bold">{{ routeStore.sido_name_kor }}</div>
-          <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.10(금) ~ 2024.05.11(토)</div>
+          <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.22(수) ~ 2024.05.23(목)</div>
           <div class="search">
             <input
               @keyup.enter="searchPlaces"
@@ -101,7 +101,7 @@ import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
 
-import { onMounted, ref, onUpdated } from "vue";
+import { onMounted, ref, onUpdated, watch } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
@@ -115,6 +115,7 @@ import { storeToRefs } from "pinia";
 const mapStore = useMapStore();
 const { searchPlaceList, userRouteList, selectedPlaceList } = storeToRefs(mapStore);
 const { getPlaceByKeyword } = mapStore;
+const { isChanged } = storeToRefs(mapStore)
 
 const memberStore = useMemberStore();
 const { userInfo } = memberStore;
@@ -126,6 +127,8 @@ useFooterStore().isFixed = false;
 
 onMounted(() => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
+  console.log("onMounted(MyRouteView.vue): 시도 확인\nsido: ", routeStore.sido_name_kor)
+
   if (routeStore.sido_name_kor) {
     searchKeyword.value = routeStore.sido_name_kor;
     searchPlaces();
@@ -138,9 +141,11 @@ onMounted(() => {
   }
 });
 
-onUpdated(() => {
-  if (selectedPlaceList.value.length > 0) addSelectedRoute();
-});
+watch(isChanged, (newList, oldList)=>{
+  isChanged.value = false
+  if(selectedPlaceList.value.length > 0) addSelectedRoute()
+})
+
 var map, ps, infowindow;
 
 // default 검색
@@ -404,6 +409,7 @@ const saveRoute = async () => {
 
 const removeRoute = (index) => {
   selectedPlaceList.value.splice(index, 1);
+  addSelectedRoute()
 };
 
 // 지도 위에 표시되고 있는 마커를 모두 제거합니다

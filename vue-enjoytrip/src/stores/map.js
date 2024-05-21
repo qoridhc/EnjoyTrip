@@ -10,6 +10,7 @@ export const useMapStore = defineStore("mapStore", () => {
   const userRouteList = ref([]); // 저장 경로 post 요청을 하기 위한 데이터를 담는 배열
   const userRouteDetailList = ref([]); // 저장한 경로 detail GET 결과를 담는 배열
   const currSidoCode = ref("");
+  const isChanged = ref(false)
 
   const getPlaceByKeyword = async (keyword) => {
     searchPlaceList.value = [];
@@ -50,5 +51,6 @@ export const useMapStore = defineStore("mapStore", () => {
     fetchGetRouteDetail,
     userRouteDetailList,
     currSidoCode,
+    isChanged,
   };
 });
