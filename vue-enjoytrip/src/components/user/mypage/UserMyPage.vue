@@ -34,8 +34,6 @@ const isActive = ref(true);
 const { userInfo } = storeToRefs(useMemberStore())
 
 onMounted(() => {
-  console.log("onMounted(UserMyPage.vue): 마이페이지 user 식별\nuser: ", userInfo.value);
-
   router.push({ name: "user-route" });
 });
 </script>

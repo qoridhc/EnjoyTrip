@@ -16,7 +16,6 @@ const loadPlaces = () => {
         function (data) {
             newPlaces = data
             places.value = [...places.value, ...newPlaces];
-            console.log("loadPlaces(ShareMain): 데이터 확인\nplaces: ", data)
         },
         function (error) {
             console.log(error)

@@ -13,12 +13,11 @@
             <div class="overlay-title">{{ currRouteInfo.title }}</div>
           </div>
           <div class="button-container">
-            <button class="w-50 btn btn-primary">공유하기</button>
-            <button class="w-50 btn btn-danger">삭제하기</button>
+            <button class="w-50 btn btn-primary" @click.prevent="share">공유하기</button>
+            <button class="w-50 btn btn-danger" @click.prevent="remove">삭제하기</button>
           </div>
         </div>
       </div>
-
       <div class="overlay" id="default-overlay" :class="{ active: !isHover }">{{ sidoName }}</div>
     </div>
   </router-link>
@@ -76,9 +75,16 @@ onMounted(async () => {
   await searchByContentId(contentId, (res) => {
     currRouteInfo.value = res.data;
     sidoName.value = attractionList.find((item) => item.sido_code === currRouteInfo.value.sido_code)?.sido_name;
-    console.log(currRouteInfo.value);
   });
 });
+
+function share(){
+  console.log("share(UserRouteCard): 공유하기 버튼 클릭")
+}
+
+function remove(){
+  console.log("remove(UserRouteCard): 삭제하기 버튼 클릭")
+}
 </script>
 
 <style scoped>
@@ -125,22 +131,23 @@ onMounted(async () => {
 }
 
 .overlay-content {
-  position: relative; /* Add position relative */
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center the content vertically */
+  justify-content: center;
   align-items: center;
   height: 100%;
 }
 
 .overlay-title {
   font-size: 16px;
-  margin-bottom: 10px; /* Optional: adjust spacing as needed */
+  margin-bottom: 10px;
+  width: 220px;
 }
 
 .button-container {
-  position: absolute; /* Add position absolute */
-  bottom: 0; /* Stick to the bottom */
+  position: absolute;
+  bottom: 0; 
   display: flex;
   justify-content: space-between;
   width: 100%;

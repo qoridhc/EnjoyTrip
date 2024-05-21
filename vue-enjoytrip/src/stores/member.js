@@ -54,7 +54,6 @@ export const useMemberStore = defineStore("memberStore", () => {
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data.userInfo;
-          console.log("getUserInfo(member.js): 토큰 user 식별 성공\nuser:", userInfo.value)
         }
         else {
           console.log("getUserInfo(member.js): 토큰 user 식별 실패\n")

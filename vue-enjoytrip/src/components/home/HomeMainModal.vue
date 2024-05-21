@@ -11,12 +11,9 @@ const { setSidoInfo } = useRouteStore();
 const img_url = ref("");
 
 onMounted(() => {
-  console.log("onMounted(HomeMainModal.vue): Modal창 onMounted\nsido_code: ", sido_code.value);
-
   getSidoInfo(
     sido_code.value,
     function (data) {
-      console.log("onMounted(HomeMainModal.vue): 여행지 정보 확인\nresponse: ", data);
       setSidoInfo(data);
       img_url.value = `/src/assets/img/sido/${sido_name_eng.value}.jpg`;
     },
@@ -29,9 +26,7 @@ onMounted(() => {
 const emit = defineEmits(["close"]);
 const closeModal = () => {
   mapStore.selectedPlaceList = [];
-
   emit("close");
-  console.log("closeModal(HomeMainModal.vue): 모달 닫기");
 };
 </script>
 

@@ -1,12 +1,3 @@
-<template>
-  <div class="d-flex flex-wrap gap-3">
-    <div v-if="userRouteDetailList.length > 0">
-      <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index">
-      </UserRouteCard>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import UserRouteCard from "@/components/user/mypage/UserRouteCard.vue";
 
@@ -30,5 +21,14 @@ const getRouteDetail = async () => {
 
 getRouteDetail();
 </script>
+
+<template>
+  <div class="d-flex flex-wrap gap-3">
+    <div v-if="userRouteDetailList.length > 0">
+      <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index">
+      </UserRouteCard>
+    </div>
+  </div>
+</template>
 
 <style scoped></style>
