@@ -64,6 +64,10 @@ const save = async () => {
 
   await postRoute(routeInfo);
 };
+
+const share = async () => {
+  console.log(selectedPlaceList.value)
+}
 </script>
 
 <style scoped>

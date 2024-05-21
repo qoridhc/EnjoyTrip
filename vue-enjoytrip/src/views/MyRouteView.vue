@@ -106,7 +106,7 @@ import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
 
-import { onMounted, ref, onUpdated } from "vue";
+import { onMounted, ref, onUpdated, watch } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
@@ -120,6 +120,7 @@ import { storeToRefs } from "pinia";
 const mapStore = useMapStore();
 const { searchPlaceList, userRouteList, selectedPlaceList } = storeToRefs(mapStore);
 const { getPlaceByKeyword } = mapStore;
+const { isChanged } = storeToRefs(mapStore)
 
 const memberStore = useMemberStore();
 const { userInfo } = memberStore;
@@ -139,9 +140,11 @@ onMounted(() => {
   }
 });
 
-onUpdated(() => {
-  if (selectedPlaceList.value.length > 0) addSelectedRoute();
-});
+watch(isChanged, (newList, oldList)=>{
+  isChanged.value = false
+  if(selectedPlaceList.value.length > 0) addSelectedRoute()
+})
+
 var map, ps, infowindow;
 
 // default 검색
@@ -352,6 +355,7 @@ const saveRoute = async () => {
 
 const removeRoute = (index) => {
   selectedPlaceList.value.splice(index, 1);
+  addSelectedRoute()
 };
 
 // 지도 위에 표시되고 있는 마커를 모두 제거합니다

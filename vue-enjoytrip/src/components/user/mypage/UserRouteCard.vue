@@ -6,15 +6,20 @@
       @mouseenter="isHover = true"
       @mouseleave="isHover = false">
       <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
-      <div class="overlay rounded" id="custom-overay" :class="{ active: isHover }">
-        <div class="text-center" style="font-size: 20px">
-          <div style="font-size: 16px">{{ currRouteInfo.title }}</div>
-          <div style="font-size: 16px">{{ sidoName }}</div>
-          <div>{{ idx + 1 }}</div>
-          <div>보기</div>
+
+      <div class="overlay rounded" id="custom-overlay" :class="{ active: isHover }">
+        <div class="overlay-content">
+          <div class="text-center">
+            <div class="overlay-title">{{ currRouteInfo.title }}</div>
+          </div>
+          <div class="button-container">
+            <button class="w-50 btn btn-primary">공유하기</button>
+            <button class="w-50 btn btn-danger">삭제하기</button>
+          </div>
         </div>
       </div>
-      <div class="overlay" id="default-overay" :class="{ active: !isHover }">{{ sidoName }}</div>
+
+      <div class="overlay" id="default-overlay" :class="{ active: !isHover }">{{ sidoName }}</div>
     </div>
   </router-link>
 </template>
@@ -61,15 +66,19 @@ const moveMyRoute = async () => {
       selectedPlaceList.value.push(selectedPlaceInfo);
     });
   }
+
+  mapStore.isChanged = true
 };
 
 onMounted(async () => {
   const contentId = props.route.infoList[0].content_id;
 
-  await searchByContentId(contentId, (res) => {
+  await searchByContentId(
+    contentId, 
+    (res) => {
     currRouteInfo.value = res.data;
-
     sidoName.value = attractionList.find((item) => item.sido_code === currRouteInfo.value.sido_code)?.sido_name;
+    console.log(currRouteInfo.value)
   });
 });
 </script>
@@ -81,9 +90,9 @@ onMounted(async () => {
 }
 
 .img-fluid {
-  width: 220px; /* 원하는 크기로 조절 */
+  width: 220px;
   height: 200px;
-  border-radius: 10px; /* 테두리를 둥글게 조절 */
+  border-radius: 10px;
 }
 
 .overlay {
@@ -97,25 +106,45 @@ onMounted(async () => {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 
-  /* 수직 가운데 정렬을 위한 스타일 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-#default-overay {
+#default-overlay {
   font-size: 20px;
 }
 
-#custom-overay {
+#custom-overlay {
   background-color: rgba(0, 0, 0, 0.5);
-  width: 220px; /* 원하는 크기로 조절 */
+  width: 220px;
   height: 200px;
-  /* margin-top: 5px; */
 }
 
 .overlay.active {
   opacity: 1;
+}
+
+.overlay-content {
+  position: relative; /* Add position relative */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center the content vertically */
+  align-items: center;
+  height: 100%;
+}
+
+.overlay-title {
+  font-size: 16px;
+  margin-bottom: 10px; /* Optional: adjust spacing as needed */
+}
+
+.button-container {
+  position: absolute; /* Add position absolute */
+  bottom: 0; /* Stick to the bottom */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 </style>
