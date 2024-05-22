@@ -7,11 +7,15 @@ import BoardListPagination from '@/components/board/list/BoardListPagination.vue
 import { getArticleList } from '@/api/board';
 import { onMounted, ref } from 'vue';
 
+import { useFooterStore } from '@/stores/footer';
+import { onBeforeRouteLeave } from 'vue-router';
+
 const articleList = ref([])
 const page = ref(1)
 const pageSize = 12;
 
 onMounted(() => {
+    useFooterStore().isFixed=true
     getArticleList(
         page, pageSize,
         function(data){
@@ -21,6 +25,10 @@ onMounted(() => {
             console.log("getArticleList(BoardList.vue): 게시글 목록 읽어오기 실패\n", error)
         }
     )
+})
+
+onBeforeRouteLeave(()=>{
+    useFooterStore().isFixed = false;
 })
 
 function updateArticleList(newArticleList){
@@ -33,15 +41,14 @@ function updateArticleList(newArticleList){
     <div class="d-flex flex-column">
         <div class="flex-shrink-0 row justify-content-center">
             <hr class="mt-2" />
-            <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="col-lg-8 col-md-10 col-sm-12" >
                 <BoardListHeader @search="updateArticleList" />
 
                 <table class="table table-hover mt-5">
                     <BoardListTableHead />
                     <BoardListTableBody 
                         v-for="(article) in articleList" :key="article.articleNo" 
-                        :article="article"
-                    />
+                        :article="article"/>
                 </table>
             </div>
             <BoardListPagination />
