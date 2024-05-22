@@ -91,7 +91,7 @@ function share(){
   shareRoute(
     props.route.route_id,
     function(){
-      emit('remove', props.route.route_id)
+      alert("공유 성공")
     },
     function(error){
       console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error)
