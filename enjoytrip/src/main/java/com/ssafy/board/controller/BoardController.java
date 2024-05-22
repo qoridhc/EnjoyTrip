@@ -125,6 +125,8 @@ public class BoardController {
 	public ResponseEntity<?> modify(@RequestBody BoardDto boardDto) {
 		try 
 		{
+			int hit = Integer.parseInt(boardDto.getHit())-2;
+			boardDto.setHit(String.valueOf(hit));
 			boardService.modifyArticle(boardDto);
 			return new ResponseEntity<BoardDto>(boardDto, HttpStatus.OK);
 		} 
