@@ -24,12 +24,13 @@
 		limit 10
 	</select>
 
-	<select id="searchByKeyword">
+	<select id="searchByKeyword" parameterType="Map">
 		SELECT
 		content_id, content_type_id, title, addr1, first_image, latitude, longitude
 		FROM attraction_info
 		WHERE title LIKE CONCAT('%', #{keyword}, '%')
-		limit 50
+		AND sido_code = #{sido_code}
+		limit 30
 	</select>
 	
 	<select id="searchBySidoCode" parameterType="String">
@@ -37,7 +38,7 @@
 		content_id, content_type_id, title, addr1, first_image, latitude, longitude
 		FROM attraction_info
 		WHERE sido_code = #{sido_code}
-		limit 50
+		limit 30
 	</select>
 
 	<select id="getSidoInfo" parameterType="String">

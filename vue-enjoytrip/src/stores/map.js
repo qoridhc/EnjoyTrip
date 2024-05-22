@@ -12,9 +12,9 @@ export const useMapStore = defineStore("mapStore", () => {
   const currSidoCode = ref("");
   const isChanged = ref(false)
 
-  const getPlaceByKeyword = async (keyword) => {
+  const getPlaceByKeyword = async (keyword, sido_code) => {
     searchPlaceList.value = [];
-    await searchByKeyword(keyword, (response) => {
+    await searchByKeyword(keyword, sido_code, (response) => {
       if (response.status === httpStatusCode.OK) {
         searchPlaceList.value = response.data;
 

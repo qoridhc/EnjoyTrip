@@ -2,8 +2,8 @@ import { localAxios } from "@/util/http-commons";
 
 const local = localAxios();
 
-async function searchByKeyword(keyword, success, fail) {
-  await local.get(`/attraction/search?keyword=${keyword}`).then(success).catch(fail);
+async function searchByKeyword(keyword, sido_code, success, fail) {
+  await local.get(`/attraction/search?keyword=${keyword}&sido_code=${sido_code}`).then(success).catch(fail);
 }
 
 async function searchByContentId(contentId, success, fail) {

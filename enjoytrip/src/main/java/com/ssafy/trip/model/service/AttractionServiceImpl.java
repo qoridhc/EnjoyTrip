@@ -41,8 +41,8 @@ public class AttractionServiceImpl implements AttractionService
 	}
 
 	@Override
-	public List<AttractionDto> searchByKeyword(String keyword) throws Exception {
-		return dao.searchByKeyword(keyword);
+	public List<AttractionDto> searchByKeyword(Map<String, String> params) throws Exception {
+		return dao.searchByKeyword(params);
 	}
 
 	@Override

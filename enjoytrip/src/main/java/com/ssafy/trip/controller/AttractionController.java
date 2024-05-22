@@ -82,12 +82,15 @@ public class AttractionController
 	
 	@GetMapping("/search")
 	public ResponseEntity<List<AttractionDto>> searchByKeyword(
-			@RequestParam("keyword") String keyword
-			
+			@RequestParam("keyword") String keyword,
+			@RequestParam("sido_code") String sido_code
 			) throws Exception {
 		log.info("search - 호출");
+		Map<String, String> params = new HashMap<>();
+		params.put("keyword", keyword);
+		params.put("sido_code", sido_code);
 		
-		return new ResponseEntity<List<AttractionDto>>(attractionService.searchByKeyword(keyword), HttpStatus.OK);
+		return new ResponseEntity<List<AttractionDto>>(attractionService.searchByKeyword(params), HttpStatus.OK);
 	}
 	
 	@GetMapping("/search/sido/{sido_code}")

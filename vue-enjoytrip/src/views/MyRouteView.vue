@@ -103,7 +103,16 @@ onMounted(async () => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 
   if (routeStore.sido_name_kor) {
+
+    // 다른 페이지에서 맵으로 넘어올때 시도코드를 기반으로 자동 검색
     await getPlaceBySidoCode(routeStore.sido_code);
+
+    // 다른 페이지에서 넘어올 때 저장된 여행지 리스트를 검색 결과에 추가해서 마커에 같이 표시하기
+    // searchPlaceList.value.push(...selectedPlaceList.value)
+    console.log(selectedPlaceList.value)
+    searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value]
+
+    // 검색 결과 기반으로 마커 표시
     displayMarkers();
   }
 });
@@ -157,7 +166,7 @@ const searchPlaces = async () => {
     return false;
   }
 
-  await getPlaceByKeyword(searchKeyword.value);
+  await getPlaceByKeyword(searchKeyword.value, routeStore.sido_code);
 
   displayMarkers();
 };
