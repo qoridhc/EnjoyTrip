@@ -40,6 +40,8 @@ function removeRoute(route_id){
     <div v-if="isShow">
       <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index"
         @remove="removeRoute"
+        @stop-share="removeRoute"
+        :isShared="true"
       >
       </UserRouteCard>
     </div>

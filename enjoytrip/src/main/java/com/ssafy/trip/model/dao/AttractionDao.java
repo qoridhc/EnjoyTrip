@@ -29,4 +29,5 @@ public interface AttractionDao
 	public int deleteRoute(int routeId) throws SQLException;
 	public int shareRoute(int routeId) throws SQLException;
 	public List<AttractionDto> searchBySidoCode(String sido_code) throws SQLException;
+	public int stopShareRoute(int routeId) throws SQLException;
 }

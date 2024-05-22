@@ -230,4 +230,20 @@ public class AttractionController
     		return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     	}
     }
+    
+    @GetMapping("route/stop/{routeId}")
+    public ResponseEntity<?> stopShareRoute(@PathVariable(value="routeId") int routeId) throws Exception {
+    	try {
+    		int res = attractionService.stopShareRoute(routeId);
+    		if(res != 0) {
+    			return new ResponseEntity<String>("정상 공유 완료", HttpStatus.OK);
+    		}
+    		else {
+    			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    		}
+    	}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+    }
 }

@@ -1,8 +1,10 @@
 <template>
   <div class="d-flex flex-wrap gap-3" style="max-height: 50vh; overflow-y: auto" :key="key">
     <div v-if="isShow">
-      <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index"
+      <UserRouteCard v-for="(route, index) in userRouteDetailList" :idx="index" :key="index"
         @remove="removeRoute"
+        :route="route"
+        :isShared="false"
       >
       </UserRouteCard>
     </div>

@@ -12,7 +12,8 @@
           <div class="overlay-title">{{ currRouteInfo.title }}</div>
         </div>
         <div class="button-container">
-          <button class="w-50 btn btn-primary" @click.stop.prevent="share">공유하기</button>
+          <button class="w-50 btn btn-primary" @click.stop.prevent="share" v-if="!isShared">공유하기</button>
+          <button class="w-50 btn btn-warning" @click.stop.prevent="stopShare" v-if="isShared">공유끊기</button>
           <button class="w-50 btn btn-danger" @click.stop.prevent="remove">삭제하기</button>
         </div>
       </div>
@@ -28,7 +29,7 @@ import { useMapStore } from "@/stores/map";
 import { searchByContentId } from "@/api/map";
 import { attractionList } from "@/util/constants.js";
 import { useRouteStore } from "@/stores/route";
-import { deleteRoute, shareRoute } from "@/api/route";
+import { deleteRoute, shareRoute, stopShareRoute } from "@/api/route";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
@@ -44,9 +45,10 @@ const isHover = ref(false);
 const props = defineProps({
   route: Object,
   idx: Number,
+  isShared: Boolean,
 });
 
-const emit = defineEmits(["remove"]);
+const emit = defineEmits(["remove", "stopShare"]);
 const router = useRouter();
 
 // 처음 실행
@@ -82,7 +84,7 @@ const moveMyRoute = async () => {
   router.push({ name: "myroute" });
 };
 
-// 버튼 클릭
+// 공유하기 버튼 클릭
 function share() {
   console.log("share(UserRouteCard): 공유하기 버튼 클릭");
   shareRoute(
@@ -102,6 +104,27 @@ function share() {
   );
 }
 
+// 공유끊기 버튼 클릭
+function stopShare(){
+  stopShareRoute(
+    props.route.route_id,
+    function () {
+      Swal.fire({
+        title: "공유 취소",
+        text: "'전체 일정' 탭에서 다시 공유하실 수 있습니다.",
+        icon: "success",
+        confirmButtonText: "다음",
+        confirmButtonColor: "#a6e3e9",
+      });
+      emit("stopShare", props.route.route_id)
+    },
+    function (error) {
+      console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error);
+    }
+  );
+}
+
+// 삭제하기 버튼 클릭
 function remove() {
   deleteRoute(
     props.route.route_id,

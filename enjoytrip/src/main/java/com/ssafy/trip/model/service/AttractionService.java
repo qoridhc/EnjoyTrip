@@ -26,4 +26,5 @@ public interface AttractionService
 	public int deleteRoute(int routeId) throws Exception;
 	public int shareRoute(int routeId) throws Exception;
 	public List<AttractionDto> searchBySidoCode(String sido_code) throws Exception;
+	public int stopShareRoute(int routeId) throws Exception;
 }
