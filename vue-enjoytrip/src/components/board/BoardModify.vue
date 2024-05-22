@@ -28,6 +28,7 @@ function submit() {
             articleNo: article.value.articleNo,
             subject: article.value.subject,
             content: article.value.content,
+            hit: article.value.hit,
         },
         function(response){
             router.push({name: 'board-detail', params: {articleNo: response.data.articleNo}})  
@@ -60,9 +61,10 @@ function submit() {
                         <button @click.prevent="submit" class="btn btn-outline-primary mb-3 me-2">
                             글수정
                         </button>
-                        <button type="button" class="btn btn-outline-danger mb-3">
+                        <router-link :to="{name: 'board-list'}" class="btn btn-outline-danger mb-3">
                             목록으로이동...
-                        </button>
+                        </router-link>
+
                     </div>
                 </form>
             </div>

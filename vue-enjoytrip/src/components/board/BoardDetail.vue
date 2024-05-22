@@ -19,6 +19,7 @@ const article = ref({})
 const isEditable = ref(false)
 
 onMounted(() => {
+    console.log("onMounted(BoardDetail.vue): 게시글 읽기\narticleNo: ", route.params.articleNo)
     getArticle(
         route.params.articleNo,
         function (data) {
@@ -33,6 +34,8 @@ onMounted(() => {
 
 // 게시글 삭제
 function remove() {
+    if(!confirm("정말 삭제하시겠습니까?")) return
+
     removeArticle(
         article.value.articleNo,
         function (response) {
