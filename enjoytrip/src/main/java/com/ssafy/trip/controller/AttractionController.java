@@ -83,13 +83,22 @@ public class AttractionController
 	@GetMapping("/search")
 	public ResponseEntity<List<AttractionDto>> searchByKeyword(
 			@RequestParam("keyword") String keyword
+			
 			) throws Exception {
 		log.info("search - 호출");
 		
 		return new ResponseEntity<List<AttractionDto>>(attractionService.searchByKeyword(keyword), HttpStatus.OK);
 	}
 	
-	@GetMapping("/search/{contentId}")
+	@GetMapping("/search/sido/{sido_code}")
+	public ResponseEntity<List<AttractionDto>> searchBySidoCode(
+			@PathVariable("sido_code") String sido_code) throws Exception {
+		log.info("search - 호출");
+		
+		return new ResponseEntity<List<AttractionDto>>(attractionService.searchBySidoCode(sido_code), HttpStatus.OK);
+	}
+	
+	@GetMapping("/search/content/{contentId}")
 	public ResponseEntity<AttractionDto> searchByContentId(
 			@PathVariable("contentId") String contentId
 			) throws Exception {
@@ -188,11 +197,27 @@ public class AttractionController
     }    
     
     @GetMapping("/route/delete/{routeId}")
-    public ResponseEntity<?> getSharedRoute(@PathVariable(value="routeId") int routeId) throws Exception {
+    public ResponseEntity<?> deleteRoute(@PathVariable(value="routeId") int routeId) throws Exception {
     	try {
     		int res = attractionService.deleteRoute(routeId);
     		if(res != 0) {
     			return new ResponseEntity<String>("정상 삭제 완료", HttpStatus.OK);
+    		}
+    		else {
+    			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    		}
+    	}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+    }
+    
+    @GetMapping("route/share/{routeId}")
+    public ResponseEntity<?> shareRoute(@PathVariable(value="routeId") int routeId) throws Exception {
+    	try {
+    		int res = attractionService.shareRoute(routeId);
+    		if(res != 0) {
+    			return new ResponseEntity<String>("정상 공유 완료", HttpStatus.OK);
     		}
     		else {
     			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);

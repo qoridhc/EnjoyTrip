@@ -27,4 +27,6 @@ public interface AttractionDao
 	public AttractionDto searchByContentId(String contentId) throws SQLException;
 	public List<RouteDto> getSharedRoute(Map<String, Integer> map) throws SQLException;
 	public int deleteRoute(int routeId) throws SQLException;
+	public int shareRoute(int routeId) throws SQLException;
+	public List<AttractionDto> searchBySidoCode(String sido_code) throws SQLException;
 }

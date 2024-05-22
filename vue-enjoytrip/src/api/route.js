@@ -24,4 +24,15 @@ function deleteRoute(routeId, success, fail){
     })
 }
 
-export{ getSidoInfo, deleteRoute }
+function shareRoute(routeId, success, fail){
+    axios.get(`${api_url}/attraction/route/share/${routeId}`)
+    .then((response) => {
+        success(response.data)
+    })
+    .catch((error) => {
+        fail(error)
+    })
+}
+
+
+export{ getSidoInfo, deleteRoute, shareRoute }

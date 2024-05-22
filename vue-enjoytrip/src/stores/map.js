@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { searchByKeyword, getRouteDetail } from "@/api/map";
+import { searchByKeyword, getRouteDetail, searchBySidoCode } from "@/api/map";
 
 import { httpStatusCode } from "@/util/http-status";
 
@@ -43,6 +43,20 @@ export const useMapStore = defineStore("mapStore", () => {
     // await searchByKeyword(keyword).then((res) => console.log(res));
   };
 
+  const getPlaceBySidoCode = async (sido_code) => {
+    searchPlaceList.value = [];
+    await searchBySidoCode(sido_code, (response) => {
+      if (response.status === httpStatusCode.OK) {
+        searchPlaceList.value = response.data;
+
+        searchPlaceList.value = searchPlaceList.value.map((item) => {
+          const { name, latitude, longitude, ...rest } = item; // name 속성을 제외한 나머지 속성들을 rest에 할당
+          return { ...rest, latlng: new kakao.maps.LatLng(item.latitude, item.longitude) }; // newName 속성 추가
+        });
+      }
+    });
+  };
+
   return {
     getPlaceByKeyword,
     searchPlaceList,
@@ -52,5 +66,6 @@ export const useMapStore = defineStore("mapStore", () => {
     userRouteDetailList,
     currSidoCode,
     isChanged,
+    getPlaceBySidoCode,
   };
 });

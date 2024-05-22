@@ -33,9 +33,6 @@ const router = useRouter();
 const isActive = ref(true);
 const { userInfo } = storeToRefs(useMemberStore())
 
-onMounted(() => {
-  router.push({ name: "user-route" });
-});
 </script>
 
 <style scoped>

@@ -31,6 +31,14 @@
 		WHERE title LIKE CONCAT('%', #{keyword}, '%')
 		limit 50
 	</select>
+	
+	<select id="searchBySidoCode" parameterType="String">
+		SELECT
+		content_id, content_type_id, title, addr1, first_image, latitude, longitude
+		FROM attraction_info
+		WHERE sido_code = #{sido_code}
+		limit 50
+	</select>
 
 	<select id="getSidoInfo" parameterType="String">
 		select * from sido_info
@@ -98,6 +106,9 @@
 		DELETE FROM route WHERE route_id = #{routeId}
 	</delete>
 
+	<update id="shareRoute">
+		UPDATE route SET is_shared = 1 WHERE route_id = #{routeId};
+	</update>
 
 	<!-- <select id="getRouteDetail" resultType="routeDto" > SELECT r.route_id, 
 		rd.sequence, rd.content_id, rd.description FROM route r LEFT JOIN route_detail 
