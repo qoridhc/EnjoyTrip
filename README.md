@@ -18,6 +18,7 @@ npm i -S vuedraggable@next
 npm install --save @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/vue-fontawesome
 npm i pinia-plugin-persistedstate
 npm i jwt-decode
+npm install sweetalert2
 ```
 
 ## DB 변경사항
