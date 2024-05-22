@@ -1,9 +1,9 @@
 <template>
-  <li class="timeline-item">
+  <li class="timeline-item ms-3">
     <div class="timeline-badge">
       <img src="/src/assets/img/place.png" alt="icon" />
     </div>
-    <div class="timeline-panel pb-3">
+    <div class="timeline-panel pb-3" style="width: 90%">
       <div class="timeline-heading">
         <h4 style="font-size: 18px; padding-top: 10px">{{ place.title }}</h4>
       </div>

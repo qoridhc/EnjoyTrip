@@ -8,18 +8,32 @@
           <div style="font-size: 25px; font-weight: bold">{{ routeStore.sido_name_kor }}</div>
           <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.22(수) ~ 2024.05.23(목)</div>
           <div class="search">
-            <input @keyup.enter="searchPlaces" type="text" v-model="searchKeyword" value="이태원맛집"
+            <input
+              @keyup.enter="searchPlaces"
+              type="text"
+              v-model="searchKeyword"
+              value="이태원맛집"
               placeholder="장소명을 입력해 주세요" />
-            <img class="pt-1" @click="searchPlaces()"
+            <img
+              class="pt-1"
+              @click="searchPlaces()"
               src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
           <div class="mt-3" style="max-height: 70vh; overflow-y: auto">
-            <draggable class="dragArea list-group" :list="searchPlaceList"
-              :group="{ name: 'people', pull: 'clone', put: false }" :sort="false" item-key="name">
+            <draggable
+              class="dragArea list-group"
+              :list="searchPlaceList"
+              :group="{ name: 'people', pull: 'clone', put: false }"
+              :sort="false"
+              item-key="name">
               <template #item="{ element, index }">
                 <div class="list-group-item">
-                  <PlaceCard :place="element" :key="index" @mouseover="markers[index].setMap(map)"
-                    @mouseout="markers[index].setMap()" @click="addNewRoute(index, -1)">
+                  <PlaceCard
+                    :place="element"
+                    :key="index"
+                    @mouseover="markers[index].setMap(map)"
+                    @mouseout="markers[index].setMap()"
+                    @click="addNewRoute(index, -1)">
                   </PlaceCard>
                 </div>
               </template>
@@ -31,18 +45,27 @@
       <div class="col-md-3">
         <div class="mt-5 d-flex">
           <h4 class="me-auto">{{ selectedPlaceList.length }}</h4>
-          <div class="border rounded p-1 me-2 custom-bg-color text-white" @click="getShortestPath()"
+          <div
+            class="border rounded p-1 me-2 custom-bg-color text-white"
+            @click="getShortestPath()"
             style="font-size: 14px; height: 30px">
             최단경로
           </div>
-          <div class="border rounded p-1 custom-bg-color text-white" @click="clearSelectedRoute()"
+          <div
+            class="border rounded p-1 custom-bg-color text-white"
+            @click="clearSelectedRoute()"
             style="font-size: 14px; height: 30px">
             초기화
           </div>
         </div>
         <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden">
-          <draggable class="dragArea list-group" :list="selectedPlaceList" group="people" item-key="name"
-            @add="(e) => addRouteByDrag(e)" @change="handleDrag">
+          <draggable
+            class="dragArea list-group"
+            :list="selectedPlaceList"
+            group="people"
+            item-key="name"
+            @add="(e) => addRouteByDrag(e)"
+            @change="handleDrag">
             <template #item="{ element, index }">
               <div class="list-group-item">
                 <RouteCard :place="element" :id="index + 1" :key="index" :move="moveRoute" @click="removeRoute(index)">
@@ -52,9 +75,13 @@
           </draggable>
         </div>
 
-        <div class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
-          @click="saveRoute()" v-if="selectedPlaceList.length > 0" data-bs-toggle="modal"
-          data-bs-target="#routeSaveModal" style="font-size: 14px; height: 30px">
+        <div
+          class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
+          @click="saveRoute()"
+          v-if="selectedPlaceList.length > 0"
+          data-bs-toggle="modal"
+          data-bs-target="#routeSaveModal"
+          style="font-size: 14px; height: 30px">
           경로저장
         </div>
 
@@ -97,28 +124,24 @@ const { userInfo } = memberStore;
 const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 
 // footer 고정
-useFooterStore().isFixed = false;
+useFooterStore().isFixed = true;
 
 onMounted(async () => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 
-
   if (routeStore.sido_name_kor) {
-    console.log(routeStore.sido_code)
-
     // 다른 페이지에서 맵으로 넘어올때 시도코드를 기반으로 자동 검색
     await getPlaceBySidoCode(routeStore.sido_code);
 
     // 다른 페이지에서 넘어올 때 저장된 여행지 리스트를 검색 결과에 추가해서 마커에 같이 표시하기
     // searchPlaceList.value.push(...selectedPlaceList.value)
-    console.log(selectedPlaceList.value)
-    searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value]
+    searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value];
 
     // 검색 결과 기반으로 마커 표시
     displayMarkers();
 
     // 저장된 여행지 리스트를 기반으로 선 추가
-    drawSelectedRouteLine()
+    drawSelectedRouteLine();
   }
 });
 
@@ -175,7 +198,7 @@ const searchPlaces = async () => {
 
   displayMarkers();
 
-  drawSelectedRouteLine()
+  drawSelectedRouteLine();
 };
 
 var positions = [];
@@ -206,33 +229,22 @@ const displayMarkers = () => {
       // image: markerImage,
     });
 
-    var content =
-      '<div class="rounded bg-white overlay_info" style="position: relative; width:200px; white-space: nowrap; overflow: hidden;">';
-    content +=
-      '    <div style="background-color:#EE4E4E; font-size:13px; padding:4px; display: block; color: white; text-align: center">' +
-      `${searchPlaceList.value[idx].title}` +
-      "</div>";
-    content += '    <div class="d-flex" style="width:200px">';
-    content += `        <img class="p-2" src="${searchPlaceList.value[idx].first_image}" style="width:60px; height:60px" alt="">`;
-    content += `        <div class="address pt-2 pe-2" style="font-size:12px; width:200px; white-space: pre-wrap;">${searchPlaceList.value[idx].addr1}</div>`;
-    content += "    </div>";
-    content += '            <div class="close" onclick="closeOverlay()" title="닫기"></div>';
-    // content += `<div class="close" onclick="closeOverlay()" style="position: absolute; top: 5px; right: 5px; background-color: transparent; border: none; font-size: 16px; cursor: pointer;">&times;</div>`;
-    content += "</div>";
-
     // 커스텀 오버레이를 생성합니다
     var customOverlay = new kakao.maps.CustomOverlay({
       position: position.latlng,
-      content: content,
+      content: createContentElement(idx),
       xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
       yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
+
+    // CustomOverlay.setContent(createContentElement(idx));
 
     kakao.maps.event.addListener(marker, "click", function () {
       customOverlay.setMap(map);
     });
 
     // kakao.maps.event.addListener(marker, "mouseover", function () {
+    //   console.log(123);
     //   customOverlay.setMap(map);
     // });
 
@@ -260,12 +272,79 @@ const displayMarkers = () => {
   map.setBounds(bounds);
 };
 
-// // 인포 윈도우 생성
-// const displayInfowindow = (marker, title) => {
-//   // var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
-//   // infowindow.setContent(content);
-//   // infowindow.open(map, marker);
-// };
+function createContentElement(idx) {
+  // 메인 컨테이너 div 생성
+  const content = document.createElement("div");
+  content.className = "rounded bg-white overlay_info";
+  content.style.position = "relative";
+  content.style.width = "200px";
+  content.style.whiteSpace = "nowrap";
+  content.style.overflow = "hidden";
+
+  // 제목 컨테이너 div 생성
+  const titleContainer = document.createElement("div");
+  titleContainer.style.backgroundColor = "#EE4E4E";
+  titleContainer.style.fontSize = "13px";
+  titleContainer.style.padding = "4px";
+  titleContainer.style.color = "white";
+  titleContainer.style.textAlign = "center";
+  titleContainer.style.overflow = "hidden";
+  titleContainer.style.whiteSpace = "nowrap";
+  titleContainer.style.display = "flex";
+  titleContainer.style.alignItems = "center";
+
+  // 제목 div 생성
+  const titleDiv = document.createElement("div");
+  titleDiv.style.textOverflow = "ellipsis";
+  titleDiv.style.overflow = "hidden";
+  titleDiv.style.whiteSpace = "nowrap";
+  titleDiv.style.flex = "1";
+  titleDiv.textContent = searchPlaceList.value[idx].title;
+
+  // 닫기 버튼 div 생성
+  const closeButton = document.createElement("div");
+  closeButton.className = "close";
+  closeButton.style.backgroundColor = "transparent";
+  closeButton.style.border = "none";
+  closeButton.style.fontSize = "16px";
+  closeButton.style.cursor = "pointer";
+  closeButton.innerHTML = "&times;";
+  closeButton.addEventListener("click", function () {
+    markers[idx].setMap(null);
+  });
+
+  titleContainer.appendChild(titleDiv);
+  titleContainer.appendChild(closeButton);
+
+  content.appendChild(titleContainer);
+
+  // 내용 컨테이너 div 생성
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "d-flex";
+  contentDiv.style.width = "200px";
+
+  // 이미지 요소 생성
+  const img = document.createElement("img");
+  img.className = "p-2";
+  img.src = searchPlaceList.value[idx].first_image;
+  img.style.width = "60px";
+  img.style.height = "60px";
+  img.alt = "";
+  contentDiv.appendChild(img);
+
+  // 주소 div 생성
+  const addressDiv = document.createElement("div");
+  addressDiv.className = "address pt-2 pe-2";
+  addressDiv.style.fontSize = "12px";
+  addressDiv.style.width = "200px";
+  addressDiv.style.whiteSpace = "pre-wrap";
+  addressDiv.textContent = searchPlaceList.value[idx].addr1;
+  contentDiv.appendChild(addressDiv);
+
+  content.appendChild(contentDiv);
+
+  return content;
+}
 
 var drawList = [], // 선을 그어야할 위치 좌표 배열
   polylines = []; // 선을 긋기위한 polyline 객체를 담은 배열
