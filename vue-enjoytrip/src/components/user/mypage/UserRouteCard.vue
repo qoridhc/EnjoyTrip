@@ -1,21 +1,24 @@
 <template>
-    <div class="image-container me-2 mb-2" @click="moveMyRoute" @mouseenter="isHover = true" @mouseleave="isHover = false">
+  <div
+    class="image-container me-2 mb-2"
+    @click="moveMyRoute"
+    @mouseenter="isHover = true"
+    @mouseleave="isHover = false">
+    <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
 
-      <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
-
-      <div class="overlay rounded" id="custom-overlay" :class="{ active: isHover }">
-        <div class="overlay-content">
-          <div class="text-center">
-            <div class="overlay-title">{{ currRouteInfo.title }}</div>
-          </div>
-          <div class="button-container">
-            <button class="w-50 btn btn-primary" @click.stop.prevent="share">공유하기</button>
-            <button class="w-50 btn btn-danger" @click.stop.prevent="remove">삭제하기</button>
-          </div>
+    <div class="overlay rounded" id="custom-overlay" :class="{ active: isHover }">
+      <div class="overlay-content">
+        <div class="text-center">
+          <div class="overlay-title">{{ currRouteInfo.title }}</div>
+        </div>
+        <div class="button-container">
+          <button class="w-50 btn btn-primary" @click.stop.prevent="share">공유하기</button>
+          <button class="w-50 btn btn-danger" @click.stop.prevent="remove">삭제하기</button>
         </div>
       </div>
-      <div class="overlay" id="default-overlay" :class="{ active: !isHover }">{{ sidoName }}</div>
     </div>
+    <div class="overlay" id="default-overlay" :class="{ active: !isHover }">{{ sidoName }}</div>
+  </div>
 </template>
 
 <script setup>
@@ -27,6 +30,7 @@ import { attractionList } from "@/util/constants.js";
 import { useRouteStore } from "@/stores/route";
 import { deleteRoute, shareRoute } from "@/api/route";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const routeStore = useRouteStore();
 const mapStore = useMapStore();
@@ -42,8 +46,8 @@ const props = defineProps({
   idx: Number,
 });
 
-const emit = defineEmits(['remove'])
-const router = useRouter()
+const emit = defineEmits(["remove"]);
+const router = useRouter();
 
 // 처음 실행
 onMounted(async () => {
@@ -62,49 +66,60 @@ const moveMyRoute = async () => {
   routeStore.sido_code = currRouteInfo.value.sido_code;
   routeStore.sido_name_kor = sidoName.value;
   for (const element of props.route.infoList) {
-
-    await searchByContentId(
-      element.content_id,
-      function (res) {
-        const selectedPlaceInfo = {
-          content_id: res.data.content_id,
-          title: res.data.title,
-          addr1: res.data.addr1,
-          latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
-          first_image: res.data.first_image,
-          description: element.description,
-        };
-        selectedPlaceList.value.push(selectedPlaceInfo);
-      });
+    await searchByContentId(element.content_id, function (res) {
+      const selectedPlaceInfo = {
+        content_id: res.data.content_id,
+        title: res.data.title,
+        addr1: res.data.addr1,
+        latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+        first_image: res.data.first_image,
+        description: element.description,
+      };
+      selectedPlaceList.value.push(selectedPlaceInfo);
+    });
   }
   mapStore.isChanged = true;
-  router.push({ name: 'myroute' })
+  router.push({ name: "myroute" });
 };
 
 // 버튼 클릭
 function share() {
-  console.log("share(UserRouteCard): 공유하기 버튼 클릭")
+  console.log("share(UserRouteCard): 공유하기 버튼 클릭");
   shareRoute(
     props.route.route_id,
     function () {
-      alert("공유 성공")
+      Swal.fire({
+        title: "공유하기 성공!!",
+        text: "플랜 둘러보기 게시판에서 확인하실 수 있습니다.",
+        icon: "success",
+        confirmButtonText: "다음",
+        confirmButtonColor: "#a6e3e9",
+      });
     },
     function (error) {
-      console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error)
+      console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error);
     }
-  )
+  );
 }
 
 function remove() {
   deleteRoute(
     props.route.route_id,
     function () {
-      emit('remove', props.route.route_id)
+      Swal.fire({
+        title: "삭제하기 성공!!",
+        text: "성공적으로 일정을 삭제하였습니다.!!",
+        icon: "success",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#a6e3e9",
+      });
+
+      emit("remove", props.route.route_id);
     },
     function (error) {
-      console.log("remove(UserRouteCard): 삭제하기 실패\nerror: ", error)
+      console.log("remove(UserRouteCard): 삭제하기 실패\nerror: ", error);
     }
-  )
+  );
 }
 </script>
 

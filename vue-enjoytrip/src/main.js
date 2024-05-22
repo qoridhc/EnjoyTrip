@@ -11,7 +11,12 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlane, faPassport, faBolt, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+
 const app = createApp(App);
+app.use(VueSweetalert2);
+
 const pinia = createPinia();
 
 pinia.use(piniaPluginPersistedstate);
