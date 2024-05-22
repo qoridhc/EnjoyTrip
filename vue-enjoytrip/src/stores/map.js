@@ -27,6 +27,7 @@ export const useMapStore = defineStore("mapStore", () => {
     // await searchByKeyword(keyword).then((res) => console.log(res));
   };
 
+  // 새 함수 만들자
   const fetchGetRouteDetail = async (userId) => {
     await getRouteDetail(
       userId,

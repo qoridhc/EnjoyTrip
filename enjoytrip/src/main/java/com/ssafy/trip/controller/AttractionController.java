@@ -183,7 +183,7 @@ public class AttractionController
 	
     @GetMapping("/route/shared")
 	public ResponseEntity<?> getSharedRoute(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws Exception {
-    	log.info("getSharedRoute(AController): 함수 호출 확인");
+    	log.info("getSharedRoute(AConctroller): 함수 호출 확인");
 		try {
 			Map<String, Integer> map = new HashMap<>();
 			map.put("start", page*pageSize);
