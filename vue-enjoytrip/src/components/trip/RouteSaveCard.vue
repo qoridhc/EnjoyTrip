@@ -15,6 +15,7 @@
           class="ms-2 border border-dark rounded ps-2 pt-1 flex-grow-1"
           v-model="inputText"
           maxlength="175"
+          placeholder="선택한 여행지를 설명해주세요"
           style="resize: none"></textarea>
       </div>
     </div>
