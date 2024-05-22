@@ -30,6 +30,7 @@ import { useMapStore } from "@/stores/map";
 import { searchByContentId } from "@/api/map";
 import { attractionList } from "@/util/constants.js";
 import { useRouteStore } from "@/stores/route";
+import { deleteRoute } from "@/api/route";
 
 const routeStore = useRouteStore();
 const mapStore = useMapStore();
@@ -83,7 +84,13 @@ function share(){
 }
 
 function remove(){
-  console.log("remove(UserRouteCard): 삭제하기 버튼 클릭\ncurr: ", props.route)
+  deleteRoute(
+    props.route.route_id,
+    function(){},
+    function(error){
+      console.log("remove(UserRouteCard): 삭제하기 실패\nerror: ", error)
+    }
+  )
 }
 </script>
 

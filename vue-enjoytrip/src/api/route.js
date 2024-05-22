@@ -14,4 +14,14 @@ function getSidoInfo(sido_code, success, fail){
     })
 }
 
-export{ getSidoInfo }
+function deleteRoute(routeId, success, fail){
+    axios.get(`${api_url}/attraction/route/delete/${routeId}`)
+    .then((response) => {
+        success(response.data)
+    })
+    .catch((error) => {
+        fail(error)
+    })
+}
+
+export{ getSidoInfo, deleteRoute }

@@ -94,6 +94,10 @@
 		ORDER BY r.route_id, rd.sequence;
 	</select>
 
+	<delete id="deleteRoute">
+		DELETE FROM route WHERE route_id = #{routeId}
+	</delete>
+
 
 	<!-- <select id="getRouteDetail" resultType="routeDto" > SELECT r.route_id, 
 		rd.sequence, rd.content_id, rd.description FROM route r LEFT JOIN route_detail 

@@ -187,10 +187,19 @@ public class AttractionController
 		}
     }    
     
-    @GetMapping("/route/delete/${routeId}")
-    public ResponseEntity<?> getSharedRoute(@PathVariable int routeId) throws Exception {
-    	
-    	
-    	return null;
+    @GetMapping("/route/delete/{routeId}")
+    public ResponseEntity<?> getSharedRoute(@PathVariable(value="routeId") int routeId) throws Exception {
+    	try {
+    		int res = attractionService.deleteRoute(routeId);
+    		if(res != 0) {
+    			return new ResponseEntity<String>("정상 삭제 완료", HttpStatus.OK);
+    		}
+    		else {
+    			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    		}
+    	}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
     }
 }
