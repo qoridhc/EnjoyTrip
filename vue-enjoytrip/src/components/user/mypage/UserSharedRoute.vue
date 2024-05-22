@@ -23,7 +23,7 @@ getRouteDetail();
 </script>
 
 <template>
-  <div class="d-flex flex-wrap gap-3">
+  <div class="d-flex flex-wrap gap-3" style="max-height: 50vh; overflow-y: auto">
     <div v-if="userRouteDetailList.length > 0">
       <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index">
       </UserRouteCard>

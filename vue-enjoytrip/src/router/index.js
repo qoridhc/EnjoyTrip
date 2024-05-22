@@ -102,6 +102,7 @@ const router = createRouter({
           name: "user-mypage",
           beforeEnter: onlyAuthUser,
           component: () => import("@/components/user/mypage/UserMyPage.vue"),
+          redirect: {name: 'user-route'},
           children: [
             {
               path: "",

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-wrap gap-3" :key="key">
+  <div class="d-flex flex-wrap gap-3" style="max-height: 50vh; overflow-y: auto" :key="key">
     <div v-if="isShow">
       <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index"
         @remove="removeRoute"
@@ -35,13 +35,6 @@ onMounted(async()=>{
   await fetchGetRouteDetail(userId);
   isShow.value = true
 })
-
-// const getRouteDetail = async () => {
-//   const userId = userInfo.id;
-//   await fetchGetRouteDetail(userId);
-// };
-
-// getRouteDetail();
 
 function removeRoute(route_id){
   userRouteDetailList.value.splice(
