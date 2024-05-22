@@ -74,8 +74,8 @@
                   :key="index"
                   :move="moveRoute"
                   @click="removeRoute(index)"
-                  @mouseover="overlays[index].setMap(map)"
-                  @mouseout="overlays[index].setMap()">
+                  @mouseover="selectedOverlays[index].setMap(map)"
+                  @mouseout="selectedOverlays[index].setMap()">
                 </RouteCard>
               </div>
             </template>
@@ -109,7 +109,7 @@ import PlaceCard from "@/components/trip/PlaceCard.vue";
 import RouteCard from "@/components/trip/RouteCard.vue";
 import RouteSaveModal from "@/components/trip/RouteSaveModal.vue";
 
-import { onMounted, ref, onUpdated, watch } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import draggable from "vuedraggable";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
@@ -168,6 +168,7 @@ var searchResult = ref([]);
 // 생성된 마커들 담는 배열열
 var markers = [],
   overlays = [];
+
 
 // 초기 맵 생성
 const initMap = () => {
@@ -239,8 +240,6 @@ const displayMarkers = (places) => {
       yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
 
-    // CustomOverlay.setContent(createContentElement(idx));
-
     kakao.maps.event.addListener(marker, "click", function () {
       customOverlay.setMap(map);
     });
@@ -273,6 +272,28 @@ const displayMarkers = (places) => {
   // map.setCenter
   map.setBounds(bounds);
 };
+
+var selectedOverlays = []
+
+watch(selectedPlaceList.value, (oldList, newList)=>{
+
+  // 초기화
+  selectedOverlays.forEach(ov => {
+    ov.setMap(null)
+  })
+  selectedOverlays = []
+
+  // 선택된 장소 리스트를 돌면서 커스텀 오버레이 생성, 추가
+  selectedPlaceList.value.forEach((place, idx) => {
+    var customOverlay = new kakao.maps.CustomOverlay({
+      position: place.latlng,
+      content: tmpCreateContentElement(selectedPlaceList.value, selectedOverlays, idx),
+      xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+      yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
+    });
+    selectedOverlays.push(customOverlay)
+  })
+})
 
 function createContentElement(idx) {
   // 메인 컨테이너 div 생성
@@ -347,6 +368,106 @@ function createContentElement(idx) {
 
   return content;
 }
+
+
+
+
+
+
+
+
+
+function tmpCreateContentElement(baseList, baseOverlay, idx) {
+  // 메인 컨테이너 div 생성
+  const content = document.createElement("div");
+  content.className = "rounded bg-white overlay_info";
+  content.style.position = "relative";
+  content.style.width = "200px";
+  content.style.whiteSpace = "nowrap";
+  content.style.overflow = "hidden";
+
+  // 제목 컨테이너 div 생성
+  const titleContainer = document.createElement("div");
+  titleContainer.style.backgroundColor = "#EE4E4E";
+  titleContainer.style.fontSize = "13px";
+  titleContainer.style.padding = "4px";
+  titleContainer.style.color = "white";
+  titleContainer.style.textAlign = "center";
+  titleContainer.style.overflow = "hidden";
+  titleContainer.style.whiteSpace = "nowrap";
+  titleContainer.style.display = "flex";
+  titleContainer.style.alignItems = "center";
+
+  // 제목 div 생성
+  const titleDiv = document.createElement("div");
+  titleDiv.style.textOverflow = "ellipsis";
+  titleDiv.style.overflow = "hidden";
+  titleDiv.style.whiteSpace = "nowrap";
+  titleDiv.style.flex = "1";
+  titleDiv.textContent = baseList[idx].title;
+
+  // 닫기 버튼 div 생성
+  const closeButton = document.createElement("div");
+  closeButton.className = "close";
+  closeButton.style.backgroundColor = "transparent";
+  closeButton.style.border = "none";
+  closeButton.style.fontSize = "16px";
+  closeButton.style.cursor = "pointer";
+  closeButton.innerHTML = "&times;";
+  closeButton.addEventListener("click", function () {
+    baseOverlay[idx].setMap(null);
+  });
+
+  titleContainer.appendChild(titleDiv);
+  titleContainer.appendChild(closeButton);
+
+  content.appendChild(titleContainer);
+
+  // 내용 컨테이너 div 생성
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "d-flex";
+  contentDiv.style.width = "200px";
+
+  // 이미지 요소 생성
+  const img = document.createElement("img");
+  img.className = "p-2";
+  img.src = baseList[idx].first_image;
+  img.style.width = "60px";
+  img.style.height = "60px";
+  img.alt = "";
+  contentDiv.appendChild(img);
+
+  // 주소 div 생성
+  const addressDiv = document.createElement("div");
+  addressDiv.className = "address pt-2 pe-2";
+  addressDiv.style.fontSize = "12px";
+  addressDiv.style.width = "200px";
+  addressDiv.style.whiteSpace = "pre-wrap";
+  addressDiv.textContent = baseList[idx].addr1;
+  contentDiv.appendChild(addressDiv);
+
+  content.appendChild(contentDiv);
+
+  return content;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 var drawList = [], // 선을 그어야할 위치 좌표 배열
   polylines = []; // 선을 긋기위한 polyline 객체를 담은 배열
