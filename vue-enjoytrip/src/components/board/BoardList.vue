@@ -8,9 +8,12 @@ import { getArticleList } from '@/api/board';
 import { onMounted, ref } from 'vue';
 
 const articleList = ref([])
+const page = ref(1)
+const pageSize = 12;
 
 onMounted(() => {
     getArticleList(
+        page, pageSize,
         function(data){
             articleList.value = data
         },
