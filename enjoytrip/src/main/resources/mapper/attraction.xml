@@ -96,11 +96,11 @@
 			SELECT route_id, user_id, is_shared
 			FROM route
 			WHERE is_shared = 1
-			ORDER BY route_id
+			ORDER BY route_id desc
 			LIMIT ${start}, ${pageSize}
 		) r
 		LEFT JOIN route_detail rd ON r.route_id = rd.route_id
-		ORDER BY r.route_id, rd.sequence;
+		ORDER BY r.route_id desc, rd.sequence asc;
 	</select>
 
 	<delete id="deleteRoute">
