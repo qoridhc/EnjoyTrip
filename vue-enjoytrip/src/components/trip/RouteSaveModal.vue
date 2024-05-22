@@ -14,12 +14,14 @@
           <h5 class="modal-title" id="routeSaveModalLabel">나의 일정</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="margin-left: 20px">
           <div class="container mt-5">
             <h2 class="text-center mb-5">My Route</h2>
-            <ul class="timeline">
-              <RouteSaveCard v-for="(item, index) in selectedPlaceList" :key="index" :place="item" :idx="index" />
-            </ul>
+            <div class="timeline-container" style="max-height: 60vh; overflow-y: auto">
+              <ul class="timeline">
+                <RouteSaveCard v-for="(item, index) in selectedPlaceList" :key="index" :place="item" :idx="index" />
+              </ul>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
