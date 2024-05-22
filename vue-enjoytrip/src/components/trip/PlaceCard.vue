@@ -16,12 +16,12 @@ const props = defineProps({
       <div class="col" style="font-size: 13px">
         <div class="pt-3" style="font-weight: bold; color: black">{{ place.title }}</div>
         <div class="pt-1 pb-2" style="color: gray">명소 {{ place.addr1 }}</div>
-        <!-- <div class="d-flex align-items-center mb-3">
+        <div class="d-flex align-items-center mb-3">
           <img src="/src/assets/img/like.png" style="width: 12px" />
           <div class="ps-2 pe-2">123</div>
           <img src="/src/assets/img/star.png" style="width: 15px" />
           <div class="ps-2 pe-2">251</div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>

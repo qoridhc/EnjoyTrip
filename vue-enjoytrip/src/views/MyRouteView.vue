@@ -248,6 +248,8 @@ const displayMarkers = () => {
   });
 
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
+  var moveLatLon = new kakao.maps.LatLng(33.452613, 126.570888);
+  // map.setCenter
   map.setBounds(bounds);
 };
 
@@ -443,7 +445,10 @@ const getShortestPath = () => {
   dijkstra();
 };
 
+let shorteRouteList = [];
+
 const dijkstra = () => {
+  shorteRouteList = [];
   dp[0] = 0;
   for (let i = 0; i < size; i++) {
     let min = Infinity;
@@ -481,9 +486,11 @@ const dijkstra = () => {
 
     if (idx !== -1) {
       drawList[i] = selectedPlaceList.value[idx].latlng;
+      shorteRouteList.push(selectedPlaceList.value[idx]);
       dp[idx] = Infinity; // dp에서 해당 요소를 제거합니다.
     }
   }
+
   // 지도에 표시할 선을 생성합니다
   var polyline = new kakao.maps.Polyline({
     path: drawList, // 선을 구성하는 좌표배열 입니다
@@ -492,6 +499,8 @@ const dijkstra = () => {
     strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
     strokeStyle: "solid", // 선의 스타일입니다
   });
+
+  selectedPlaceList.value = shorteRouteList;
 
   // 지도에 선을 표시합니다
   polyline.setMap(map);

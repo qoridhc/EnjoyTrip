@@ -43,7 +43,9 @@ import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
 import { postRoute } from "@/api/map";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const mapStore = useMapStore();
 const memberStore = useMemberStore();
 
@@ -63,11 +65,13 @@ const save = async () => {
   };
 
   await postRoute(routeInfo);
+
+  router.push({ name: "user-route" });
 };
 
 const share = async () => {
-  console.log(selectedPlaceList.value)
-}
+  console.log(selectedPlaceList.value);
+};
 </script>
 
 <style scoped>
