@@ -98,6 +98,9 @@
 		DELETE FROM route WHERE route_id = #{routeId}
 	</delete>
 
+	<update id="shareRoute">
+		UPDATE route SET is_shared = 1 WHERE route_id = #{routeId};
+	</update>
 
 	<!-- <select id="getRouteDetail" resultType="routeDto" > SELECT r.route_id, 
 		rd.sequence, rd.content_id, rd.description FROM route r LEFT JOIN route_detail 

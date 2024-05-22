@@ -1,18 +1,20 @@
 <template>
   <div class="d-flex flex-wrap gap-3" :key="key">
-    <div v-if="userRouteDetailList.length > 0">
+    <div v-if="isShow">
       <UserRouteCard v-for="(route, index) in userRouteDetailList" :route="route" :idx="index" :key="index"
         @remove="removeRoute"
       >
       </UserRouteCard>
     </div>
+    <CommonSpinner v-if="!isShow"/>
   </div>
 </template>
 
 <script setup>
 import UserRouteCard from "@/components/user/mypage/UserRouteCard.vue";
+import CommonSpinner from "@/components/common/CommonSpinner.vue";
 
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
@@ -25,13 +27,21 @@ const { fetchGetRouteDetail } = mapStore;
 const { userRouteDetailList } = storeToRefs(useMapStore());
 
 const key = ref(0)
+const isShow = ref(false)
 
-const getRouteDetail = async () => {
+onMounted(async()=>{
+  isShow.value = false
   const userId = userInfo.id;
   await fetchGetRouteDetail(userId);
-};
+  isShow.value = true
+})
 
-getRouteDetail();
+// const getRouteDetail = async () => {
+//   const userId = userInfo.id;
+//   await fetchGetRouteDetail(userId);
+// };
+
+// getRouteDetail();
 
 function removeRoute(route_id){
   userRouteDetailList.value.splice(

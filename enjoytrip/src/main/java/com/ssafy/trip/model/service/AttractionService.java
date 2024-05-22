@@ -24,4 +24,5 @@ public interface AttractionService
 	public AttractionDto searchByContentId(String contentId) throws Exception;
 	public List<RouteDto> getSharedRoute(Map<String, Integer> map) throws Exception;
 	public int deleteRoute(int routeId) throws Exception;
+	public int shareRoute(int routeId) throws Exception;
 }

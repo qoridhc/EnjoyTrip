@@ -30,7 +30,7 @@ import { useMapStore } from "@/stores/map";
 import { searchByContentId } from "@/api/map";
 import { attractionList } from "@/util/constants.js";
 import { useRouteStore } from "@/stores/route";
-import { deleteRoute } from "@/api/route";
+import { deleteRoute, shareRoute } from "@/api/route";
 import { useRouter } from "vue-router";
 
 const routeStore = useRouteStore();
@@ -88,6 +88,15 @@ const moveMyRoute = async () => {
 // 버튼 클릭
 function share(){
   console.log("share(UserRouteCard): 공유하기 버튼 클릭")
+  shareRoute(
+    props.route.route_id,
+    function(){
+      emit('remove', props.route.route_id)
+    },
+    function(error){
+      console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error)
+    }
+  )
 }
 
 function remove(){
