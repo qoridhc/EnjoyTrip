@@ -235,7 +235,7 @@ const displayMarkers = (places) => {
     // 커스텀 오버레이를 생성합니다
     var customOverlay = new kakao.maps.CustomOverlay({
       position: position.latlng,
-      content: createContentElement(idx),
+      content: createContentElement(searchPlaceList.value, overlays, idx),
       xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
       yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
@@ -287,7 +287,7 @@ watch(selectedPlaceList.value, (oldList, newList)=>{
   selectedPlaceList.value.forEach((place, idx) => {
     var customOverlay = new kakao.maps.CustomOverlay({
       position: place.latlng,
-      content: tmpCreateContentElement(selectedPlaceList.value, selectedOverlays, idx),
+      content: createContentElement(selectedPlaceList.value, selectedOverlays, idx),
       xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
       yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
@@ -295,89 +295,7 @@ watch(selectedPlaceList.value, (oldList, newList)=>{
   })
 })
 
-function createContentElement(idx) {
-  // 메인 컨테이너 div 생성
-  const content = document.createElement("div");
-  content.className = "rounded bg-white overlay_info";
-  content.style.position = "relative";
-  content.style.width = "200px";
-  content.style.whiteSpace = "nowrap";
-  content.style.overflow = "hidden";
-
-  // 제목 컨테이너 div 생성
-  const titleContainer = document.createElement("div");
-  titleContainer.style.backgroundColor = "#EE4E4E";
-  titleContainer.style.fontSize = "13px";
-  titleContainer.style.padding = "4px";
-  titleContainer.style.color = "white";
-  titleContainer.style.textAlign = "center";
-  titleContainer.style.overflow = "hidden";
-  titleContainer.style.whiteSpace = "nowrap";
-  titleContainer.style.display = "flex";
-  titleContainer.style.alignItems = "center";
-
-  // 제목 div 생성
-  const titleDiv = document.createElement("div");
-  titleDiv.style.textOverflow = "ellipsis";
-  titleDiv.style.overflow = "hidden";
-  titleDiv.style.whiteSpace = "nowrap";
-  titleDiv.style.flex = "1";
-  titleDiv.textContent = searchPlaceList.value[idx].title;
-
-  // 닫기 버튼 div 생성
-  const closeButton = document.createElement("div");
-  closeButton.className = "close";
-  closeButton.style.backgroundColor = "transparent";
-  closeButton.style.border = "none";
-  closeButton.style.fontSize = "16px";
-  closeButton.style.cursor = "pointer";
-  closeButton.innerHTML = "&times;";
-  closeButton.addEventListener("click", function () {
-    overlays[idx].setMap(null);
-  });
-
-  titleContainer.appendChild(titleDiv);
-  titleContainer.appendChild(closeButton);
-
-  content.appendChild(titleContainer);
-
-  // 내용 컨테이너 div 생성
-  const contentDiv = document.createElement("div");
-  contentDiv.className = "d-flex";
-  contentDiv.style.width = "200px";
-
-  // 이미지 요소 생성
-  const img = document.createElement("img");
-  img.className = "p-2";
-  img.src = searchPlaceList.value[idx].first_image;
-  img.style.width = "60px";
-  img.style.height = "60px";
-  img.alt = "";
-  contentDiv.appendChild(img);
-
-  // 주소 div 생성
-  const addressDiv = document.createElement("div");
-  addressDiv.className = "address pt-2 pe-2";
-  addressDiv.style.fontSize = "12px";
-  addressDiv.style.width = "200px";
-  addressDiv.style.whiteSpace = "pre-wrap";
-  addressDiv.textContent = searchPlaceList.value[idx].addr1;
-  contentDiv.appendChild(addressDiv);
-
-  content.appendChild(contentDiv);
-
-  return content;
-}
-
-
-
-
-
-
-
-
-
-function tmpCreateContentElement(baseList, baseOverlay, idx) {
+function createContentElement(baseList, baseOverlay, idx) {
   // 메인 컨테이너 div 생성
   const content = document.createElement("div");
   content.className = "rounded bg-white overlay_info";
@@ -450,24 +368,6 @@ function tmpCreateContentElement(baseList, baseOverlay, idx) {
 
   return content;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 var drawList = [], // 선을 그어야할 위치 좌표 배열
   polylines = []; // 선을 긋기위한 polyline 객체를 담은 배열
