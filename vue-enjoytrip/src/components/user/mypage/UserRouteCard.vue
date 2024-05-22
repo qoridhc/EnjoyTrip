@@ -1,6 +1,6 @@
 <template>
-    <div class="image-container me-2 mb-2" @click="moveMyRoute()" @mouseenter="isHover = true"
-      @mouseleave="isHover = false">
+    <div class="image-container me-2 mb-2" @click="moveMyRoute" @mouseenter="isHover = true" @mouseleave="isHover = false">
+
       <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
 
       <div class="overlay rounded" id="custom-overlay" :class="{ active: isHover }">
@@ -9,8 +9,8 @@
             <div class="overlay-title">{{ currRouteInfo.title }}</div>
           </div>
           <div class="button-container">
-            <button class="w-50 btn btn-primary" @click.prevent="share">공유하기</button>
-            <button class="w-50 btn btn-danger" @click.prevent="remove">삭제하기</button>
+            <button class="w-50 btn btn-primary" @click.stop.prevent="share">공유하기</button>
+            <button class="w-50 btn btn-danger" @click.stop.prevent="remove">삭제하기</button>
           </div>
         </div>
       </div>
@@ -145,6 +145,7 @@ function remove() {
   background-color: rgba(0, 0, 0, 0.5);
   width: 220px;
   height: 200px;
+  cursor: pointer;
 }
 
 .overlay.active {
