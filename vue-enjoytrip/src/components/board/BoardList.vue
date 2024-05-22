@@ -28,7 +28,7 @@ function updateArticleList(newArticleList){
 
 <template>
     <div class="d-flex flex-column">
-        <div class="flex-shrink-0 row justify-content-center py-5">
+        <div class="flex-shrink-0 row justify-content-center">
             <hr class="mt-2" />
             <div class="col-lg-8 col-md-10 col-sm-12">
                 <BoardListHeader @search="updateArticleList" />

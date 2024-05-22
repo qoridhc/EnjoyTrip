@@ -1,7 +1,16 @@
 <script setup>
 import ShareMain from '@/components/share/ShareMain.vue';
 import { useFooterStore } from '@/stores/footer';
-useFooterStore().isFixed = false
+import { onBeforeRouteLeave } from 'vue-router';
+const footerStore = useFooterStore()
+
+footerStore.isFixed = false
+footerStore.isTopFixed = false;
+
+onBeforeRouteLeave(()=>{
+    footerStore.isTopFixed = true;
+})
+
 </script>
 
 <template>

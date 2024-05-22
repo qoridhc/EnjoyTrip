@@ -1,16 +1,17 @@
 <script setup>
 import { useMenuStore } from "@/stores/menu";
 import { useMemberStore } from "@/stores/member";
+import { useFooterStore } from "@/stores/footer";
 import { storeToRefs } from "pinia";
 
 const menuStore = useMenuStore();
 const memberStore = useMemberStore();
+const footerStore = useFooterStore();
 
 // 반응형을 유지하면서 스토어에서 속성을 추출하려면, storeToRefs()를 사용
 // https://pinia.vuejs.kr/core-concepts/
 const { menuList } = storeToRefs(menuStore);
 const { changeMenuState } = menuStore;
-
 const { userLogout } = memberStore;
 
 const logout = () => {
@@ -20,7 +21,9 @@ const logout = () => {
 </script>
 
 <template>
-  <nav class="fixed-top navbar navbar-light navbar-expand-lg" style="font-family: 'NotoSansKR-Regular'">
+  <nav class="navbar navbar-light navbar-expand-lg" style="font-family: 'NotoSansKR-Regular'"
+    :class="{ 'fixed-top': footerStore.isTopFixed, 'sticky-top': !footerStore.isTopFixed }"
+  >
     <div class="container px-5">
       <router-link class="navbar-brand" :to="{ name: 'Home' }">Enjoy Trip</router-link>
       <button
