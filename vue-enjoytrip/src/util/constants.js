@@ -17,3 +17,14 @@ export const attractionList = [
   { sido_code: "38", sido_name: "전라남도" },
   { sido_code: "39", sido_name: "제주도" },
 ];
+
+// 관광타입(12:관광지, 14:문화시설, 15:축제공연행사, 25:여행코스, 28:레포츠, 32:숙박, 38:쇼핑, 39:음식점
+export const contentTypeList = [
+  { content_type_id: "12", content_name: "명소", content_img: "/src/assets/img/modal/trip.png" },
+  { content_type_id: "14", content_name: "문화", content_img: "/src/assets/img/modal/culture.png" },
+  { content_type_id: "15", content_name: "문화", content_img: "/src/assets/img/modal/culture.png" },
+  { content_type_id: "28", content_name: "레포츠", content_img: "/src/assets/img/modal/culture.png" },
+  { content_type_id: "32", content_name: "숙박", content_img: "/src/assets/img/modal/lodge.png" },
+  { content_type_id: "38", content_name: "쇼핑", content_img: "/src/assets/img/modal/shopping.png" },
+  { content_type_id: "39", content_name: "맛집", content_img: "/src/assets/img/modal/food.png" },
+];

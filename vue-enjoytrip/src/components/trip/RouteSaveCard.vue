@@ -1,7 +1,11 @@
 <template>
   <li class="timeline-item ms-3">
-    <div class="timeline-badge">
-      <img src="/src/assets/img/place.png" alt="icon" />
+    {{}}
+    <div class="timeline-badge" :style="{ backgroundColor: colorList[idx % 5] }">
+      <img
+        :src="contentTypeList.find((item) => item.content_type_id === props.place.content_type_id).content_img"
+        alt="icon"
+        style="width: 70%; padding-top: 6px" />
     </div>
     <div class="timeline-panel pb-3" style="width: 90%">
       <div class="timeline-heading">
@@ -23,6 +27,8 @@
 </template>
 
 <script setup>
+const colorList = ["#7AB2B2", "#CA8787", "#40A578", "#AF8F6F", "#AD88C6"];
+
 const props = defineProps({
   place: Object,
   idx: Number,
@@ -31,13 +37,12 @@ const props = defineProps({
 import { ref, watch } from "vue";
 import { useMapStore } from "@/stores/map";
 import { storeToRefs } from "pinia";
+import { contentTypeList } from "@/util/constants";
 
 const mapStore = useMapStore();
-
 const { selectedPlaceList } = storeToRefs(mapStore);
 
 const inputText = ref("");
-inputText.value = props.place.description;
 
 watch(inputText, (newValue, oldValue) => {
   selectedPlaceList.value[props.idx].description = newValue;

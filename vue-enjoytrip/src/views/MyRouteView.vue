@@ -391,6 +391,7 @@ const addNewRoute = (index, insertPos) => {
     addr1: searchPlaceList.value[index].addr1,
     latlng: searchPlaceList.value[index].latlng,
     first_image: searchPlaceList.value[index].first_image,
+    content_type_id: searchPlaceList.value[index].content_type_id,
   };
 
   // PlaceCard를 클릭해서 추가한경우 -> 맨뒤에 push
@@ -401,7 +402,7 @@ const addNewRoute = (index, insertPos) => {
     if (isDuplicated) {
       Swal.fire({
         title: "이미 선택한 장소입니다.",
-        text: "확인하고 다시 시도해주세요",
+        text: "선택하지 않은 장소를 추가해주세요.",
         icon: "error",
         confirmButtonColor: "#EE4E4E",
         confirmButtonText: "닫기",

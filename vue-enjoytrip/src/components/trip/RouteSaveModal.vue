@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="modal fade"
-    id="routeSaveModal"
-    tabindex="-1"
-    aria-labelledby="routeSaveModalLabel"
-    aria-hidden="true"
-    data-bs-backdrop="false">
+  <div class="modal fade" id="routeSaveModal" tabindex="-1" aria-labelledby="routeSaveModalLabel" aria-hidden="true" data-bs-backdrop="false">
     <div class="modal-dialog modal-lg">
       <!-- Add 'modal-lg' class here -->
       <div class="modal-content">
@@ -18,20 +12,14 @@
           <div class="container mt-5">
             <h2 class="text-center mb-5">My Route</h2>
             <div class="timeline-container" style="max-height: 60vh; overflow-y: auto">
-              <ul class="timeline">
+              <ul class="timeline ms-2">
                 <RouteSaveCard v-for="(item, index) in selectedPlaceList" :key="index" :place="item" :idx="index" />
               </ul>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            class="rounded border-0"
-            @click="save"
-            data-bs-dismiss="modal"
-            style="background-color: #a6e3e9; color: white">
-            Save
-          </button>
+          <button class="rounded border-0" @click="save" data-bs-dismiss="modal" style="background-color: #a6e3e9; color: white">Save</button>
         </div>
       </div>
     </div>
@@ -39,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import RouteSaveCard from "./RouteSaveCard.vue";
 import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
