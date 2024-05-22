@@ -46,6 +46,7 @@ import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
 import { postRoute } from "@/api/map";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const mapStore = useMapStore();
@@ -67,6 +68,14 @@ const save = async () => {
   };
 
   await postRoute(routeInfo);
+
+  Swal.fire({
+    title: "루트 저장 성공!",
+    text: "나의 일정에서 확인해보세요!",
+    icon: "success",
+    confirmButtonText: "닫기",
+    confirmButtonColor: "#a6e3e9",
+  });
 
   router.push({ name: "user-route" });
 };
