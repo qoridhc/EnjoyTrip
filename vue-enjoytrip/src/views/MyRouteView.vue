@@ -115,6 +115,7 @@ import { useMapStore } from "@/stores/map";
 import { useMemberStore } from "@/stores/member";
 import { useFooterStore } from "@/stores/footer";
 import { useRouteStore } from "@/stores/route";
+import Swal from "sweetalert2";
 
 const routeStore = useRouteStore();
 
@@ -198,7 +199,13 @@ const addScript = () => {
 const searchPlaces = async () => {
   searchResult.value = [];
   if (!searchKeyword.value.replace(/^\s+|\s+$/g, "")) {
-    alert("키워드를 입력해주세요!");
+    Swal.fire({
+      title: "키워드를 입력해주세요.",
+      text: "확인하고 다시 시도해주세요",
+      icon: "error",
+      confirmButtonColor: "#EE4E4E",
+      confirmButtonText: "닫기",
+    });
     return false;
   }
 
@@ -392,7 +399,13 @@ const addNewRoute = (index, insertPos) => {
     const isDuplicated = selectedPlaceList.value.some((iter) => iter.content_id === selectedPlaceInfo.content_id);
 
     if (isDuplicated) {
-      alert("이미 선택한 장소입니다.");
+      Swal.fire({
+        title: "이미 선택한 장소입니다.",
+        text: "확인하고 다시 시도해주세요",
+        icon: "error",
+        confirmButtonColor: "#EE4E4E",
+        confirmButtonText: "닫기",
+      });
       return;
     }
 
@@ -418,7 +431,13 @@ const addNewRoute = (index, insertPos) => {
       if (i === insertPos) continue;
 
       if (selectedPlaceList.value[i].content_id === selectedPlaceList.value[insertPos].content_id) {
-        alert("이미 선택한 장소입니다.");
+        Swal.fire({
+          title: "이미 선택한 장소입니다.",
+          text: "확인하고 다시 시도해주세요",
+          icon: "error",
+          confirmButtonColor: "#EE4E4E",
+          confirmButtonText: "닫기",
+        });
         selectedPlaceList.value.splice(insertPos, 1);
         break;
       }
