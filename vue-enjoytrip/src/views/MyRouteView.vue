@@ -31,8 +31,8 @@
                   <PlaceCard
                     :place="element"
                     :key="index"
-                    @mouseover="markers[index].setMap(map)"
-                    @mouseout="markers[index].setMap()"
+                    @mouseover="overlays[index].setMap(map)"
+                    @mouseout="overlays[index].setMap()"
                     @click="addNewRoute(index, -1)">
                   </PlaceCard>
                 </div>
@@ -68,7 +68,14 @@
             @change="handleDrag">
             <template #item="{ element, index }">
               <div class="list-group-item">
-                <RouteCard :place="element" :id="index + 1" :key="index" :move="moveRoute" @click="removeRoute(index)">
+                <RouteCard
+                  :place="element"
+                  :id="index + 1"
+                  :key="index"
+                  :move="moveRoute"
+                  @click="removeRoute(index)"
+                  @mouseover="overlays[index].setMap(map)"
+                  @mouseout="overlays[index].setMap()">
                 </RouteCard>
               </div>
             </template>
@@ -135,10 +142,10 @@ onMounted(async () => {
 
     // 다른 페이지에서 넘어올 때 저장된 여행지 리스트를 검색 결과에 추가해서 마커에 같이 표시하기
     // searchPlaceList.value.push(...selectedPlaceList.value)
-    searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value]
+    searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value];
 
     // 검색 결과 기반으로 마커 표시
-    displayMarkers();
+    displayMarkers(searchPlaceList.value);
 
     // 저장된 여행지 리스트를 기반으로 선 추가
     drawSelectedRouteLine();
@@ -159,7 +166,8 @@ const searchKeyword = ref("");
 var searchResult = ref([]);
 
 // 생성된 마커들 담는 배열열
-var markers = [];
+var markers = [],
+  overlays = [];
 
 // 초기 맵 생성
 const initMap = () => {
@@ -196,30 +204,24 @@ const searchPlaces = async () => {
 
   await getPlaceByKeyword(searchKeyword.value, routeStore.sido_code);
 
-  displayMarkers();
+  searchPlaceList.value = [...searchPlaceList.value, ...selectedPlaceList.value];
+
+  displayMarkers(searchPlaceList.value);
 
   drawSelectedRouteLine();
 };
 
 var positions = [];
 
-const displayMarkers = () => {
+const displayMarkers = (places) => {
   positions = [];
 
-  const places = searchPlaceList.value;
+  // 기존에 생성된 마커 제거
+  removeMarker();
 
   places.forEach((place) => {
     positions.push({ title: place.title, latlng: place.latlng });
   });
-
-  // 기존에 생성된 마커가 있으면 마커 반복문 돌면서 지우기
-  if (markers.length > 0) {
-    markers.forEach((item) => {
-      item.setMap(null);
-    });
-  }
-
-  markers = [];
 
   positions.forEach((position, idx) => {
     const marker = new kakao.maps.Marker({
@@ -262,8 +264,8 @@ const displayMarkers = () => {
     // kakao.maps.event.addListener(marker, "mouseout", () => {
     //   infowindow.close(map, marker);
     // });
-
-    markers.push(customOverlay);
+    markers.push(marker);
+    overlays.push(customOverlay);
   });
 
   const bounds = positions.reduce((bounds, position) => bounds.extend(position.latlng), new kakao.maps.LatLngBounds());
@@ -310,7 +312,7 @@ function createContentElement(idx) {
   closeButton.style.cursor = "pointer";
   closeButton.innerHTML = "&times;";
   closeButton.addEventListener("click", function () {
-    markers[idx].setMap(null);
+    overlays[idx].setMap(null);
   });
 
   titleContainer.appendChild(titleDiv);
@@ -364,9 +366,7 @@ const addNewRoute = (index, insertPos) => {
   // PlaceCard를 클릭해서 추가한경우 -> 맨뒤에 push
   if (insertPos === -1) {
     // 같은 장소 중복 선택 방지
-    const isDuplicated = selectedPlaceList.value.some(
-      (iter) => iter.content_id === selectedPlaceInfo.content_id
-    );
+    const isDuplicated = selectedPlaceList.value.some((iter) => iter.content_id === selectedPlaceInfo.content_id);
 
     if (isDuplicated) {
       alert("이미 선택한 장소입니다.");
@@ -390,14 +390,13 @@ const addNewRoute = (index, insertPos) => {
     // 선 배열에 저장
     polylines.push(polyline);
   } else {
-
     // 같은 장소 중복 선택 방지
     for (let i = 0; i < selectedPlaceList.value.length; i++) {
       if (i === insertPos) continue;
 
       if (selectedPlaceList.value[i].content_id === selectedPlaceList.value[insertPos].content_id) {
         alert("이미 선택한 장소입니다.");
-        selectedPlaceList.value.splice(insertPos, 1)
+        selectedPlaceList.value.splice(insertPos, 1);
         break;
       }
     }
@@ -456,12 +455,24 @@ const removeRoute = (index) => {
 };
 
 // 지도 위에 표시되고 있는 마커를 모두 제거합니다
-// const removeMarker = () => {
-//   for (var i = 0; i < markers.length; i++) {
-//     markers[i].setMap(null);
-//   }
-//   markers = [];
-// };
+const removeMarker = () => {
+  // 기존에 생성된 마커가 있으면 마커 반복문 돌면서 지우기
+  if (markers.length > 0) {
+    markers.forEach((item) => {
+      item.setMap(null);
+    });
+  }
+
+  // 기존에 생성된 오버레이가 있으면 마커 반복문 돌면서 지우기
+  if (overlays.length > 0) {
+    overlays.forEach((item) => {
+      item.setMap(null);
+    });
+  }
+
+  markers = [];
+  overlays = [];
+};
 
 // 선택한 경로 모두 초기화
 const clearSelectedRoute = () => {

@@ -8,7 +8,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="container pb-2 pt-2 me-5" @click="$emit('click')">
+  <div
+    class="container pb-2 pt-2 me-5"
+    @click="$emit('click')"
+    @mouseover="$emit('mouseover')"
+    @mouseout="$emit('mouseout')">
     <div class="row justify-content-center align-items-center">
       <div
         class="col-md-1 me-3 rounded-circle custom-bg-color text-center text-light"
