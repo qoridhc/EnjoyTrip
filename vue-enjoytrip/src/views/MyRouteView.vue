@@ -102,7 +102,9 @@ useFooterStore().isFixed = false;
 onMounted(async () => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 
+
   if (routeStore.sido_name_kor) {
+    console.log(routeStore.sido_code)
 
     // 다른 페이지에서 맵으로 넘어올때 시도코드를 기반으로 자동 검색
     await getPlaceBySidoCode(routeStore.sido_code);
@@ -114,6 +116,9 @@ onMounted(async () => {
 
     // 검색 결과 기반으로 마커 표시
     displayMarkers();
+
+    // 저장된 여행지 리스트를 기반으로 선 추가
+    drawSelectedRouteLine()
   }
 });
 
@@ -169,6 +174,8 @@ const searchPlaces = async () => {
   await getPlaceByKeyword(searchKeyword.value, routeStore.sido_code);
 
   displayMarkers();
+
+  drawSelectedRouteLine()
 };
 
 var positions = [];

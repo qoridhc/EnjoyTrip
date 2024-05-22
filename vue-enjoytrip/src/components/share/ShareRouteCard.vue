@@ -41,7 +41,7 @@ onMounted(async () => {
                 content_id: res.data.content_id,
                 title: res.data.title.split('(')[0],
                 addr1: res.data.addr1,
-                currPos: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+                latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
                 first_image: res.data.first_image,
                 description: props.place.infoList[0].description,
                 sidoName: attractionList.find((item) => item.sido_code === res.data.sido_code)?.sido_name,
@@ -57,7 +57,7 @@ onMounted(async () => {
 const moveSharedRoute = async () => {
     selectedPlaceList.value = []
     routeStore.sido_name_kor = sharedPlaceInfo.value.sidoName;
-    console.log("moveSharedRoute(ShareRouteCard): 시도 확인\nsido: ", routeStore.sido_name_kor)
+    routeStore.sido_code = attractionList.find((item) => item.sido_name === routeStore.sido_name_kor)?.sido_code;
 
     for (const info of props.place.infoList) {
         await searchByContentId(
@@ -67,7 +67,7 @@ const moveSharedRoute = async () => {
                     content_id: res.data.content_id,
                     title: res.data.title,
                     addr1: res.data.addr1,
-                    currPos: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+                    latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
                     first_image: res.data.first_image,
                     description: info.description,
                 };

@@ -1,9 +1,5 @@
 <template>
-  <router-link :to="{ name: 'myroute' }">
-    <div
-      class="image-container me-2 mb-2"
-      @click="moveMyRoute()"
-      @mouseenter="isHover = true"
+    <div class="image-container me-2 mb-2" @click="moveMyRoute()" @mouseenter="isHover = true"
       @mouseleave="isHover = false">
       <img class="img-fluid rounded" :src="currRouteInfo.first_image" />
 
@@ -20,7 +16,6 @@
       </div>
       <div class="overlay" id="default-overlay" :class="{ active: !isHover }">{{ sidoName }}</div>
     </div>
-  </router-link>
 </template>
 
 <script setup>
@@ -66,46 +61,47 @@ const moveMyRoute = async () => {
 
   routeStore.sido_code = currRouteInfo.value.sido_code;
   routeStore.sido_name_kor = sidoName.value;
-
   for (const element of props.route.infoList) {
-    await searchByContentId(element.content_id, (res) => {
-      const selectedPlaceInfo = {
-        content_id: res.data.content_id,
-        title: res.data.title,
-        addr1: res.data.addr1,
-        latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
-        first_image: res.data.first_image,
-        description: element.description,
-      };
 
-      selectedPlaceList.value.push(selectedPlaceInfo);
-    });
+    await searchByContentId(
+      element.content_id,
+      function (res) {
+        const selectedPlaceInfo = {
+          content_id: res.data.content_id,
+          title: res.data.title,
+          addr1: res.data.addr1,
+          latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
+          first_image: res.data.first_image,
+          description: element.description,
+        };
+        selectedPlaceList.value.push(selectedPlaceInfo);
+      });
   }
-
   mapStore.isChanged = true;
+  router.push({ name: 'myroute' })
 };
 
 // 버튼 클릭
-function share(){
+function share() {
   console.log("share(UserRouteCard): 공유하기 버튼 클릭")
   shareRoute(
     props.route.route_id,
-    function(){
+    function () {
       alert("공유 성공")
     },
-    function(error){
+    function (error) {
       console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error)
     }
   )
 }
 
-function remove(){
+function remove() {
   deleteRoute(
     props.route.route_id,
-    function(){
+    function () {
       emit('remove', props.route.route_id)
     },
-    function(error){
+    function (error) {
       console.log("remove(UserRouteCard): 삭제하기 실패\nerror: ", error)
     }
   )
@@ -172,7 +168,7 @@ function remove(){
 
 .button-container {
   position: absolute;
-  bottom: 0; 
+  bottom: 0;
   display: flex;
   justify-content: space-between;
   width: 100%;
