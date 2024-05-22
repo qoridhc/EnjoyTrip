@@ -104,14 +104,12 @@ onMounted(async () => {
 
 
   if (routeStore.sido_name_kor) {
-    console.log(routeStore.sido_code)
 
     // 다른 페이지에서 맵으로 넘어올때 시도코드를 기반으로 자동 검색
     await getPlaceBySidoCode(routeStore.sido_code);
 
     // 다른 페이지에서 넘어올 때 저장된 여행지 리스트를 검색 결과에 추가해서 마커에 같이 표시하기
     // searchPlaceList.value.push(...selectedPlaceList.value)
-    console.log(selectedPlaceList.value)
     searchPlaceList.value = [...selectedPlaceList.value, ...searchPlaceList.value]
 
     // 검색 결과 기반으로 마커 표시
@@ -282,18 +280,18 @@ const addNewRoute = (index, insertPos) => {
     first_image: searchPlaceList.value[index].first_image,
   };
 
-  // 같은 장소 중복 선택 방지
-  const isDuplicated = selectedPlaceList.value.some(
-    (iter) => JSON.stringify(iter) === JSON.stringify(selectedPlaceInfo)
-  );
-
-  if (isDuplicated) {
-    alert("이미 선택한 장소입니다.");
-    return;
-  }
-
   // PlaceCard를 클릭해서 추가한경우 -> 맨뒤에 push
   if (insertPos === -1) {
+    // 같은 장소 중복 선택 방지
+    const isDuplicated = selectedPlaceList.value.some(
+      (iter) => iter.content_id === selectedPlaceInfo.content_id
+    );
+
+    if (isDuplicated) {
+      alert("이미 선택한 장소입니다.");
+      return;
+    }
+
     selectedPlaceList.value.push(selectedPlaceInfo);
     drawList.push(searchPlaceList.value[index].latlng);
 
@@ -311,6 +309,18 @@ const addNewRoute = (index, insertPos) => {
     // 선 배열에 저장
     polylines.push(polyline);
   } else {
+
+    // 같은 장소 중복 선택 방지
+    for (let i = 0; i < selectedPlaceList.value.length; i++) {
+      if (i === insertPos) continue;
+
+      if (selectedPlaceList.value[i].content_id === selectedPlaceList.value[insertPos].content_id) {
+        alert("이미 선택한 장소입니다.");
+        selectedPlaceList.value.splice(insertPos, 1)
+        break;
+      }
+    }
+
     // PlaceCard를 드래그해서 추가한경우
     // 이미 selectedPlaceList 배열에 추가되어있으므로 따로 insert해줄필요 X
     // drawSelectedRouteLine() 호출해서 다시 선 그어주기만 하면됨
