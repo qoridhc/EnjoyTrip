@@ -169,7 +169,6 @@ var searchResult = ref([]);
 var markers = [],
   overlays = [];
 
-
 // 초기 맵 생성
 const initMap = () => {
   var container = document.getElementById("map");
@@ -273,27 +272,30 @@ const displayMarkers = (places) => {
   map.setBounds(bounds);
 };
 
-var selectedOverlays = []
+var selectedOverlays = [];
 
-watch(selectedPlaceList.value, (oldList, newList)=>{
+watch(selectedPlaceList.value, (oldList, newList) => {
+  getSelectedOverlays(newList);
+});
 
+function getSelectedOverlays(newList) {
   // 초기화
-  selectedOverlays.forEach(ov => {
-    ov.setMap(null)
-  })
-  selectedOverlays = []
+  selectedOverlays.forEach((ov) => {
+    ov.setMap(null);
+  });
+  selectedOverlays = [];
 
   // 선택된 장소 리스트를 돌면서 커스텀 오버레이 생성, 추가
-  selectedPlaceList.value.forEach((place, idx) => {
+  newList.forEach((place, idx) => {
     var customOverlay = new kakao.maps.CustomOverlay({
       position: place.latlng,
-      content: createContentElement(selectedPlaceList.value, selectedOverlays, idx),
+      content: createContentElement(newList, selectedOverlays, idx),
       xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
       yAnchor: 1.1, // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
     });
-    selectedOverlays.push(customOverlay)
-  })
-})
+    selectedOverlays.push(customOverlay);
+  });
+}
 
 function createContentElement(baseList, baseOverlay, idx) {
   // 메인 컨테이너 div 생성
@@ -631,6 +633,7 @@ const dijkstra = () => {
   });
 
   selectedPlaceList.value = shorteRouteList;
+  getSelectedOverlays(selectedPlaceList.value);
 
   // 지도에 선을 표시합니다
   polyline.setMap(map);
