@@ -7,7 +7,7 @@ async function searchByKeyword(keyword, success, fail) {
 }
 
 async function searchByContentId(contentId, success, fail) {
-  await local.get(`/attraction/search/${contentId}`).then(success).catch(fail);
+  await local.get(`/attraction/search/content/${contentId}`).then(success).catch(fail);
 }
 
 async function postRoute(routeList, success, fail) {
@@ -31,4 +31,8 @@ function getSharedRoute(page, pageSize, success, fail) {
   });
 }
 
-export { searchByKeyword, postRoute, getRouteDetail, searchByContentId, getSharedRoute };
+async function searchBySidoCode(sido_code, success, fail){
+  await local.get(`/attraction/search/sido/${sido_code}`).then(success).catch(fail);
+}
+
+export { searchByKeyword, postRoute, getRouteDetail, searchByContentId, getSharedRoute, searchBySidoCode };

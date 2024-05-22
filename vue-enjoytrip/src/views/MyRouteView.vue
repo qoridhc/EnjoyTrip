@@ -8,32 +8,18 @@
           <div style="font-size: 25px; font-weight: bold">{{ routeStore.sido_name_kor }}</div>
           <div class="pt-2 pb-3" style="font-size: 16px; font-weight: bold">2024.05.22(수) ~ 2024.05.23(목)</div>
           <div class="search">
-            <input
-              @keyup.enter="searchPlaces"
-              type="text"
-              v-model="searchKeyword"
-              value="이태원맛집"
+            <input @keyup.enter="searchPlaces" type="text" v-model="searchKeyword" value="이태원맛집"
               placeholder="장소명을 입력해 주세요" />
-            <img
-              class="pt-1"
-              @click="searchPlaces()"
+            <img class="pt-1" @click="searchPlaces()"
               src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
           <div class="mt-3" style="max-height: 70vh; overflow-y: auto">
-            <draggable
-              class="dragArea list-group"
-              :list="searchPlaceList"
-              :group="{ name: 'people', pull: 'clone', put: false }"
-              :sort="false"
-              item-key="name">
+            <draggable class="dragArea list-group" :list="searchPlaceList"
+              :group="{ name: 'people', pull: 'clone', put: false }" :sort="false" item-key="name">
               <template #item="{ element, index }">
                 <div class="list-group-item">
-                  <PlaceCard
-                    :place="element"
-                    :key="index"
-                    @mouseover="markers[index].setMap(map)"
-                    @mouseout="markers[index].setMap()"
-                    @click="addNewRoute(index, -1)">
+                  <PlaceCard :place="element" :key="index" @mouseover="markers[index].setMap(map)"
+                    @mouseout="markers[index].setMap()" @click="addNewRoute(index, -1)">
                   </PlaceCard>
                 </div>
               </template>
@@ -45,27 +31,18 @@
       <div class="col-md-3">
         <div class="mt-5 d-flex">
           <h4 class="me-auto">{{ selectedPlaceList.length }}</h4>
-          <div
-            class="border rounded p-1 me-2 custom-bg-color text-white"
-            @click="getShortestPath()"
+          <div class="border rounded p-1 me-2 custom-bg-color text-white" @click="getShortestPath()"
             style="font-size: 14px; height: 30px">
             최단경로
           </div>
-          <div
-            class="border rounded p-1 custom-bg-color text-white"
-            @click="clearSelectedRoute()"
+          <div class="border rounded p-1 custom-bg-color text-white" @click="clearSelectedRoute()"
             style="font-size: 14px; height: 30px">
             초기화
           </div>
         </div>
         <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden">
-          <draggable
-            class="dragArea list-group"
-            :list="selectedPlaceList"
-            group="people"
-            item-key="name"
-            @add="(e) => addRouteByDrag(e)"
-            @change="handleDrag">
+          <draggable class="dragArea list-group" :list="selectedPlaceList" group="people" item-key="name"
+            @add="(e) => addRouteByDrag(e)" @change="handleDrag">
             <template #item="{ element, index }">
               <div class="list-group-item">
                 <RouteCard :place="element" :id="index + 1" :key="index" :move="moveRoute" @click="removeRoute(index)">
@@ -75,13 +52,9 @@
           </draggable>
         </div>
 
-        <div
-          class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
-          @click="saveRoute()"
-          v-if="selectedPlaceList.length > 0"
-          data-bs-toggle="modal"
-          data-bs-target="#routeSaveModal"
-          style="font-size: 14px; height: 30px">
+        <div class="ms-auto mt-4 col-md-2 text-center border rounded p-1 me-2 custom-bg-color text-white"
+          @click="saveRoute()" v-if="selectedPlaceList.length > 0" data-bs-toggle="modal"
+          data-bs-target="#routeSaveModal" style="font-size: 14px; height: 30px">
           경로저장
         </div>
 
@@ -115,7 +88,7 @@ import { storeToRefs } from "pinia";
 
 const mapStore = useMapStore();
 const { searchPlaceList, userRouteList, selectedPlaceList } = storeToRefs(mapStore);
-const { getPlaceByKeyword } = mapStore;
+const { getPlaceByKeyword, getPlaceBySidoCode } = mapStore;
 const { isChanged } = storeToRefs(mapStore);
 
 const memberStore = useMemberStore();
@@ -126,12 +99,12 @@ const { VITE_KAKAO_MAP_SERVICE_KEY } = import.meta.env;
 // footer 고정
 useFooterStore().isFixed = false;
 
-onMounted(() => {
+onMounted(async () => {
   window.kakao && window.kakao.maps ? initMap() : addScript();
 
   if (routeStore.sido_name_kor) {
-    searchKeyword.value = routeStore.sido_name_kor;
-    searchPlaces();
+    await getPlaceBySidoCode(routeStore.sido_code);
+    displayMarkers();
   }
 });
 
@@ -143,7 +116,7 @@ watch(isChanged, (newList, oldList) => {
 var map;
 
 // default 검색
-const searchKeyword = ref("제주도");
+const searchKeyword = ref("");
 
 // 검색 결과 담는 배열
 var searchResult = ref([]);
@@ -543,6 +516,7 @@ img {
   right: 12px;
   margin: 0;
 }
+
 .custom-bg-color {
   background-color: #a6e3e9;
 }

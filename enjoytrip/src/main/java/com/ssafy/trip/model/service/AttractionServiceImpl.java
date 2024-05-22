@@ -81,4 +81,9 @@ public class AttractionServiceImpl implements AttractionService
 	public int shareRoute(int routeId) throws Exception {
 		return dao.shareRoute(routeId);
 	}
+
+	@Override
+	public List<AttractionDto> searchBySidoCode(String sido_code) throws Exception {
+		return dao.searchBySidoCode(sido_code);
+	}
 }
