@@ -1,6 +1,5 @@
 <template>
   <li class="timeline-item ms-3">
-    {{}}
     <div class="timeline-badge" :style="{ backgroundColor: colorList[idx % 5] }">
       <img
         :src="contentTypeList.find((item) => item.content_type_id === props.place.content_type_id).content_img"

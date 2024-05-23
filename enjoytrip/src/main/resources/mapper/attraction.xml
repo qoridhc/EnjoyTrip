@@ -84,7 +84,7 @@
 	</select>
 
 	<select id="searchByContentId">
-		select content_id, sido_code, first_image, title, addr1, latitude, longitude
+		select content_id, content_type_id, sido_code, first_image, title, addr1, latitude, longitude
 		from attraction_info
 		where content_id = #{content_id}
 	</select>

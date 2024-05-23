@@ -148,6 +148,8 @@ onMounted(async () => {
     // 검색 결과 기반으로 마커 표시
     displayMarkers(searchPlaceList.value);
 
+    getSelectedOverlays(selectedPlaceList.value);
+
     // 저장된 여행지 리스트를 기반으로 선 추가
     drawSelectedRouteLine();
   }

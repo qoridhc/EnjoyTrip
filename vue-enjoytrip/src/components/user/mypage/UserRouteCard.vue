@@ -76,7 +76,9 @@ const moveMyRoute = async () => {
         latlng: new kakao.maps.LatLng(res.data.latitude, res.data.longitude),
         first_image: res.data.first_image,
         description: element.description,
+        content_type_id: res.data.content_type_id,
       };
+
       selectedPlaceList.value.push(selectedPlaceInfo);
     });
   }
@@ -105,7 +107,7 @@ function share() {
 }
 
 // 공유끊기 버튼 클릭
-function stopShare(){
+function stopShare() {
   stopShareRoute(
     props.route.route_id,
     function () {
@@ -116,7 +118,7 @@ function stopShare(){
         confirmButtonText: "다음",
         confirmButtonColor: "#a6e3e9",
       });
-      emit("stopShare", props.route.route_id)
+      emit("stopShare", props.route.route_id);
     },
     function (error) {
       console.log("remove(UserRouteCard): 공유하기 실패\nerror: ", error);
